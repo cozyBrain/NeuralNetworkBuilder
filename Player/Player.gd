@@ -134,7 +134,9 @@ func _input(event):  # _unhandled_input
 					toolcode.PC:
 						Tool.use1(rayCastDetectedObject)
 					toolcode.SC:
-						if event.button_index == BUTTON_LEFT:
+						if rayCastDetectedObject == null:
+							print("SquareConnector: No Object Detected")
+						elif event.button_index == BUTTON_LEFT:
 							Tool.selectAarea(rayCastDetectedObject)
 						elif event.button_index == BUTTON_RIGHT:
 							Tool.selectBarea(rayCastDetectedObject)
