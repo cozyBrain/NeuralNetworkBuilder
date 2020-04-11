@@ -135,19 +135,19 @@ func _input(event):  # _unhandled_input
 						Tool.use1(rayCastDetectedObject)
 					toolcode.SC:
 						if rayCastDetectedObject == null:
-							print("SquareConnector: No Object Detected")
+							print(Tool.name, ": No Object Detected")
 						elif event.button_index == BUTTON_LEFT:
 							Tool.selectAarea(rayCastDetectedObject)
 						elif event.button_index == BUTTON_RIGHT:
 							Tool.selectBarea(rayCastDetectedObject)
 					toolcode.H:  # Hand
 						if null == rayCastDetectedObject:
-							print("Hand: No Object Detected")
+							print(Tool.name, ": No Object Detected")
 						else:
-							print("Hand: ", rayCastDetectedObject, " >")
+							print(Tool.name, ": < ", rayCastDetectedObject, " >")
 							var type = rayCastDetectedObject.get("Type")
 							if type == null:
-								print("Hand: could not interact")
+								print(Tool.name, ": could not interact")
 							else:
 								match type:
 									G.N_Types.N_NetworkController:
@@ -157,14 +157,14 @@ func _input(event):  # _unhandled_input
 											var count = 100
 											for i in range(count):
 												rayCastDetectedObject.wave()
-											print("Hand: learned for ", count, " times")
+											print(Tool.name, ": learned for ", count, " times")
 									G.N_Types.N_Input, G.N_Types.N_Goal:
 										if event.button_index == BUTTON_LEFT:
 											rayCastDetectedObject.addOutput(0.25)
 										elif event.button_index == BUTTON_RIGHT:
 											rayCastDetectedObject.addOutput(-0.25)
 									_:
-										print("Hand: no interaction with ", G.N_TypeToString[type])
+										print(Tool.name, ": no interaction with ", G.N_TypeToString[type])
 					_:
 						print("the tool couldn't be recognized")
 			else:
