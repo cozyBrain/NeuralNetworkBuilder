@@ -157,7 +157,7 @@ func _input(event):  # _unhandled_input
 											var count = 100
 											for i in range(count):
 												rayCastDetectedObject.wave()
-											print(Tool.name, ": learned for ", count, " times")
+											print(Tool.name, ": iterated for ", count, " times")
 									G.N_Types.N_Input, G.N_Types.N_Goal:
 										if event.button_index == BUTTON_LEFT:
 											rayCastDetectedObject.addOutput(0.25)
