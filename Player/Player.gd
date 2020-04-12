@@ -116,8 +116,7 @@ func _physics_process(delta):
 	move_and_slide(velocity)
 
 func _input(event):  # _unhandled_input
-	# cam movement
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion:  # cam movement
 		$Yaxis.rotate_y(deg2rad(-event.relative.x * mouse_sensitivity))
 		
 		var change = -event.relative.y * mouse_sensitivity

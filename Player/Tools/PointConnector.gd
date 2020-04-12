@@ -31,8 +31,10 @@ func use2(A : Object, B : Object) -> Object:
 	newSynapse.look_at_from_position(position, A.translation, d)
 	if newSynapse.connectFrom(A) == -1:
 		print(self.name, ": synapse failed: connectFrom ", A)
+		return null
 	if newSynapse.connectTo(B) == -1:
 		print(self.name, ": synapse failed: connectTo ", B)
+		return null
 		
 	var success : int = 0
 	# connect both node with the newSynapse
