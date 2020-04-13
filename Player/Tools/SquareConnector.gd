@@ -57,13 +57,9 @@ func initiate() -> void:
 		print("B area: ", Barea[0].translation, " to ", Barea[1].translation)
 		
 	if Aselected and Bselected:
-#		var bodyDetector = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
-#		get_node(session_path).add_child(bodyDetector)
-#		bodyDetector.detect(Aarea[0].translation, Aarea[1].translation)
-#		bodyDetector.queue_free()
 		var Abodies = AareaDetector.get_overlapping_bodies()
 		var Bbodies = BareaDetector.get_overlapping_bodies()
-		print(Abodies, Bbodies)
+
 		for Abody in Abodies:
 			for Bbody in Bbodies:
 				var newSynapse = get_parent().get_node("PointConnector").use2(Abody, Bbody)
