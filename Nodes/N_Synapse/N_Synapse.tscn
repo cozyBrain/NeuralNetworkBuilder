@@ -2,8 +2,6 @@
 
 [ext_resource path="res://Nodes/N_Synapse/N_Synapse.gd" type="Script" id=1]
 
-
-
 [sub_resource type="CylinderShape" id=1]
 
 [sub_resource type="SpatialMaterial" id=2]
