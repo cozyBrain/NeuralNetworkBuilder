@@ -13,7 +13,6 @@ func _ready():
 func resize(s : Vector3) -> void:
 	var cs = get_node("CollisionShape")
 	cs.transform = cs.transform.scaled(s)
-	print(s)
 #func detect(from : Vector3, to : Vector3) -> void:
 	
 #	# difference
