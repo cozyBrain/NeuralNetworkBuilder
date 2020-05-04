@@ -1,5 +1,5 @@
 extends Node
-enum N_Types {
+enum N_Types {  # Every types after the type Player are sorted by times. ex) Player, A, B then, A is created earlier than B.
 	N_LeakyReLU, N_Synapse, N_NetworkController, N_Input, N_Tanh, N_Goal, Player
 }
 const N_TypeToString = ["N_LeakyReLU", "N_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal", "Player"]

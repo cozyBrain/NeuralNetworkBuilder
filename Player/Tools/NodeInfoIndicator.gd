@@ -1,5 +1,5 @@
 extends Node
-class_name Hand
+class_name NodeInfoIndicator
 
 export (NodePath) var session_path = G.default_session_path
 

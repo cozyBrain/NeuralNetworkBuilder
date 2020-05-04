@@ -12,11 +12,11 @@ var Output : float = 0.5
 var Type : int = G.N_Types.Player
 
 var hotbarSelection : int  # 0 ~ 9
-const toolcode = {
+const toolcode = {  # Every toolcodes after the code n are sorted by times. ex) n, NC, B then, NC is created earlier than B.
 	NII="NodeInfoIndicator", SC="SquareConnector", PC="PointConnector",
-	H="Hand", n="none"
+	H="Hand", n="none", NC="NodeCreator",
 }
-var hotbar = [toolcode.NII,toolcode.PC,toolcode.SC,toolcode.H,toolcode.n,toolcode.n,toolcode.n,toolcode.n,toolcode.n,toolcode.n]  # size:10  hotbar lol! Korean people will see why
+var hotbar = [toolcode.NII,toolcode.PC,toolcode.SC,toolcode.H,toolcode.NC,toolcode.n,toolcode.n,toolcode.n,toolcode.n,toolcode.n]  # size:10  hotbar lol! Korean people will see why
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -164,7 +164,9 @@ func _input(event):  # _unhandled_input
 											rayCastDetectedObject.addOutput(-0.25)
 									_:
 										print(Tool.name, ": no interaction with ", G.N_TypeToString[type])
+					toolcode.NC:
+						print("NodeCreator")
 					_:
 						print("the tool couldn't be recognized")
 			else:
-				print("the tool couldn't be found")
+				print("the tool couldn't be found. maybe programmer missed something.")

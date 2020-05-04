@@ -9,11 +9,6 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node",
-"class": "Hand",
-"language": "GDScript",
-"path": "res://Player/Tools/NodeInfoIndicator.gd"
-}, {
 "base": "StaticBody",
 "class": "N_Goal",
 "language": "GDScript",
@@ -44,6 +39,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Nodes/N_Tanh/N_Tanh.gd"
 }, {
+"base": "Node",
+"class": "NodeCreator",
+"language": "GDScript",
+"path": "res://Player/Tools/NodeCreator.gd"
+}, {
+"base": "Node",
+"class": "NodeInfoIndicator",
+"language": "GDScript",
+"path": "res://Player/Tools/NodeInfoIndicator.gd"
+}, {
 "base": "KinematicBody",
 "class": "Player",
 "language": "GDScript",
@@ -60,13 +65,14 @@ _global_script_classes=[ {
 "path": "res://Player/Tools/SquareConnector.gd"
 } ]
 _global_script_class_icons={
-"Hand": "",
 "N_Goal": "",
 "N_Input": "",
 "N_LeakyReLU": "",
 "N_NetworkController": "",
 "N_Synapse": "",
 "N_Tanh": "",
+"NodeCreator": "",
+"NodeInfoIndicator": "",
 "Player": "",
 "PointConnector": "",
 "SquareConnector": ""
