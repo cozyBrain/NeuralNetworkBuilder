@@ -12,6 +12,7 @@ var Output : float = 0.5
 var Type : int = G.N_Types.Player
 
 var hotbarSelection : int  # 0 ~ 9
+var prevHotbarSelection : int = -1
 const toolcode = {  # Every toolcodes after the code n are sorted by times. ex) n, NC, B then, NC is created earlier than B.
 	NII="NodeInfoIndicator", SC="SquareConnector", PC="PointConnector",
 	H="Hand", n="none", NC="NodeCreator",
@@ -22,11 +23,9 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _physics_process(delta):
-	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
-	
+	# movement
 	var direction = Vector3()
 	var aim = $Yaxis/Camera.get_camera_transform().basis
-	
 	if Input.is_key_pressed(KEY_W):
 		direction -= aim.z
 	if Input.is_key_pressed(KEY_S):
@@ -43,7 +42,14 @@ func _physics_process(delta):
 		FLY_SPEED = 40
 	else:
 		FLY_SPEED = 10 
-	if Input.is_key_pressed(KEY_1):
+	direction = direction.normalized()
+	var target = direction * FLY_SPEED
+	velocity = velocity.linear_interpolate(target, FLY_ACCEL * delta)
+	move_and_slide(velocity)
+	
+	
+	# hotBarSelection
+	if Input.is_key_pressed(KEY_1):  # add prev hotbar to detect if the player changes tool.
 		hotbarSelection = 0
 	elif Input.is_key_pressed(KEY_2):
 		hotbarSelection = 1
@@ -63,8 +69,30 @@ func _physics_process(delta):
 		hotbarSelection = 8
 	elif Input.is_key_pressed(KEY_0):
 		hotbarSelection = 9
-	if Input.is_action_just_pressed("KEY_E"):
+	if prevHotbarSelection != hotbarSelection:  # when you select another tool
+		var prevTool = get_node("Tools/"+hotbar[prevHotbarSelection])
+		if prevTool != null:
+			if prevTool.has_method("deactivate"):
+				prevTool.deactivate()
 		var Tool = get_node("Tools/"+hotbar[hotbarSelection])
+		if Tool != null:
+			if Tool.has_method("activate"): 
+				match hotbar[hotbarSelection]:
+					toolcode.NC:
+						Tool.activate(translation, aim)
+		print("changed")
+		prevHotbarSelection = hotbarSelection
+	
+	var Tool = get_node("Tools/"+hotbar[hotbarSelection])
+	if Tool != null: 
+		if Tool.has_method("update"):
+			match hotbar[hotbarSelection]:
+				toolcode.NC:
+					Tool.update(translation, aim)
+			
+			
+	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
+	if Input.is_action_just_pressed("KEY_E"):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
 				toolcode.NII:
@@ -109,11 +137,6 @@ func _physics_process(delta):
 			session.close()
 		else:
 			print("session doesn't have close method")
-	
-	direction = direction.normalized()
-	var target = direction * FLY_SPEED
-	velocity = velocity.linear_interpolate(target, FLY_ACCEL * delta)
-	move_and_slide(velocity)
 
 func _input(event):  # _unhandled_input
 	if event is InputEventMouseMotion:  # cam movement
@@ -165,6 +188,10 @@ func _input(event):  # _unhandled_input
 									_:
 										print(Tool.name, ": no interaction with ", G.N_TypeToString[type])
 					toolcode.NC:
+						if event.button_index == BUTTON_WHEEL_UP:
+							Tool.distance += 0.25
+						elif event.button_index == BUTTON_WHEEL_DOWN:
+							Tool.distance -= 0.25
 						print("NodeCreator")
 					_:
 						print("the tool couldn't be recognized")
