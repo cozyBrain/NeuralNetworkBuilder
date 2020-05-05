@@ -10,9 +10,12 @@ var rayCastDetectedObject
 var session_path = G.default_session_path
 var Output : float = 0.5
 var Type : int = G.N_Types.Player
+var aim : Basis
 
 var hotbarSelection : int  # 0 ~ 9
 var prevHotbarSelection : int = -1
+var hotbarSubSelection : bool = false
+
 const toolcode = {  # Every toolcodes after the code n are sorted by times. ex) n, NC, B then, NC is created earlier than B.
 	NII="NodeInfoIndicator", SC="SquareConnector", PC="PointConnector",
 	H="Hand", n="none", NC="NodeCreator",
@@ -25,7 +28,7 @@ func _ready():
 func _physics_process(delta):
 	# movement
 	var direction = Vector3()
-	var aim = $Yaxis/Camera.get_camera_transform().basis
+	aim = $Yaxis/Camera.get_camera_transform().basis
 	if Input.is_key_pressed(KEY_W):
 		direction -= aim.z
 	if Input.is_key_pressed(KEY_S):
@@ -47,52 +50,15 @@ func _physics_process(delta):
 	velocity = velocity.linear_interpolate(target, FLY_ACCEL * delta)
 	move_and_slide(velocity)
 	
-	
-	# hotBarSelection
-	if Input.is_key_pressed(KEY_1):  # add prev hotbar to detect if the player changes tool.
-		hotbarSelection = 0
-	elif Input.is_key_pressed(KEY_2):
-		hotbarSelection = 1
-	elif Input.is_key_pressed(KEY_3):
-		hotbarSelection = 2
-	elif Input.is_key_pressed(KEY_4):
-		hotbarSelection = 3
-	elif Input.is_key_pressed(KEY_5):
-		hotbarSelection = 4
-	elif Input.is_key_pressed(KEY_6):
-		hotbarSelection = 5
-	elif Input.is_key_pressed(KEY_7):
-		hotbarSelection = 6
-	elif Input.is_key_pressed(KEY_8):
-		hotbarSelection = 7
-	elif Input.is_key_pressed(KEY_9):
-		hotbarSelection = 8
-	elif Input.is_key_pressed(KEY_0):
-		hotbarSelection = 9
-	if prevHotbarSelection != hotbarSelection:  # when you select another tool
-		var prevTool = get_node("Tools/"+hotbar[prevHotbarSelection])
-		if prevTool != null:
-			if prevTool.has_method("deactivate"):
-				prevTool.deactivate()
-		var Tool = get_node("Tools/"+hotbar[hotbarSelection])
-		if Tool != null:
-			if Tool.has_method("activate"): 
-				match hotbar[hotbarSelection]:
-					toolcode.NC:
-						Tool.activate(translation, aim)
-		print("changed")
-		prevHotbarSelection = hotbarSelection
-	
-	var Tool = get_node("Tools/"+hotbar[hotbarSelection])
+	var Tool = get_node_or_null("Tools/"+hotbar[hotbarSelection])
 	if Tool != null: 
 		if Tool.has_method("update"):
 			match hotbar[hotbarSelection]:
 				toolcode.NC:
 					Tool.update(translation, aim)
 			
-			
 	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
-	if Input.is_action_just_pressed("KEY_E"):
+	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
 				toolcode.NII:
@@ -139,7 +105,43 @@ func _physics_process(delta):
 			print("session doesn't have close method")
 
 func _input(event):  # _unhandled_input
-	if event is InputEventMouseMotion:  # cam movement
+	if event is InputEventKey:
+		if event.is_pressed():
+			# hotBarSelection
+			var scancode : int = event.get_scancode()
+			if 48 <= scancode and scancode <= 57:  # 0 ~ 9
+					if hotbarSubSelection:
+						var subSelection = scancode - 49
+						if subSelection == -1:
+							subSelection = 9
+						print("subSelection:", subSelection)
+						if subSelection == 9:
+							print("escape")
+							hotbarSubSelection = false
+					else:
+						hotbarSelection = scancode - 49
+						if hotbarSelection == -1:
+							hotbarSelection = 9
+						# when you select another tool
+						if prevHotbarSelection != hotbarSelection:  
+							var prevTool = get_node_or_null("Tools/"+hotbar[prevHotbarSelection])
+							if prevTool != null:
+								if prevTool.has_method("deactivate"):
+									prevTool.deactivate()
+							var Tool = get_node_or_null("Tools/"+hotbar[hotbarSelection])
+							if Tool != null:
+								if Tool.has_method("activate"):
+									match hotbar[hotbarSelection]:
+										toolcode.NC:
+											Tool.activate(translation, aim)
+							prevHotbarSelection = hotbarSelection
+						else:  # when you select selected tool again
+							print("hotbarSubSelect")
+							hotbarSubSelection = true
+						
+					
+					
+	elif event is InputEventMouseMotion:  # cam movement
 		$Yaxis.rotate_y(deg2rad(-event.relative.x * mouse_sensitivity))
 		
 		var change = -event.relative.y * mouse_sensitivity
@@ -188,11 +190,14 @@ func _input(event):  # _unhandled_input
 									_:
 										print(Tool.name, ": no interaction with ", G.N_TypeToString[type])
 					toolcode.NC:
-						if event.button_index == BUTTON_WHEEL_UP:
-							Tool.distance += 0.25
+						if event.button_index == BUTTON_LEFT:
+							Tool.add()
+						elif event.button_index == BUTTON_RIGHT:
+							Tool.remove()
+						elif event.button_index == BUTTON_WHEEL_UP:
+							Tool.distance += 0.5
 						elif event.button_index == BUTTON_WHEEL_DOWN:
-							Tool.distance -= 0.25
-						print("NodeCreator")
+							Tool.distance -= 0.5
 					_:
 						print("the tool couldn't be recognized")
 			else:

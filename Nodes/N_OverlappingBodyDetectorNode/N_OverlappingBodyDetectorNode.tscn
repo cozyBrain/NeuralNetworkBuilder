@@ -6,7 +6,7 @@
 
 [sub_resource type="SpatialMaterial" id=2]
 flags_transparent = true
-albedo_color = Color( 0.976471, 1, 0, 0.0745098 )
+albedo_color = Color( 0.976471, 1, 0, 0.0313726 )
 
 [sub_resource type="CubeMesh" id=3]
 material = SubResource( 2 )
