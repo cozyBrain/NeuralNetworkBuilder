@@ -9,6 +9,9 @@ export (String) var pointPositionIndicatorResource = "res://Nodes/N_OverlappingB
 var pointPositionIndicator
 var pointPosition
 
+var addInterval : float = 0.2  # this is needed to prevent adding multiple object.
+var addTick : float
+
 var prevPointPosition : Vector3 = Vector3(0.001, 0.002, 0.003)
 var distance : float = 2
 
@@ -28,11 +31,15 @@ func remove():
 		print("remove ", body)
 		body.queue_free()
 
-func update(translation, aim : Basis):
+func update(translation : Vector3, aim : Basis, delta : float):
+	addTick += delta
 	if Input.is_mouse_button_pressed(BUTTON_RIGHT):
 		remove()
 	elif Input.is_mouse_button_pressed(BUTTON_LEFT):
-		add()
+		if addTick >= addInterval:
+			addTick = 0
+			add() 
+			
 	pointPosition = translation
 	pointPosition -= aim.z * distance
 
@@ -41,11 +48,12 @@ func update(translation, aim : Basis):
 		prevPointPosition = pointPosition
 		pointPositionIndicator.translation = pointPosition
 
+
 func activate(translation, aim : Basis):
 	var pointPosition = translation
 	pointPosition -= aim.z*distance
 
-	# pointPosition = pointPosition.round()
+	pointPosition = pointPosition.round()
 	if prevPointPosition != pointPosition:
 		prevPointPosition = pointPosition
 		pointPositionIndicator = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()

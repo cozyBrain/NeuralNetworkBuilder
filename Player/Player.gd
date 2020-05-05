@@ -56,7 +56,7 @@ func _physics_process(delta):
 		if Tool.has_method("update"):
 			match hotbar[hotbarSelection]:
 				toolcode.NC:
-					Tool.update(translation, aim)
+					Tool.update(translation, aim, delta)
 			
 	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
 	if Input.is_action_just_pressed("KEY_F"):
