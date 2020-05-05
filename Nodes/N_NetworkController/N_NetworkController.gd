@@ -113,7 +113,7 @@ func connectTo(target:Node) -> int:
 		return -1
 	match type:
 		G.N_Types.N_Synapse:
-			Osynapses.push_front(target) # target
+			Osynapses.push_front(target) #  target
 		var unknownType:
 			return -1
 	return 0

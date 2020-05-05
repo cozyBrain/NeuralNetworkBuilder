@@ -74,4 +74,3 @@ func disconnectFrom(target:Node) -> void:
 
 func updateEmissionByOutput() -> void:
 	$CollisionShape/MeshInstance.get_surface_material(0).emission_energy = Output
-	# WOW FINALLY I CAN DO SET EMISSION_ENERGYYYYYYYYYYYYYYYYY!!! but This change applies to others too

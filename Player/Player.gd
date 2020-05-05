@@ -11,6 +11,7 @@ var session_path = G.default_session_path
 var Output : float = 0.5
 var Type : int = G.N_Types.Player
 var aim : Basis
+var Tool
 
 var hotbarSelection : int  # 0 ~ 9
 var prevHotbarSelection : int = -1
@@ -24,6 +25,7 @@ var hotbar = [toolcode.NII,toolcode.PC,toolcode.SC,toolcode.H,toolcode.NC,toolco
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	print("PlayerHotbar: ", hotbar)
 
 func _physics_process(delta):
 	# movement
@@ -50,7 +52,6 @@ func _physics_process(delta):
 	velocity = velocity.linear_interpolate(target, FLY_ACCEL * delta)
 	move_and_slide(velocity)
 	
-	var Tool = get_node_or_null("Tools/"+hotbar[hotbarSelection])
 	if Tool != null: 
 		if Tool.has_method("update"):
 			match hotbar[hotbarSelection]:
@@ -114,10 +115,13 @@ func _input(event):  # _unhandled_input
 						var subSelection = scancode - 49
 						if subSelection == -1:
 							subSelection = 9
-						print("subSelection:", subSelection)
-						if subSelection == 9:
+						if subSelection == 9:  # when you press key 0 to escape
 							print("escape")
 							hotbarSubSelection = false
+						else:
+							print("subSelection:", subSelection)
+							Tool.set("hotbarSelection", subSelection)
+							
 					else:
 						hotbarSelection = scancode - 49
 						if hotbarSelection == -1:
@@ -125,22 +129,24 @@ func _input(event):  # _unhandled_input
 						# when you select another tool
 						if prevHotbarSelection != hotbarSelection:  
 							var prevTool = get_node_or_null("Tools/"+hotbar[prevHotbarSelection])
+							prevHotbarSelection = hotbarSelection
 							if prevTool != null:
 								if prevTool.has_method("deactivate"):
 									prevTool.deactivate()
-							var Tool = get_node_or_null("Tools/"+hotbar[hotbarSelection])
+							Tool = get_node_or_null("Tools/"+hotbar[hotbarSelection])
 							if Tool != null:
 								if Tool.has_method("activate"):
 									match hotbar[hotbarSelection]:
 										toolcode.NC:
 											Tool.activate(translation, aim)
-							prevHotbarSelection = hotbarSelection
-						else:  # when you select selected tool again
-							print("hotbarSubSelect")
+											var ToolHotbar = Tool.get("hotbar")
+											if ToolHotbar != null:
+												print("ToolHotbar: ", ToolHotbar)
+												# display on ui
+												
+						else:  # when you select selected one again
+							print("hotbarSubSelection. 0 to escape.")
 							hotbarSubSelection = true
-						
-					
-					
 	elif event is InputEventMouseMotion:  # cam movement
 		$Yaxis.rotate_y(deg2rad(-event.relative.x * mouse_sensitivity))
 		
@@ -150,7 +156,6 @@ func _input(event):  # _unhandled_input
 			camera_angle += change
 	elif event is InputEventMouseButton:
 		if event.is_pressed():
-			var Tool = get_node("Tools/"+hotbar[hotbarSelection])
 			if Tool != null: 
 				match hotbar[hotbarSelection]:
 					toolcode.NII:
@@ -190,11 +195,7 @@ func _input(event):  # _unhandled_input
 									_:
 										print(Tool.name, ": no interaction with ", G.N_TypeToString[type])
 					toolcode.NC:
-						if event.button_index == BUTTON_LEFT:
-							Tool.add()
-						elif event.button_index == BUTTON_RIGHT:
-							Tool.remove()
-						elif event.button_index == BUTTON_WHEEL_UP:
+						if event.button_index == BUTTON_WHEEL_UP:
 							Tool.distance += 0.5
 						elif event.button_index == BUTTON_WHEEL_DOWN:
 							Tool.distance -= 0.5

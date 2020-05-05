@@ -1,3 +1,6 @@
+# <todo>
+# change appearence of pointPositionIndicator when it overlaps with some node.
+
 extends Node
 class_name NodeCreator
 
@@ -9,11 +12,15 @@ var pointPosition
 var prevPointPosition : Vector3 = Vector3(0.001, 0.002, 0.003)
 var distance : float = 2
 
+var hotbar : Array = [G.N_Types.N_LeakyReLU, G.N_Types.N_Input, G.N_Types.N_Goal, G.N_Types.N_Tanh, G.N_Types.N_NetworkController]
+var hotbarSelection : int
+	
 func add():
 	if len(pointPositionIndicator.get_overlapping_bodies()) == 0:
-		var t = load("res://Nodes/N_LeakyReLU/N_LeakyReLU.tscn").instance()
-		t.translation = pointPosition
-		add_child(t)
+		var body = load("res://Nodes/" + G.N_TypeToString[hotbar[hotbarSelection]] + "/" + G.N_TypeToString[hotbar[hotbarSelection]] + ".tscn").instance()
+		body.translation = pointPosition
+		G.default_session.add_child(body)
+		print("add ", body)
 func remove():
 	for body in pointPositionIndicator.get_overlapping_bodies():
 		if body.Type == G.N_Types.N_Synapse:
@@ -22,8 +29,12 @@ func remove():
 		body.queue_free()
 
 func update(translation, aim : Basis):
+	if Input.is_mouse_button_pressed(BUTTON_RIGHT):
+		remove()
+	elif Input.is_mouse_button_pressed(BUTTON_LEFT):
+		add()
 	pointPosition = translation
-	pointPosition -= aim.z*distance
+	pointPosition -= aim.z * distance
 
 	pointPosition = pointPosition.round()
 	if prevPointPosition != pointPosition:
@@ -34,7 +45,7 @@ func activate(translation, aim : Basis):
 	var pointPosition = translation
 	pointPosition -= aim.z*distance
 
-	#pointPosition = pointPosition.round()
+	# pointPosition = pointPosition.round()
 	if prevPointPosition != pointPosition:
 		prevPointPosition = pointPosition
 		pointPositionIndicator = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
