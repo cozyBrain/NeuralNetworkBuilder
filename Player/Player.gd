@@ -27,37 +27,12 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	print("PlayerHotbar: ", hotbar)
 
-func _physics_process(delta):
-	# movement
-	var direction = Vector3()
-	aim = $Yaxis/Camera.get_camera_transform().basis
-	if Input.is_key_pressed(KEY_W):
-		direction -= aim.z
-	if Input.is_key_pressed(KEY_S):
-		direction += aim.z
-	if Input.is_key_pressed(KEY_A):
-		direction -= aim.x
-	if Input.is_key_pressed(KEY_D):
-		direction += aim.x
-	if Input.is_key_pressed(KEY_SPACE):
-		direction += aim.y
-	if Input.is_key_pressed(KEY_CONTROL):
-		direction -= aim.y
-	if Input.is_key_pressed(KEY_SHIFT):
-		FLY_SPEED = 40
-	else:
-		FLY_SPEED = 10 
-	direction = direction.normalized()
-	var target = direction * FLY_SPEED
-	velocity = velocity.linear_interpolate(target, FLY_ACCEL * delta)
-	move_and_slide(velocity)
-	
+func _process(delta):
 	if Tool != null: 
 		if Tool.has_method("update"):
 			match hotbar[hotbarSelection]:
 				toolcode.NC:
 					Tool.update(translation, aim, delta)
-			
 	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
 	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
@@ -104,6 +79,31 @@ func _physics_process(delta):
 			session.close()
 		else:
 			print("session doesn't have close method")
+
+func _physics_process(delta):
+	# movement
+	var direction = Vector3()
+	aim = $Yaxis/Camera.get_camera_transform().basis
+	if Input.is_key_pressed(KEY_W):
+		direction -= aim.z
+	if Input.is_key_pressed(KEY_S):
+		direction += aim.z
+	if Input.is_key_pressed(KEY_A):
+		direction -= aim.x
+	if Input.is_key_pressed(KEY_D):
+		direction += aim.x
+	if Input.is_key_pressed(KEY_SPACE):
+		direction += aim.y
+	if Input.is_key_pressed(KEY_CONTROL):
+		direction -= aim.y
+	if Input.is_key_pressed(KEY_SHIFT):
+		FLY_SPEED = 40
+	else:
+		FLY_SPEED = 10 
+	direction = direction.normalized()
+	var target = direction * FLY_SPEED
+	velocity = velocity.linear_interpolate(target, FLY_ACCEL * delta)
+	move_and_slide(velocity)
 
 func _input(event):  # _unhandled_input
 	if event is InputEventKey:

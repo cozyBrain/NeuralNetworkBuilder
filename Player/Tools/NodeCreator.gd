@@ -7,17 +7,17 @@ class_name NodeCreator
 export (NodePath) var session_path = G.default_session_path
 export (String) var pointPositionIndicatorResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
 var pointPositionIndicator
-var pointPosition
+var pointPosition : Vector3
+var prevPointPosition : Vector3 = Vector3(0.001, 0.002, 0.003)
 
-var addInterval : float = 0.2  # this is needed to prevent adding multiple object.
+var addInterval : float = 2  # this should be >1 to prevent adding multiple object at one click. but I'm not sure that this way is right to solve the problem.
 var addTick : float
 
-var prevPointPosition : Vector3 = Vector3(0.001, 0.002, 0.003)
 var distance : float = 2
 
 var hotbar : Array = [G.N_Types.N_LeakyReLU, G.N_Types.N_Input, G.N_Types.N_Goal, G.N_Types.N_Tanh, G.N_Types.N_NetworkController]
 var hotbarSelection : int
-	
+
 func add():
 	if len(pointPositionIndicator.get_overlapping_bodies()) == 0:
 		var body = load("res://Nodes/" + G.N_TypeToString[hotbar[hotbarSelection]] + "/" + G.N_TypeToString[hotbar[hotbarSelection]] + ".tscn").instance()
@@ -32,14 +32,14 @@ func remove():
 		body.queue_free()
 
 func update(translation : Vector3, aim : Basis, delta : float):
-	addTick += delta
+	addTick += 1
 	if Input.is_mouse_button_pressed(BUTTON_RIGHT):
 		remove()
 	elif Input.is_mouse_button_pressed(BUTTON_LEFT):
 		if addTick >= addInterval:
 			addTick = 0
 			add() 
-			
+
 	pointPosition = translation
 	pointPosition -= aim.z * distance
 
