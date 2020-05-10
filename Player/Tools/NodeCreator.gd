@@ -10,8 +10,8 @@ var pointPositionIndicator
 var pointPosition : Vector3
 var prevPointPosition : Vector3 = Vector3(0.001, 0.002, 0.003)
 
-var addInterval : float = 2  # this should be >1 to prevent adding multiple object at one click. but I'm not sure that this way is right to solve the problem.
-var addTick : float
+var leftClickCheckInterval : float = 2  # this should be >1 to prevent adding multiple object at one click. but I'm not sure that this way is right to solve the problem.
+var leftClickCheckTick : float
 
 var distance : float = 2
 
@@ -32,12 +32,12 @@ func remove():
 		body.queue_free()
 
 func update(translation : Vector3, aim : Basis, delta : float):
-	addTick += 1
+	leftClickCheckTick += 1
 	if Input.is_mouse_button_pressed(BUTTON_RIGHT):
 		remove()
 	elif Input.is_mouse_button_pressed(BUTTON_LEFT):
-		if addTick >= addInterval:
-			addTick = 0
+		if leftClickCheckTick >= leftClickCheckInterval:
+			leftClickCheckTick = 0
 			add() 
 
 	pointPosition = translation
