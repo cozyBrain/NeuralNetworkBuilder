@@ -12,6 +12,10 @@ var Output : float = 0.5
 var Type : int = G.N_Types.Player
 var aim : Basis
 var Tool
+var typingMode : bool = false
+
+onready var consoleInputBox = get_node("Console/Input")
+onready var consoleOutputBox = get_node("Console/Output")
 
 var hotbarSelection : int  # 0 ~ 9
 var prevHotbarSelection : int = -1
@@ -33,6 +37,18 @@ func _process(delta):
 			match hotbar[hotbarSelection]:
 				toolcode.NC:
 					Tool.update(translation, aim, delta)
+	if Input.is_key_pressed(KEY_ESCAPE):
+		var session = get_node(session_path)
+		if session.has_method("close"):
+			session.close()
+		else:
+			print("session doesn't have close method")
+	if Input.is_action_just_pressed("fullscreen"):  # but there's an issue that crosshair move away from center..
+		OS.window_fullscreen = !OS.window_fullscreen
+
+	if typingMode:
+		return
+
 	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
 	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
@@ -62,6 +78,10 @@ func _process(delta):
 					print("the tool couldn't be recognized")
 		else:
 			print("the tool couldn't be found")
+	if Input.is_action_just_pressed("KEY_T"):
+		typingMode = true
+		consoleInputBox.grab_focus()
+		return
 	if Input.is_action_just_pressed("KEY_C"):
 		pass
 	if Input.is_key_pressed(KEY_O):
@@ -70,18 +90,11 @@ func _process(delta):
 	elif Input.is_key_pressed(KEY_P):
 		Engine.time_scale = clamp(Engine.time_scale-0.02,0,1)
 		print("Engine.time_scale: ", Engine.time_scale)
-	if Input.is_action_just_pressed("fullscreen"):  # but there's an issue that crosshair move away from center..
-		OS.window_fullscreen = !OS.window_fullscreen
-		
-	if Input.is_key_pressed(KEY_ESCAPE):
-		var session = get_node(session_path)
-		if session.has_method("close"):
-			session.close()
-		else:
-			print("session doesn't have close method")
 
 func _physics_process(delta):
-	# movement
+	if typingMode:
+		return
+		
 	var direction = Vector3()
 	aim = $Yaxis/Camera.get_camera_transform().basis
 	if Input.is_key_pressed(KEY_W):
@@ -105,7 +118,19 @@ func _physics_process(delta):
 	velocity = velocity.linear_interpolate(target, FLY_ACCEL * delta)
 	move_and_slide(velocity)
 
-func _input(event):  # _unhandled_input
+func _input(event):
+	
+	if event is InputEventMouseMotion:  # cam movement
+		$Yaxis.rotate_y(deg2rad(-event.relative.x * mouse_sensitivity))
+		
+		var change = -event.relative.y * mouse_sensitivity
+		if change + camera_angle < 90 and change + camera_angle > -90:
+			$Yaxis/Camera.rotate_x(deg2rad(change))
+			camera_angle += change
+
+	if typingMode:
+		return
+
 	if event is InputEventKey:
 		if event.is_pressed():
 			# hotBarSelection
@@ -121,7 +146,6 @@ func _input(event):  # _unhandled_input
 						else:
 							print("subSelection:", subSelection)
 							Tool.set("hotbarSelection", subSelection)
-							
 					else:
 						hotbarSelection = scancode - 49
 						if hotbarSelection == -1:
@@ -147,13 +171,7 @@ func _input(event):  # _unhandled_input
 						else:  # when you select selected one again
 							print("hotbarSubSelection. 0 to escape.")
 							hotbarSubSelection = true
-	elif event is InputEventMouseMotion:  # cam movement
-		$Yaxis.rotate_y(deg2rad(-event.relative.x * mouse_sensitivity))
-		
-		var change = -event.relative.y * mouse_sensitivity
-		if change + camera_angle < 90 and change + camera_angle > -90:
-			$Yaxis/Camera.rotate_x(deg2rad(change))
-			camera_angle += change
+	
 	elif event is InputEventMouseButton:
 		if event.is_pressed():
 			if Tool != null: 
@@ -203,3 +221,18 @@ func _input(event):  # _unhandled_input
 						print("the tool couldn't be recognized")
 			else:
 				print("the tool couldn't be found. maybe programmer missed something.")
+
+func consolePrintln(text):
+	consoleOutputBox.text = str(consoleOutputBox.text, "\n", text)
+func _on_Input_text_entered(text):
+	typingMode = false
+	consoleInputBox.release_focus()
+	consoleInputBox.clear()
+	if text != "":
+		processCommand(text)
+
+func processCommand(text):
+	var words = text.split(" ", false)
+	words = Array(words)
+	
+	consolePrintln(text)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Player/Player.gd" type="Script" id=1]
 [ext_resource path="res://Player/crosshair.png" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Player/Tools/Hand.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Player/Tools/SquareConnector.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Player/Tools/NodeCreator.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Player/CommandHandler.gd" type="Script" id=8]
 
 [sub_resource type="CapsuleShape" id=1]
 
@@ -15,6 +16,9 @@ transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 1 )
+
+[node name="CommandHandler" type="Node" parent="."]
+script = ExtResource( 8 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 1 )
@@ -38,7 +42,7 @@ self_modulate = Color( 0.831373, 0.831373, 0.831373, 1 )
 anchor_left = -0.69
 anchor_right = 1.0
 margin_left = 706.56
-margin_right = 1024.0
+margin_right = 1025.0
 margin_bottom = 1200.0
 rect_scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 2 )
@@ -47,6 +51,28 @@ stretch_mode = 4
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Console" type="Control" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Output" type="TextEdit" parent="Console"]
+margin_left = 32.0
+margin_top = 23.0
+margin_right = 373.0
+margin_bottom = 218.0
+focus_mode = 0
+text = "NeuralNetworkBuilder Alpha Version"
+readonly = true
+
+[node name="Input" type="LineEdit" parent="Console"]
+margin_left = 32.0
+margin_top = 223.0
+margin_right = 371.0
+margin_bottom = 247.0
 
 [node name="Tools" type="Node" parent="."]
 
@@ -59,3 +85,4 @@ __meta__ = {
 [node name="Hand" parent="Tools" instance=ExtResource( 5 )]
 
 [node name="NodeCreator" parent="Tools" instance=ExtResource( 7 )]
+[connection signal="text_entered" from="Console/Input" to="." method="_on_Input_text_entered"]

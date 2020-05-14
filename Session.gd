@@ -16,11 +16,6 @@ func _ready():
 	add_child(players[0])
 	pass # Replace with function body.
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
 func close():
 	print('close Session..')
 	get_tree().quit()
