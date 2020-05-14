@@ -38,7 +38,7 @@ func _process(delta):
 			session.close()
 		else:
 			print("session doesn't have close method")
-	if Input.is_action_just_pressed("fullscreen"):  # but there's an issue that crosshair move away from center..
+	if Input.is_action_just_pressed("fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
 
 	if typingMode:
@@ -197,7 +197,7 @@ func _input(event):
 											rayCastDetectedObject.initialize()
 										elif event.button_index == BUTTON_LEFT:
 											var count = 100
-											for i in range(count):
+											for _i in range(count):
 												rayCastDetectedObject.wave()
 											print(Tool.name, ": iterated for ", count, " times")
 									G.N_Types.N_Input, G.N_Types.N_Goal:

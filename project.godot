@@ -93,6 +93,10 @@ G="*res://Global/Global.gd"
 /stdout/print_fps=false
 stdout/print_fps=false
 
+[display]
+
+window/stretch/mode="viewport"
+
 [input]
 
 ui_accept={

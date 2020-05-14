@@ -20,7 +20,7 @@ func connectFrom(target:Node) -> int:
 	match type:
 		G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Tanh, G.ID.N_Goal, G.ID.N_NetworkController:
 			Inodes.push_front(target)
-		var unknownType:
+		var _unknownType:
 			return -1
 	return 0
 func connectTo(target:Node) -> int:
@@ -30,7 +30,7 @@ func connectTo(target:Node) -> int:
 	match type:
 		G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Tanh, G.ID.N_Goal:
 			Onodes.push_front(target)
-		var unknownType:
+		var _unknownType:
 			return -1
 	return 0
 	
