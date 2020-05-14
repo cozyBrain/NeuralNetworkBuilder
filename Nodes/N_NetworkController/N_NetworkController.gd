@@ -6,7 +6,7 @@ var propSequence : Array
 var bpropSequence : Array
 var propOnly : bool = false
 
-const Type : int = G.N_Types.N_NetworkController # TypeData.N_NetworkController
+const Type : int = G.ID.N_NetworkController # TypeData.N_NetworkController
 
 func getInfo() -> Dictionary:
 	return {"Type":Type, "Osynapses":Osynapses, "propSequence":propSequence, "bpropSequence":bpropSequence}
@@ -35,7 +35,7 @@ func initialize() -> void:
 
 				# init weights
 				match objType:
-					G.N_Types.N_Goal:
+					G.ID.N_Goal:
 						pass
 					_:
 						var objIsynapses = keyAKAobject.get("Isynapses")
@@ -112,7 +112,7 @@ func connectTo(target:Node) -> int:
 	if type == null:
 		return -1
 	match type:
-		G.N_Types.N_Synapse:
+		G.ID.N_Synapse:
 			Osynapses.push_front(target) #  target
 		var unknownType:
 			return -1

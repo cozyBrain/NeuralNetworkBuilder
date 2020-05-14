@@ -4,7 +4,7 @@ extends StaticBody
 var Weight : float = 1  # default value of Weight should be 1 for several reasons. for instance) when N_Goal bprop()
 var Onodes : Array
 var Inodes : Array
-const Type : int = G.N_Types.N_Synapse
+const Type : int = G.ID.N_Synapse
 
 func getInfo() -> Dictionary:
 	return {"Type":Type, "Weight":Weight, "Inodes":Inodes, "Onodes":Onodes}
@@ -18,7 +18,7 @@ func connectFrom(target:Node) -> int:
 	if type == null:
 		return -1
 	match type:
-		G.N_Types.N_LeakyReLU, G.N_Types.N_Input, G.N_Types.N_Tanh, G.N_Types.N_Goal, G.N_Types.N_NetworkController:
+		G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Tanh, G.ID.N_Goal, G.ID.N_NetworkController:
 			Inodes.push_front(target)
 		var unknownType:
 			return -1
@@ -28,7 +28,7 @@ func connectTo(target:Node) -> int:
 	if type == null:
 		return -1
 	match type:
-		G.N_Types.N_LeakyReLU, G.N_Types.N_Input, G.N_Types.N_Tanh, G.N_Types.N_Goal:
+		G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Tanh, G.ID.N_Goal:
 			Onodes.push_front(target)
 		var unknownType:
 			return -1

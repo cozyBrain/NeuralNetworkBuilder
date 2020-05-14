@@ -5,7 +5,7 @@ var Osynapses : Array
 var Isynapses : Array
 var Output : float  # Output is Goal
 var BOutput : float 
-const Type : int = G.N_Types.N_Goal
+const Type : int = G.ID.N_Goal
 
 func getInfo() -> Dictionary:
 	return {"Type":Type, "Description":"OutputIsGoal", "Output":Output, "BOutput":BOutput, "Isynapses":Isynapses, "Osynapses":Osynapses}
@@ -47,7 +47,7 @@ func connectTo(target:Node) -> int:
 	if type == null:
 		return -1
 	match type:
-		G.N_Types.N_Synapse:
+		G.ID.N_Synapse:
 			Osynapses.push_front(target)
 		_:
 			return -1
@@ -57,7 +57,7 @@ func connectFrom(target:Node) -> int:
 	if type == null:
 		return -1
 	match type:
-		G.N_Types.N_Synapse:
+		G.ID.N_Synapse:
 			Isynapses.push_front(target) 
 		_:
 			return -1

@@ -1,8 +1,14 @@
 extends Node
-enum N_Types {  # Every types after the type Player are sorted by times. ex) Player, A, B then, A is created earlier than B.
-	N_LeakyReLU, N_Synapse, N_NetworkController, N_Input, N_Tanh, N_Goal, Player
+enum ID {
+	None, Player,
+	NII, PC, SC, H, NC,
+	N_LeakyReLU, N_Synapse, N_NetworkController, N_Input, N_Tanh, N_Goal,
 }
-const N_TypeToString = ["N_LeakyReLU", "N_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal", "Player"]
+const IDtoString = [
+	"None", "Player",
+	"NodeInfoIndicator", "PointConnector", "SquareConnector", "Hand", "NodeCreator",
+	"N_LeakyReLU", "N_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
+]
 const dx = 0.001
 const learningRate = 0.001
 const default_session_path = "/root/session"

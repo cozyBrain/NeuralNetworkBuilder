@@ -53,26 +53,51 @@ __meta__ = {
 }
 
 [node name="Console" type="Control" parent="."]
-margin_right = 1024.0
-margin_bottom = 600.0
+margin_left = 10.0
+margin_top = 400.0
+margin_right = 1034.0
+margin_bottom = 1000.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Output" type="TextEdit" parent="Console"]
-margin_left = 32.0
-margin_top = 23.0
-margin_right = 373.0
-margin_bottom = 218.0
-focus_mode = 0
-text = "NeuralNetworkBuilder Alpha Version"
-readonly = true
+[node name="VBoxContainer" type="VBoxContainer" parent="Console"]
+anchor_right = 0.273
+margin_right = 340.0
+margin_bottom = 178.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Input" type="LineEdit" parent="Console"]
-margin_left = 32.0
-margin_top = 223.0
-margin_right = 371.0
-margin_bottom = 247.0
+[node name="Output" type="RichTextLabel" parent="Console/VBoxContainer"]
+margin_right = 619.0
+margin_bottom = 150.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_colors/default_color = Color( 0, 1, 0.788235, 0.717647 )
+bbcode_enabled = true
+scroll_following = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Console/VBoxContainer"]
+margin_top = 154.0
+margin_right = 619.0
+margin_bottom = 178.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Input" type="LineEdit" parent="Console/VBoxContainer/HBoxContainer"]
+margin_right = 619.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_colors/cursor_color = Color( 0.803922, 0.933333, 0.443137, 0.717647 )
+custom_colors/font_color = Color( 0, 1, 0.788235, 0.717647 )
+caret_blink = true
+caret_blink_speed = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Tools" type="Node" parent="."]
 
@@ -85,4 +110,4 @@ margin_bottom = 247.0
 [node name="Hand" parent="Tools" instance=ExtResource( 5 )]
 
 [node name="NodeCreator" parent="Tools" instance=ExtResource( 7 )]
-[connection signal="text_entered" from="Console/Input" to="." method="_on_Input_text_entered"]
+[connection signal="text_entered" from="Console/VBoxContainer/HBoxContainer/Input" to="." method="_on_Input_text_entered"]

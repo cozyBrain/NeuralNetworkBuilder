@@ -1,41 +1,36 @@
 class_name Player
 extends KinematicBody
-var camera_angle = 0
-var mouse_sensitivity = 0.3
-var keyboard_sensitivity = 0.3
-var FLY_SPEED = 10
-var FLY_ACCEL = 40
+var cameraAngle = 0
+var mouseSensitivity = 0.3
+var keyboardsensitivity = 0.3
+var flySpeed = 10
+var flyAccel = 40
 var velocity = Vector3()
 var rayCastDetectedObject
 var session_path = G.default_session_path
-var Output : float = 0.5
-var Type : int = G.N_Types.Player
+var Type : int = G.ID.Player
 var aim : Basis
 var Tool
-var typingMode : bool = false
 
-onready var consoleInputBox = get_node("Console/Input")
-onready var consoleOutputBox = get_node("Console/Output")
+onready var consoleInputBox = get_node("Console/VBoxContainer/HBoxContainer/Input")
+onready var consoleOutputBox = get_node("Console/VBoxContainer/Output")
+var typingMode : bool = false
 
 var hotbarSelection : int  # 0 ~ 9
 var prevHotbarSelection : int = -1
 var hotbarSubSelection : bool = false
 
-const toolcode = {  # Every toolcodes after the code n are sorted by times. ex) n, NC, B then, NC is created earlier than B.
-	NII="NodeInfoIndicator", SC="SquareConnector", PC="PointConnector",
-	H="Hand", n="none", NC="NodeCreator",
-}
-var hotbar = [toolcode.NII,toolcode.PC,toolcode.SC,toolcode.H,toolcode.NC,toolcode.n,toolcode.n,toolcode.n,toolcode.n,toolcode.n]  # size:10  hotbar lol! Korean people will see why
+var hotbar = [G.ID.NII,G.ID.PC,G.ID.SC,G.ID.H,G.ID.NC,G.ID.None,G.ID.None,G.ID.None,G.ID.None,G.ID.None]  # size:10  hotbar lol! Korean people will see why
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	print("PlayerHotbar: ", hotbar)
+	consolePrintln(str("PlayerHotbar: ", hotbar))
 
 func _process(delta):
 	if Tool != null: 
 		if Tool.has_method("update"):
 			match hotbar[hotbarSelection]:
-				toolcode.NC:
+				G.ID.NC:
 					Tool.update(translation, aim, delta)
 	if Input.is_key_pressed(KEY_ESCAPE):
 		var session = get_node(session_path)
@@ -53,13 +48,13 @@ func _process(delta):
 	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
-				toolcode.NII:
+				G.ID.NII:
 					Tool.use1(rayCastDetectedObject)
-				toolcode.PC:
+				G.ID.PC:
 					Tool.use1(rayCastDetectedObject)
-				toolcode.SC:
+				G.ID.SC:
 					Tool.initiate()
-				toolcode.H:  # Hand
+				G.ID.H:  # Hand
 					if null == rayCastDetectedObject:
 						print("Hand: No Object Detected")
 					else:
@@ -110,23 +105,23 @@ func _physics_process(delta):
 	if Input.is_key_pressed(KEY_CONTROL):
 		direction -= aim.y
 	if Input.is_key_pressed(KEY_SHIFT):
-		FLY_SPEED = 40
+		flySpeed = 40
 	else:
-		FLY_SPEED = 10 
+		flySpeed = 10 
 	direction = direction.normalized()
-	var target = direction * FLY_SPEED
-	velocity = velocity.linear_interpolate(target, FLY_ACCEL * delta)
+	var target = direction * flySpeed
+	velocity = velocity.linear_interpolate(target, flyAccel * delta)
 	move_and_slide(velocity)
 
 func _input(event):
 	
 	if event is InputEventMouseMotion:  # cam movement
-		$Yaxis.rotate_y(deg2rad(-event.relative.x * mouse_sensitivity))
+		$Yaxis.rotate_y(deg2rad(-event.relative.x * mouseSensitivity))
 		
-		var change = -event.relative.y * mouse_sensitivity
-		if change + camera_angle < 90 and change + camera_angle > -90:
+		var change = -event.relative.y * mouseSensitivity
+		if change + cameraAngle < 90 and change + cameraAngle > -90:
 			$Yaxis/Camera.rotate_x(deg2rad(change))
-			camera_angle += change
+			cameraAngle += change
 
 	if typingMode:
 		return
@@ -152,16 +147,16 @@ func _input(event):
 							hotbarSelection = 9
 						# when you select another tool
 						if prevHotbarSelection != hotbarSelection:  
-							var prevTool = get_node_or_null("Tools/"+hotbar[prevHotbarSelection])
+							var prevTool = get_node_or_null("Tools/"+G.IDtoString[hotbar[prevHotbarSelection]])
 							prevHotbarSelection = hotbarSelection
 							if prevTool != null:
 								if prevTool.has_method("deactivate"):
 									prevTool.deactivate()
-							Tool = get_node_or_null("Tools/"+hotbar[hotbarSelection])
+							Tool = get_node_or_null("Tools/"+G.IDtoString[hotbar[prevHotbarSelection]])
 							if Tool != null:
 								if Tool.has_method("activate"):
 									match hotbar[hotbarSelection]:
-										toolcode.NC:
+										G.ID.NC:
 											Tool.activate(translation, aim)
 											var ToolHotbar = Tool.get("hotbar")
 											if ToolHotbar != null:
@@ -176,18 +171,18 @@ func _input(event):
 		if event.is_pressed():
 			if Tool != null: 
 				match hotbar[hotbarSelection]:
-					toolcode.NII:
+					G.ID.NII:
 						Tool.use1(rayCastDetectedObject)
-					toolcode.PC:
+					G.ID.PC:
 						Tool.use1(rayCastDetectedObject)
-					toolcode.SC:
+					G.ID.SC:
 						if rayCastDetectedObject == null:
 							print(Tool.name, ": No Object Detected")
 						elif event.button_index == BUTTON_LEFT:
 							Tool.selectAarea(rayCastDetectedObject)
 						elif event.button_index == BUTTON_RIGHT:
 							Tool.selectBarea(rayCastDetectedObject)
-					toolcode.H:  # Hand
+					G.ID.H:  # Hand
 						if null == rayCastDetectedObject:
 							print(Tool.name, ": No Object Detected")
 						else:
@@ -212,7 +207,7 @@ func _input(event):
 											rayCastDetectedObject.addOutput(-0.25)
 									_:
 										print(Tool.name, ": no interaction with ", G.N_TypeToString[type])
-					toolcode.NC:
+					G.ID.NC:
 						if event.button_index == BUTTON_WHEEL_UP:
 							Tool.distance += 0.5
 						elif event.button_index == BUTTON_WHEEL_DOWN:
@@ -236,3 +231,4 @@ func processCommand(text):
 	words = Array(words)
 	
 	consolePrintln(text)
+	

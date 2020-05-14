@@ -4,7 +4,7 @@ extends StaticBody
 var Osynapses : Array
 var Isynapses : Array
 var Output : float
-const Type : int = G.N_Types.N_Input
+const Type : int = G.ID.N_Input
 
 func getInfo() -> Dictionary:
 	return {"Type":Type, "Output":Output, "Isynapses":Isynapses, "Osynapses":Osynapses}
@@ -30,7 +30,7 @@ func connectTo(target:Node) -> int:
 	if type == null:
 		return -1
 	match type:
-		G.N_Types.N_Synapse:
+		G.ID.N_Synapse:
 			Osynapses.push_front(target)
 		_:
 			return -1
@@ -40,7 +40,7 @@ func connectFrom(target:Node) -> int:
 	if type == null:
 		return -1
 	match type:
-		G.N_Types.N_Synapse:
+		G.ID.N_Synapse:
 			Isynapses.push_front(target) 
 		_:
 			return -1

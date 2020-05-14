@@ -14,6 +14,6 @@ func use1(rayCastDetectedObject : Object):
 			var infoDict = rayCastDetectedObject.getInfo()
 			for key in infoDict:
 				if typeof(infoDict[key]) == TYPE_INT and key == "Type":
-					print(key, " : ", infoDict[key], " : ", G.N_TypeToString[infoDict[key]])
+					print(key, " : ", infoDict[key], " : ", G.IDtoString[infoDict[key]])
 					continue
 				print(key, " : ", infoDict[key])
