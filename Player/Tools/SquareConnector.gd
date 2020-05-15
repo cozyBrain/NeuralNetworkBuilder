@@ -57,10 +57,10 @@ func initiate() -> void:
 		var Bbodies = BareaDetector.get_overlapping_bodies()
 
 		for Abody in Abodies:
-			if Abody.Type == G.N_Types.N_Synapse:
+			if Abody.Type == G.ID.N_Synapse:
 				continue
 			for Bbody in Bbodies:
-				if Bbody.Type == G.N_Types.N_Synapse:
+				if Bbody.Type == G.ID.N_Synapse:
 					continue
 				var newSynapse = get_parent().get_node("PointConnector").use2(Abody, Bbody)
 				if newSynapse != null:
