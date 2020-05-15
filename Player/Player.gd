@@ -48,10 +48,6 @@ func _process(delta):
 	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
-				G.ID.NII:
-					Tool.use1(rayCastDetectedObject)
-				G.ID.PC:
-					Tool.use1(rayCastDetectedObject)
 				G.ID.SC:
 					Tool.initiate()
 				G.ID.H:  # Hand
@@ -70,7 +66,7 @@ func _process(delta):
 								_:
 									print("Hand: no interaction with ", G.N_TypeToString[type])
 				_:
-					print("the tool couldn't be recognized")
+					print("no action")
 		else:
 			print("the tool couldn't be found")
 	if Input.is_action_just_pressed("KEY_T"):
