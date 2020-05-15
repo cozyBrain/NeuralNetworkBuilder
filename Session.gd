@@ -14,7 +14,6 @@ func _ready():
 	preloadedPlayer.set_name("P1")
 	players.push_front(preloadedPlayer)
 	add_child(players[0])
-	pass # Replace with function body.
 
 func close():
 	print('close Session..')

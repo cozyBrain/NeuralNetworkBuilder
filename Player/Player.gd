@@ -19,6 +19,7 @@ var typingMode : bool = false
 var hotbarSelection : int  # 0 ~ 9
 var prevHotbarSelection : int = -1
 var hotbarSubSelection : bool = false
+var ToolHotbar
 
 var hotbar = [G.ID.NII,G.ID.PC,G.ID.SC,G.ID.H,G.ID.NC,G.ID.None,G.ID.None,G.ID.None,G.ID.None,G.ID.None]  # size:10  hotbar lol! Korean people will see why
 
@@ -27,6 +28,9 @@ func _ready():
 	consolePrintln(str("PlayerHotbar: ", hotbar))
 
 func _process(delta):
+	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
+	#rayCastDetectedObject = instance_from_id(rayCastDetectedObject.get_instance_id())
+	
 	if Tool != null: 
 		if Tool.has_method("update"):
 			match hotbar[hotbarSelection]:
@@ -44,7 +48,6 @@ func _process(delta):
 	if typingMode:
 		return
 
-	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
 	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
@@ -110,7 +113,6 @@ func _physics_process(delta):
 	move_and_slide(velocity)
 
 func _input(event):
-	
 	if event is InputEventMouseMotion:  # cam movement
 		$Yaxis.rotate_y(deg2rad(-event.relative.x * mouseSensitivity))
 		
@@ -127,39 +129,40 @@ func _input(event):
 			# hotBarSelection
 			var scancode : int = event.get_scancode()
 			if 48 <= scancode and scancode <= 57:  # 0 ~ 9
-					if hotbarSubSelection:
-						var subSelection = scancode - 49
-						if subSelection == -1:
-							subSelection = 9
-						if subSelection == 9:  # when you press key 0 to escape
-							print("escape")
-							hotbarSubSelection = false
-						else:
-							print("subSelection:", subSelection)
-							Tool.set("hotbarSelection", subSelection)
+				if hotbarSubSelection:
+					var subSelection = scancode - 49
+					if subSelection == -1:
+						subSelection = 9
+					if subSelection == 9:  # key 0 to escape
+						print("escape")
+						hotbarSubSelection = false
 					else:
-						hotbarSelection = scancode - 49
-						if hotbarSelection == -1:
-							hotbarSelection = 9
-						# when you select another tool
-						if prevHotbarSelection != hotbarSelection:  
-							var prevTool = get_node_or_null("Tools/"+G.IDtoString[hotbar[prevHotbarSelection]])
-							prevHotbarSelection = hotbarSelection
-							if prevTool != null:
-								if prevTool.has_method("deactivate"):
-									prevTool.deactivate()
-							Tool = get_node_or_null("Tools/"+G.IDtoString[hotbar[prevHotbarSelection]])
-							if Tool != null:
-								if Tool.has_method("activate"):
-									match hotbar[hotbarSelection]:
-										G.ID.NC:
-											Tool.activate(translation, aim)
-											var ToolHotbar = Tool.get("hotbar")
-											if ToolHotbar != null:
-												print("ToolHotbar: ", ToolHotbar)
-												# display on ui
-												
-						else:  # when you select selected one again
+						print("subSelection:", subSelection)
+						Tool.set("hotbarSelection", subSelection)
+				else:
+					hotbarSelection = scancode - 49
+					if hotbarSelection == -1:
+						hotbarSelection = 9
+					# when you select another tool
+					if prevHotbarSelection != hotbarSelection:  
+						var prevTool = get_node_or_null("Tools/"+G.IDtoString[hotbar[prevHotbarSelection]])
+						prevHotbarSelection = hotbarSelection
+						if prevTool != null:
+							if prevTool.has_method("deactivate"):
+								prevTool.deactivate()
+						Tool = get_node_or_null("Tools/"+G.IDtoString[hotbar[prevHotbarSelection]])
+						if Tool != null:
+							if Tool.has_method("activate"):
+								match hotbar[hotbarSelection]:
+									G.ID.NC:
+										Tool.activate(translation, aim)
+										ToolHotbar = Tool.get("hotbar")
+										if ToolHotbar != null:
+											print("ToolHotbar: ", ToolHotbar)
+											# display on ui
+											
+					else:  # when you select selected one again
+						if ToolHotbar != null:
 							print("hotbarSubSelection. 0 to escape.")
 							hotbarSubSelection = true
 	
