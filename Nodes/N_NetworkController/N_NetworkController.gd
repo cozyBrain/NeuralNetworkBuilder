@@ -6,7 +6,7 @@ var propSequence : Array
 var bpropSequence : Array
 var propOnly : bool = false
 
-const Type : int = G.ID.N_NetworkController # TypeData.N_NetworkController
+const Type : int = G.ID.N_NetworkController  # TypeData.N_NetworkController
 
 func getInfo() -> Dictionary:
 	return {"Type":Type, "Osynapses":Osynapses, "propSequence":propSequence, "bpropSequence":bpropSequence}

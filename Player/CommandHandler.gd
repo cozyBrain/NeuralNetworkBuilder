@@ -1,18 +1,18 @@
 extends Node
 
+func _ready():
+	pass
 
-enum {
-	ARG_INT,
-	ARG_STRING,
-	ARG_BOOL,
-	ARG_FLOAT
+const validCommands = {
+	"NII" : "NodeInfoIndicator  usage: NII (integer:instance_id)",
+	"PC" : "PointConnector"
 }
 
-const valid_commands = [
-	["NII",
-		[ARG_STRING] ]
-]
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+func NII(arg : String) -> String:
+	if arg == "Null":
+		return "No object detected."
+	var Tool = get_parent().get_node_or_null("../Tools/NodeInfoIndicator")
+	return Tool.use1(instance_from_id(str2var(arg)))
 
+func PC(arg : String):
+	return arg

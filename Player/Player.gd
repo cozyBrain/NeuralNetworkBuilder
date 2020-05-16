@@ -12,8 +12,11 @@ var Type : int = G.ID.Player
 var aim : Basis
 var Tool
 
+onready var commandHandler = get_node("Console/CommandHandler")
 onready var consoleInputBox = get_node("Console/VBoxContainer/HBoxContainer/Input")
 onready var consoleOutputBox = get_node("Console/VBoxContainer/Output")
+var consoleInputModes = ["command", "chat"]
+var consoleInputModeSelection : int = 0
 var typingMode : bool = false
 
 var hotbarSelection : int  # 0 ~ 9
@@ -46,6 +49,11 @@ func _process(delta):
 		OS.window_fullscreen = !OS.window_fullscreen
 
 	if typingMode:
+		if Input.is_action_just_pressed("KEY_CTRL"):
+			consoleInputModeSelection += 1
+			if consoleInputModes.size() <= consoleInputModeSelection:
+				consoleInputModeSelection = 0
+			print(consoleInputModes[consoleInputModeSelection])
 		return
 
 	if Input.is_action_just_pressed("KEY_F"):
@@ -171,7 +179,11 @@ func _input(event):
 			if Tool != null: 
 				match hotbar[hotbarSelection]:
 					G.ID.NII:
-						Tool.use1(rayCastDetectedObject)
+						#Tool.use1(rayCastDetectedObject)
+						if rayCastDetectedObject != null:
+							processCommand(str("NII ", rayCastDetectedObject.get_instance_id()))
+						else:
+							processCommand(str("NII ", null))
 					G.ID.PC:
 						Tool.use1(rayCastDetectedObject)
 					G.ID.SC:
@@ -222,12 +234,23 @@ func _on_Input_text_entered(text):
 	typingMode = false
 	consoleInputBox.release_focus()
 	consoleInputBox.clear()
-	if text != "":
+	if text == "":
+		return
+	consolePrintln(text)	
+	if consoleInputModes[consoleInputModeSelection] == "command":
 		processCommand(text)
+	elif consoleInputModes[consoleInputModeSelection] == "chat":
+		pass
+	else:
+		consolePrintln("unknown input mode")
 
 func processCommand(text):
-	var words = text.split(" ", false)
-	words = Array(words)
-	
-	consolePrintln(text)
-	
+	var words = text.split(" ", false, 1)  # [command, arguments]
+	while words.size() < 2:
+		words.push_back("")
+
+	if commandHandler.validCommands.has(words[0]):
+		var output = commandHandler.call(words[0], words[1])
+		consolePrintln(output)
+
+
