@@ -1,24 +1,23 @@
 extends Node
 class_name PointConnector
 
-onready var Loaded_N_Synapse = preload("res://Nodes/N_Synapse/N_Synapse.tscn")
+onready var N_Synapse = preload("res://Nodes/N_Synapse/N_Synapse.tscn")
 
-var A : Object
-func use1(rayCastDetectedObject : Object) -> void:
-	if null == rayCastDetectedObject:
-		print(self.name, ": No Object Detected")
-		return
-	if A == null:
-		A = rayCastDetectedObject
-		print(self.name, ": From ", self.A)
-		return
+var Anode : Object
+func handle(instanceID) -> String:
+	var output : String
+	var rayCastDetectedObject = instance_from_id(int(instanceID))
+	if Anode == null:
+		Anode = rayCastDetectedObject
+		output += str(self.name, ": From ", self.Anode)
 	else:
-		print(self.name, ": To ", rayCastDetectedObject)
-		G.default_session.add_child(self.use2(self.A, rayCastDetectedObject))
-		A = null
-		
-func use2(A : Object, B : Object) -> Object:
-	var newSynapse = Loaded_N_Synapse.instance()
+		output += str(self.name, ": To ", rayCastDetectedObject)
+		G.default_session.add_child(connectNode(self.Anode, rayCastDetectedObject))
+		Anode = null
+	return output
+	
+func connectNode(A : Object, B : Object) -> Object:
+	var newSynapse = N_Synapse.instance()
 	# config synapse
 	var distance = A.translation.distance_to(B.translation)
 	var position = (A.translation + B.translation) / 2

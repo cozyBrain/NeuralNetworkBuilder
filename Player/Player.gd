@@ -12,9 +12,7 @@ var Type : int = G.ID.Player
 var aim : Basis
 var Tool
 
-onready var commandHandler = get_node("Console/CommandHandler")
-onready var consoleInputBox = get_node("Console/VBoxContainer/HBoxContainer/Input")
-onready var consoleOutputBox = get_node("Console/VBoxContainer/Output")
+onready var console = $Console
 var consoleInputModes = ["command", "chat"]
 var consoleInputModeSelection : int = 0
 var typingMode : bool = false
@@ -28,17 +26,13 @@ var hotbar = [G.ID.NII,G.ID.PC,G.ID.SC,G.ID.H,G.ID.NC,G.ID.None,G.ID.None,G.ID.N
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	consolePrintln(str("PlayerHotbar: ", hotbar))
+	console.println(str("PlayerHotbar: ", hotbar))
 
 func _process(delta):
 	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
 	#rayCastDetectedObject = instance_from_id(rayCastDetectedObject.get_instance_id())
 	
-	if Tool != null: 
-		if Tool.has_method("update"):
-			match hotbar[hotbarSelection]:
-				G.ID.NC:
-					Tool.update(translation, aim, delta)
+
 	if Input.is_key_pressed(KEY_ESCAPE):
 		var session = get_node(session_path)
 		if session.has_method("close"):
@@ -49,7 +43,7 @@ func _process(delta):
 		OS.window_fullscreen = !OS.window_fullscreen
 
 	if typingMode:
-		if Input.is_action_just_pressed("KEY_CTRL"):
+		if Input.is_action_just_pressed("KEY_TAB"):
 			consoleInputModeSelection += 1
 			if consoleInputModes.size() <= consoleInputModeSelection:
 				consoleInputModeSelection = 0
@@ -80,9 +74,16 @@ func _process(delta):
 					print("no action")
 		else:
 			print("the tool couldn't be found")
+	if Input.is_action_just_pressed("SHIFT+T"):
+		typingMode = true
+		console.inputBox.grab_focus()
+		var inputText = str("Tool ", G.IDtoString[hotbar[hotbarSelection]], " ")
+		console.inputBox.set_text(inputText)
+		console.inputBox.set_cursor_position(inputText.length())
+		return
 	if Input.is_action_just_pressed("KEY_T"):
 		typingMode = true
-		consoleInputBox.grab_focus()
+		console.inputBox.grab_focus()
 		return
 	if Input.is_action_just_pressed("KEY_C"):
 		pass
@@ -94,6 +95,12 @@ func _process(delta):
 		print("Engine.time_scale: ", Engine.time_scale)
 
 func _physics_process(delta):
+	if Tool != null: 
+		if Tool.has_method("update"):
+			match hotbar[hotbarSelection]:
+				G.ID.NC:
+					Tool.update(translation, aim, delta)
+	
 	if typingMode:
 		return
 		
@@ -170,7 +177,7 @@ func _input(event):
 											# display on ui
 											
 					else:  # when you select selected one again
-						if ToolHotbar != null:
+						if ToolHotbar != null:  # does the tool has hotbar?
 							print("hotbarSubSelection. 0 to escape.")
 							hotbarSubSelection = true
 	
@@ -179,13 +186,15 @@ func _input(event):
 			if Tool != null: 
 				match hotbar[hotbarSelection]:
 					G.ID.NII:
-						#Tool.use1(rayCastDetectedObject)
 						if rayCastDetectedObject != null:
-							processCommand(str("NII ", rayCastDetectedObject.get_instance_id()))
+							console.processCommand(str("Tool NodeInfoIndicator ", rayCastDetectedObject.get_instance_id()))
 						else:
-							processCommand(str("NII ", null))
+							console.println("No object detected!")
 					G.ID.PC:
-						Tool.use1(rayCastDetectedObject)
+						if rayCastDetectedObject != null:
+							console.processCommand(str("Tool PointConnector ", rayCastDetectedObject.get_instance_id()))
+						else:
+							console.println("No object detected!")
 					G.ID.SC:
 						if rayCastDetectedObject == null:
 							print(Tool.name, ": No Object Detected")
@@ -224,33 +233,20 @@ func _input(event):
 						elif event.button_index == BUTTON_WHEEL_DOWN:
 							Tool.distance -= 0.5
 					_:
-						print("the tool couldn't be recognized")
+						print("The tool couldn't be recognized")
 			else:
-				print("the tool couldn't be found. maybe programmer missed something.")
+				print("The tool couldn't be found. maybe programmer missed something.")
 
-func consolePrintln(text):
-	consoleOutputBox.text = str(consoleOutputBox.text, "\n", text)
 func _on_Input_text_entered(text):
 	typingMode = false
-	consoleInputBox.release_focus()
-	consoleInputBox.clear()
+	console.inputBox.release_focus()
+	console.inputBox.clear()
 	if text == "":
 		return
-	consolePrintln(text)	
+	console.println(text)	
 	if consoleInputModes[consoleInputModeSelection] == "command":
-		processCommand(text)
+		console.processCommand(text)
 	elif consoleInputModes[consoleInputModeSelection] == "chat":
 		pass
 	else:
-		consolePrintln("unknown input mode")
-
-func processCommand(text):
-	var words = text.split(" ", false, 1)  # [command, arguments]
-	while words.size() < 2:
-		words.push_back("")
-
-	if commandHandler.validCommands.has(words[0]):
-		var output = commandHandler.call(words[0], words[1])
-		consolePrintln(output)
-
-
+		console.consolePrintln("Unknown input mode")

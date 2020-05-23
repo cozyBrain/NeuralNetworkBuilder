@@ -7,7 +7,7 @@
 [ext_resource path="res://Player/Tools/Hand.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Player/Tools/SquareConnector.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Player/Tools/NodeCreator.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Player/CommandHandler.gd" type="Script" id=8]
+[ext_resource path="res://Player/Console.gd" type="Script" id=8]
 
 [sub_resource type="CapsuleShape" id=1]
 
@@ -54,12 +54,10 @@ margin_left = 10.0
 margin_top = 400.0
 margin_right = 1034.0
 margin_bottom = 1000.0
+script = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="CommandHandler" type="Node" parent="Console"]
-script = ExtResource( 8 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Console"]
 anchor_right = 0.273

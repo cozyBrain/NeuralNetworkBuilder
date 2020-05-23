@@ -62,7 +62,7 @@ func initiate() -> void:
 			for Bbody in Bbodies:
 				if Bbody.Type == G.ID.N_Synapse:
 					continue
-				var newSynapse = get_parent().get_node("PointConnector").use2(Abody, Bbody)
+				var newSynapse = get_parent().get_node("PointConnector").connectNode(Abody, Bbody)
 				if newSynapse != null:
 					G.default_session.add_child(newSynapse)
 

@@ -1,5 +1,9 @@
-# <todo>
-# change appearence of pointPositionIndicator when it overlaps with some node.
+#<NodeCreator>  # is somewhere weird?
+#An expected bug found: rightClick(create)+fastMovement overlaps already placed node!!
+#part of doc of get_overlapping_bodies() (this list is modified once during the physics step, not immediately after objects are moved. Consider using signals instead.
+#and signals doesn't look like a right solution.
+#How to get overlapping object immediately? in other words, how to get an object by its translation?
+#If I make this program with godot engineer!
 
 extends Node
 class_name NodeCreator
@@ -10,7 +14,7 @@ var pointPositionIndicator
 var pointPosition : Vector3
 var prevPointPosition : Vector3
 
-var leftClickCheckInterval : float = 2  # this should be >1 to prevent adding multiple object at one click. but I'm not sure that this way is right to solve the problem.
+var leftClickCheckInterval : float = 5  # because of the issue described above. but this doesn't seem right to solve it.
 var leftClickCheckTick : float
 
 var distance : float = 2
@@ -18,27 +22,27 @@ var distance : float = 2
 var hotbar : Array = [G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Goal, G.ID.N_Tanh, G.ID.N_NetworkController]
 var hotbarSelection : int
 
-func add():
+func create():
 	if len(pointPositionIndicator.get_overlapping_bodies()) == 0:
 		var body = load("res://Nodes/" + G.IDtoString[hotbar[hotbarSelection]] + "/" + G.IDtoString[hotbar[hotbarSelection]] + ".tscn").instance()
 		body.translation = pointPosition
 		G.default_session.add_child(body)
-		print("add ", body)
-func remove():
+		print("create ", body)
+func delete():
 	for body in pointPositionIndicator.get_overlapping_bodies():
 		if body.Type == G.ID.N_Synapse:
 			continue
-		print("remove ", body)
+		print("delete ", body)
 		body.queue_free()
 
 func update(translation : Vector3, aim : Basis, delta : float):
 	leftClickCheckTick += 1
 	if Input.is_mouse_button_pressed(BUTTON_RIGHT):
-		remove()
+		delete()
 	elif Input.is_mouse_button_pressed(BUTTON_LEFT):
 		if leftClickCheckTick >= leftClickCheckInterval:
 			leftClickCheckTick = 0
-			add() 
+			create() 
 
 	pointPosition = translation
 	pointPosition -= aim.z * distance
