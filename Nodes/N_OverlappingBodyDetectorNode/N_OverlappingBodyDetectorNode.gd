@@ -8,6 +8,3 @@ func _ready():
 func resize(s : Vector3) -> void:
 	var cs = get_node("CollisionShape")
 	cs.transform = cs.transform.scaled(s)
-
-func _physics_process(delta):
-	pass

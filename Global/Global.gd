@@ -12,10 +12,21 @@ const IDtoString = [
 const dx = 0.001
 const learningRate = 0.001
 const default_session_path = "/root/session"
-var default_session
+onready var default_session = get_node(default_session_path)
+
+var nodeMap : Dictionary
+
+func addNode(node : Node) -> void:
+	nodeMap[node.translation] = node
+	default_session.add_child(node)
+func eraseNode(node : Node) -> void:
+	nodeMap.erase(node.translation)
+	node.queue_free()
+func getNode(position : Vector3) -> Node:
+	return nodeMap.get(position)
 
 func _ready():
-	default_session = get_node(default_session_path)
+	pass
 
 func square(x:float) -> float:
 	return x*x

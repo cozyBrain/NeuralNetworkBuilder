@@ -23,17 +23,27 @@ var hotbar : Array = [G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Goal, G.ID.N_Tanh, 
 var hotbarSelection : int
 
 func create():
-	if len(pointPositionIndicator.get_overlapping_bodies()) == 0:
+#	if len(pointPositionIndicator.get_overlapping_bodies()) == 0:
+#		var body = load("res://Nodes/" + G.IDtoString[hotbar[hotbarSelection]] + "/" + G.IDtoString[hotbar[hotbarSelection]] + ".tscn").instance()
+#		body.translation = pointPosition
+#		G.default_session.add_child(body)
+#		print("create ", body)
+	var obj = G.getNode(pointPosition)
+	if obj == null:
 		var body = load("res://Nodes/" + G.IDtoString[hotbar[hotbarSelection]] + "/" + G.IDtoString[hotbar[hotbarSelection]] + ".tscn").instance()
 		body.translation = pointPosition
-		G.default_session.add_child(body)
+		G.addNode(body)
 		print("create ", body)
+
 func delete():
-	for body in pointPositionIndicator.get_overlapping_bodies():
-		if body.Type == G.ID.N_Synapse:
-			continue
-		print("delete ", body)
-		body.queue_free()
+#	for body in pointPositionIndicator.get_overlapping_bodies():
+#		if body.Type == G.ID.N_Synapse:
+#			continue
+#		print("delete ", body)
+#		body.queue_free()
+	var obj = G.getNode(pointPosition)
+	if obj != null:
+		G.eraseNode(obj)
 
 func update(translation : Vector3, aim : Basis, delta : float):
 	leftClickCheckTick += 1
