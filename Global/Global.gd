@@ -4,12 +4,12 @@
 extends Node
 enum ID {
 	None, Player,
-	OII, PC, SC, H, NC,
+	OII, PC, SC, H, NC, S,
 	N_LeakyReLU, L_Synapse, N_NetworkController, N_Input, N_Tanh, N_Goal,
 }
 const IDtoString = [
 	"None", "Player",
-	"ObjectInfoIndicator", "PointConnector", "SquareConnector", "Hand", "NodeCreator",
+	"ObjectInfoIndicator", "PointConnector", "SquareConnector", "Hand", "NodeCreator", "Selector",
 	"N_LeakyReLU", "L_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
 ]
 const dx = 0.001
