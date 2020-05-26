@@ -33,7 +33,7 @@ func Tool(arg : String) -> String:
 
 	var Tool = get_node_or_null(toolsPath + splittedArg[0])
 	if Tool == null:  # when the tool doesn't exist
-		return str("\"", splittedArg[0], "\" doesn't exist!\n")
+		return str("Tool \"", splittedArg[0], "\" doesn't exist!\n")
 		
 	var output = Tool.handle(splittedArg[1])
 	if typeof(output) == TYPE_STRING:

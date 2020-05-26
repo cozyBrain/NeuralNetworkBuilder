@@ -22,7 +22,7 @@ var prevHotbarSelection : int = -1
 var hotbarSubSelection : bool = false
 var ToolHotbar
 
-var hotbar = [G.ID.NII,G.ID.PC,G.ID.SC,G.ID.H,G.ID.NC,G.ID.None,G.ID.None,G.ID.None,G.ID.None,G.ID.None]  # size:10  hotbar lol! Korean people will see why
+var hotbar = [G.ID.OII,G.ID.PC,G.ID.SC,G.ID.H,G.ID.NC,G.ID.None,G.ID.None,G.ID.None,G.ID.None,G.ID.None]  # size:10  hotbar lol! Korean people will see why
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -188,9 +188,9 @@ func _input(event):
 		if event.is_pressed():
 			if Tool != null: 
 				match hotbar[hotbarSelection]:
-					G.ID.NII:
+					G.ID.OII:
 						if rayCastDetectedObject != null:
-							console.processCommand(str("Tool NodeInfoIndicator ", str(rayCastDetectedObject.translation)))
+							console.processCommand(str("Tool ObjectInfoIndicator ", str(rayCastDetectedObject.get_instance_id())))
 						else:
 							console.println("No node detected!")
 					G.ID.PC:

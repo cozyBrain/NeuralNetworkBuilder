@@ -3,7 +3,7 @@
 [ext_resource path="res://Player/Player.gd" type="Script" id=1]
 [ext_resource path="res://Player/crosshair.png" type="Texture" id=2]
 [ext_resource path="res://Player/Tools/PointConnector.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Player/Tools/NodeInfoIndicator.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Player/Tools/ObjectInfoIndicator.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Player/Tools/Hand.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Player/Tools/SquareConnector.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Player/Tools/NodeCreator.tscn" type="PackedScene" id=7]
@@ -99,8 +99,6 @@ __meta__ = {
 
 [node name="Tools" type="Node" parent="."]
 
-[node name="NodeInfoIndicator" parent="Tools" instance=ExtResource( 4 )]
-
 [node name="PointConnector" parent="Tools" instance=ExtResource( 3 )]
 
 [node name="SquareConnector" parent="Tools" instance=ExtResource( 6 )]
@@ -108,4 +106,6 @@ __meta__ = {
 [node name="Hand" parent="Tools" instance=ExtResource( 5 )]
 
 [node name="NodeCreator" parent="Tools" instance=ExtResource( 7 )]
+
+[node name="ObjectInfoIndicator" parent="Tools" instance=ExtResource( 4 )]
 [connection signal="text_entered" from="Console/VBoxContainer/HBoxContainer/Input" to="." method="_on_Input_text_entered"]

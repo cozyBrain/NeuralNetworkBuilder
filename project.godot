@@ -44,10 +44,10 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Player/Tools/NodeCreator.gd"
 }, {
-"base": "Spatial",
+"base": "Node",
 "class": "NodeInfoIndicator",
 "language": "GDScript",
-"path": "res://Player/Tools/NodeInfoIndicator.gd"
+"path": "res://Player/Tools/ObjectInfoIndicator.gd"
 }, {
 "base": "KinematicBody",
 "class": "Player",
