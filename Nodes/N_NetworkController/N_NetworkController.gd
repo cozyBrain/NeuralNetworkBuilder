@@ -1,15 +1,15 @@
 class_name N_NetworkController
 extends StaticBody
 
-var Osynapses : Array
+var Olinks : Array
 var propSequence : Array
 var bpropSequence : Array
 var propOnly : bool = false
 
-const Type : int = G.ID.N_NetworkController  # TypeData.N_NetworkController
+const ID : int = G.ID.N_NetworkController  # IDData.N_NetworkController
 
 func getInfo() -> Dictionary:
-	return {"Type":Type, "Osynapses":Osynapses, "propSequence":propSequence, "bpropSequence":bpropSequence}
+	return {"ID":ID, "Olinks":Olinks, "propSequence":propSequence, "bpropSequence":bpropSequence}
 
 func prop() -> void:
 	pass
@@ -30,26 +30,26 @@ func initialize() -> void:
 	while layerIndex < propSequence.size():
 		var nextLayer : Dictionary
 		for keyAKAobject in propSequence[layerIndex]:  # iterating map of the layer
-			var objType = keyAKAobject.get("Type")
-			if objType != null:
+			var objID = keyAKAobject.get("ID")
+			if objID != null:
 
 				# init weights
-				match objType:
+				match objID:
 					G.ID.N_Goal:
 						pass
 					_:
-						var objIsynapses = keyAKAobject.get("Isynapses")
-						if objIsynapses != null:
-							var numOfObjIsynapses = objIsynapses.size()
-							for synapse in objIsynapses:  # init weight
-								synapse.Weight = lerp(-1, 1, randf()) / sqrt(numOfObjIsynapses)
-								print("initialize weight:", synapse.Weight)
+						var objIlinks = keyAKAobject.get("Ilinks")
+						if objIlinks != null:
+							var numOfObjIlinks = objIlinks.size()
+							for link in objIlinks:  # init weight
+								link.Weight = lerp(-1, 1, randf()) / sqrt(numOfObjIlinks)
+								print("initialize weight:", link.Weight)
 
-				var objOsynapses = keyAKAobject.get("Osynapses")
-				if objOsynapses == null:
+				var objOlinks = keyAKAobject.get("Olinks")
+				if objOlinks == null:
 					continue
-				for synapse in objOsynapses:
-					for node in synapse.Onodes:
+				for link in objOlinks:
+					for node in link.Onodes:
 						nextLayer[node] = true
 
 		if not nextLayer.empty():
@@ -79,11 +79,11 @@ func initialize() -> void:
 	while layerIndex < bpropSequence.size():
 		var nextLayer : Dictionary
 		for keyAKAobject in bpropSequence[layerIndex]:
-			var objIsynapses = keyAKAobject.get("Isynapses")
-			if objIsynapses == null:
+			var objIlinks = keyAKAobject.get("Ilinks")
+			if objIlinks == null:
 				continue
-			for synapse in objIsynapses:
-				for node in synapse.Inodes:
+			for link in objIlinks:
+				for node in link.Inodes:
 					nextLayer[node] = true
 		if not nextLayer.empty():
 			bpropSequence.push_back(nextLayer)
@@ -108,17 +108,17 @@ func wave() -> void:
 	
 func connectTo(target:Node) -> int:
 	# U can cancel Onodes.push if target is not compatible by using has_meta, has_method, has_node, if not etc..
-	var type = target.get("Type")
-	if type == null:
+	var id = target.get("ID")
+	if id == null:
 		return -1
-	match type:
-		G.ID.N_Synapse:
-			Osynapses.push_front(target) #  target
-		var unknownType:
+	match id:
+		G.ID.L_Synapse:
+			Olinks.push_front(target) #  target
+		var _unknownID:
 			return -1
 	return 0
 	
 func disconnectTo(target:Node) -> void:
-	var index = Osynapses.find(target)
+	var index = Olinks.find(target)
 	if index >= 0:
-		Osynapses.remove(index)
+		Olinks.remove(index)

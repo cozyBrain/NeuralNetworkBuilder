@@ -1,72 +1,86 @@
 extends Node
 class_name SquareConnector
 
-var Aarea = []
-var Barea = []
-var AareaDetector : Object
-var BareaDetector : Object
+const Type : int = G.ID.SC
 
-func selectAarea(rayCastDetectedObject : Object) -> void:
-	if Aarea.size() == 0:
-		print("A area begin point:", rayCastDetectedObject.translation)
-		Aarea.push_back(rayCastDetectedObject)
-	elif Aarea.size() == 1:
-		print("A area end point:", rayCastDetectedObject.translation)
-		Aarea.push_back(rayCastDetectedObject)
-		self.AareaDetector = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
-		var xScale = abs(Aarea[0].translation.x - Aarea[1].translation.x) + 1
-		var yScale = abs(Aarea[0].translation.y - Aarea[1].translation.y) + 1
-		var zScale = abs(Aarea[0].translation.z - Aarea[1].translation.z) + 1
-		AareaDetector.resize(Vector3(xScale, yScale, zScale))
-		AareaDetector.translation = (Aarea[0].translation + Aarea[1].translation) / 2
-		add_child(self.AareaDetector)
+var areas = [[], []]  # A[beginPoint, endPoint], B[begin, end]
+
+onready var AreaIndicator = preload("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn")
+var areaIndicators = [null, null]
+
+func handle(arg : String) -> String:  # [AorB, pointPosition]
+	var output : String
+	var splitted = arg.split(" ", false, 1)
+	# AorB
+	var AorB
+	if splitted[0] == "A":
+		AorB = 0
+	elif splitted[0] == "B":
+		AorB = 1
+	elif splitted[0] == "initiate":
+		return initiate()
 	else:
-		print("A area already selected.")
-func selectBarea(rayCastDetectedObject : Object) -> void:
-	if Barea.size() == 0:
-		print("B area begin point:", rayCastDetectedObject.translation)
-		Barea.push_back(rayCastDetectedObject)
-	elif Barea.size() == 1:
-		print("B area end point:", rayCastDetectedObject.translation)
-		Barea.push_back(rayCastDetectedObject)
-		self.BareaDetector = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
-		var xScale = abs(Barea[0].translation.x - Barea[1].translation.x) + 1
-		var yScale = abs(Barea[0].translation.y - Barea[1].translation.y) + 1
-		var zScale = abs(Barea[0].translation.z - Barea[1].translation.z) + 1
-		BareaDetector.resize(Vector3(xScale, yScale, zScale))
-		BareaDetector.translation = (Barea[0].translation + Barea[1].translation) / 2
-		add_child(self.BareaDetector)
+		return "Invalid argument"
+
+	var aORb = "A" if AorB == 0 else "B"
+	
+	# pointPosition
+	var pointPosition = G.str2vector3(splitted[1])
+	if pointPosition == null:
+		return "Invalid argument"
+
+	if areas[AorB].size() == 0:
+		output += str(aORb+" area begin point:", pointPosition)
+		areas[AorB].push_back(pointPosition)
+	elif areas[AorB].size() == 1:
+		output += str(aORb+" area end point:", pointPosition)
+		areas[AorB].push_back(pointPosition)
+		areaIndicators[AorB] = AreaIndicator.instance()
+		var xScale = abs(areas[AorB][0].x - areas[AorB][1].x) + 1
+		var yScale = abs(areas[AorB][0].y - areas[AorB][1].y) + 1
+		var zScale = abs(areas[AorB][0].z - areas[AorB][1].z) + 1
+		areaIndicators[AorB].resize(Vector3(xScale, yScale, zScale))
+		areaIndicators[AorB].translation = (areas[AorB][0] + areas[AorB][1]) / 2
+		add_child(areaIndicators[AorB])
 	else:
-		print("B area already selected.")
-func initiate() -> void:
+		output += str(aORb+" area already selected.")
+	
+	return output
+		
+func initiate() -> String:
 	var Aselected = true
 	var Bselected = true
-	if Aarea.size() != 2:
+	if areas[0].size() != 2:
 		print("A area isn't selected")
 		Aselected = false
 	else:
-		print("A area: ", Aarea[0].translation, " to ", Aarea[1].translation)
-	if Barea.size() != 2:
+		print("A area: ", areas[0][0], " to ", areas[0][1])
+	if areas[1].size() != 2:
 		print("B area isn't selected")
 		Bselected = false
 	else:
-		print("B area: ", Barea[0].translation, " to ", Barea[1].translation)
+		print("B area: ", areas[1][0], " to ", areas[1][1])
 		
-	if Aselected and Bselected:
-		var Abodies = AareaDetector.get_overlapping_bodies()
-		var Bbodies = BareaDetector.get_overlapping_bodies()
+	if not Aselected or not Bselected:
+		return "not selected"
+		
 
-		for Abody in Abodies:
-			if Abody.Type == G.ID.N_Synapse:
+	var Anodes = G.default_session.squareGetNode(areas[0][0], areas[0][1])
+	var Bnodes = G.default_session.squareGetNode(areas[1][0], areas[1][1])
+
+	for Anode in Anodes:
+		if Anode.ID == G.ID.L_Synapse:
+			continue
+		for Bnode in Bnodes:
+			if Bnode.ID == G.ID.L_Synapse:
 				continue
-			for Bbody in Bbodies:
-				if Bbody.Type == G.ID.N_Synapse:
-					continue
-				var newSynapse = get_parent().get_node("PointConnector").connectNode(Abody, Bbody)
-				if newSynapse != null:
-					G.default_session.add_child(newSynapse)
+			var newSynapse = get_parent().get_node("PointConnector").connectNode(Anode, Bnode)
+			if newSynapse != null:
+					G.default_session.addLink(newSynapse)
 
-		Aarea.clear()
-		AareaDetector.queue_free()
-		Barea.clear()
-		BareaDetector.queue_free()
+	#reset
+	areas = [[], []]
+	areaIndicators[0].queue_free()
+	areaIndicators[1].queue_free()
+	
+	return "done"

@@ -1,14 +1,14 @@
 class_name N_Goal
 extends StaticBody
 
-var Osynapses : Array
-var Isynapses : Array
+var Olinks : Array
+var Ilinks : Array
 var Output : float  # Output is Goal
 var BOutput : float 
-const Type : int = G.ID.N_Goal
+const ID : int = G.ID.N_Goal
 
 func getInfo() -> Dictionary:
-	return {"Type":Type, "Description":"OutputIsGoal", "Output":Output, "BOutput":BOutput, "Isynapses":Isynapses, "Osynapses":Osynapses}
+	return {"ID":ID, "Description":"OutputIsGoal", "Output":Output, "BOutput":BOutput, "Ilinks":Ilinks, "Olinks":Olinks}
 	
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
@@ -34,43 +34,43 @@ func bprop() -> void:  # back-propagation
 	#for synapse in Osynapses:
 	#	for node in synapse.Onodes:
 	#		BOutput += node.BOutput * synapse.Weight
-	for synapse in Isynapses:
-		for node in synapse.Inodes:
+	for link in Ilinks:
+		for node in link.Inodes:
 			var preErr = G.square(node.Output - Output)
 			var aftErr = G.square((node.Output-G.dx) - Output)
 			BOutput += ((preErr - aftErr) / G.dx)
-	BOutput /= Isynapses.size()
+	BOutput /= Ilinks.size()
 		
 	
 func connectTo(target:Node) -> int:
-	var type = target.get("Type")
-	if type == null:
+	var id = target.get("ID")
+	if id == null:
 		return -1
-	match type:
-		G.ID.N_Synapse:
-			Osynapses.push_front(target)
+	match id:
+		G.ID.L_Synapse:
+			Olinks.push_front(target)
 		_:
 			return -1
 	return 0
 func connectFrom(target:Node) -> int:
-	var type = target.get("Type")
-	if type == null:
+	var id = target.get("ID")
+	if id == null:
 		return -1
-	match type:
-		G.ID.N_Synapse:
-			Isynapses.push_front(target) 
+	match id:
+		G.ID.L_Synapse:
+			Ilinks.push_front(target) 
 		_:
 			return -1
 	return 0
 	
 func disconnectTo(target:Node) -> void:
-	var index = Osynapses.find(target)
+	var index = Olinks.find(target)
 	if index >= 0:
-		Osynapses.remove(index)
+		Olinks.remove(index)
 func disconnectFrom(target:Node) -> void:
-	var index = Isynapses.find(target)
+	var index = Ilinks.find(target)
 	if index >= 0:
-		Isynapses.remove(index)
+		Ilinks.remove(index)
 
 func updateEmissionByOutput() -> void:
 	$CollisionShape/MeshInstance.get_surface_material(0).emission_energy = Output

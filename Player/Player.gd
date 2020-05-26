@@ -8,7 +8,7 @@ var flyAccel = 40
 var velocity = Vector3()
 var rayCastDetectedObject
 var session_path = G.default_session_path
-var Type : int = G.ID.Player
+var ID : int = G.ID.Player
 var aim : Basis
 var Tool
 
@@ -26,13 +26,16 @@ var hotbar = [G.ID.NII,G.ID.PC,G.ID.SC,G.ID.H,G.ID.NC,G.ID.None,G.ID.None,G.ID.N
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	console.println(str("PlayerHotbar: ", hotbar))
+	var playerHotbarIndication = str("PlayerHotbar: [")
+	for item in hotbar:
+		playerHotbarIndication += str(" "+G.IDtoString[item]+" ")
+	playerHotbarIndication += "]"
+	console.println(playerHotbarIndication)
 
 func _process(delta):
 	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
 	#rayCastDetectedObject = instance_from_id(rayCastDetectedObject.get_instance_id())
 	
-
 	if Input.is_key_pressed(KEY_ESCAPE):
 		var session = get_node(session_path)
 		if session.has_method("close"):
@@ -54,22 +57,22 @@ func _process(delta):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
 				G.ID.SC:
-					Tool.initiate()
+					console.processCommand(str("Tool SquareConnector initiate"))
 				G.ID.H:  # Hand
 					if null == rayCastDetectedObject:
 						print("Hand: No Object Detected")
 					else:
 						print("Hand: < ", rayCastDetectedObject, " >")
-						var type = rayCastDetectedObject.get("Type")
-						if type == null:
+						var id = rayCastDetectedObject.get("ID")
+						if id == null:
 							print("Hand: could not interact")
 						else:
-							match type:
-								G.N_Types.N_NetworkController:
+							match id:
+								G.ID.N_NetworkController:
 									rayCastDetectedObject.propOnly = !rayCastDetectedObject.propOnly
 									print("propOnly: ", rayCastDetectedObject.propOnly)
 								_:
-									print("Hand: no interaction with ", G.N_TypeToString[type])
+									print("Hand: no interaction with ", G.IDtoString[id])
 				_:
 					print("no action")
 		else:
@@ -187,32 +190,32 @@ func _input(event):
 				match hotbar[hotbarSelection]:
 					G.ID.NII:
 						if rayCastDetectedObject != null:
-							console.processCommand(str("Tool NodeInfoIndicator ", rayCastDetectedObject.get_instance_id()))
+							console.processCommand(str("Tool NodeInfoIndicator ", str(rayCastDetectedObject.translation)))
 						else:
-							console.println("No object detected!")
+							console.println("No node detected!")
 					G.ID.PC:
 						if rayCastDetectedObject != null:
-							console.processCommand(str("Tool PointConnector ", rayCastDetectedObject.get_instance_id()))
+							console.processCommand(str("Tool PointConnector ", str(rayCastDetectedObject.translation)))
 						else:
-							console.println("No object detected!")
+							console.println("No node detected!")
 					G.ID.SC:
 						if rayCastDetectedObject == null:
-							print(Tool.name, ": No Object Detected")
+							console.println("No node detected!")
 						elif event.button_index == BUTTON_LEFT:
-							Tool.selectAarea(rayCastDetectedObject)
+							console.processCommand(str("Tool SquareConnector A ", str(rayCastDetectedObject.translation)))
 						elif event.button_index == BUTTON_RIGHT:
-							Tool.selectBarea(rayCastDetectedObject)
+							console.processCommand(str("Tool SquareConnector B ", str(rayCastDetectedObject.translation)))
 					G.ID.H:  # Hand
 						if null == rayCastDetectedObject:
 							print(Tool.name, ": No Object Detected")
 						else:
 							print(Tool.name, ": < ", rayCastDetectedObject, " >")
-							var type = rayCastDetectedObject.get("Type")
-							if type == null:
+							var id = rayCastDetectedObject.get("ID")
+							if id == null:
 								print(Tool.name, ": could not interact")
 							else:
-								match type:
-									G.N_Types.N_NetworkController:
+								match id:
+									G.ID.N_NetworkController:
 										if event.button_index == BUTTON_RIGHT:
 											rayCastDetectedObject.initialize()
 										elif event.button_index == BUTTON_LEFT:
@@ -220,13 +223,13 @@ func _input(event):
 											for _i in range(count):
 												rayCastDetectedObject.wave()
 											print(Tool.name, ": iterated for ", count, " times")
-									G.N_Types.N_Input, G.N_Types.N_Goal:
+									G.ID.N_Input, G.ID.N_Goal:
 										if event.button_index == BUTTON_LEFT:
 											rayCastDetectedObject.addOutput(0.25)
 										elif event.button_index == BUTTON_RIGHT:
 											rayCastDetectedObject.addOutput(-0.25)
 									_:
-										print(Tool.name, ": no interaction with ", G.N_TypeToString[type])
+										print(Tool.name, ": no interaction with ", G.IDtoString[id])
 					G.ID.NC:
 						if event.button_index == BUTTON_WHEEL_UP:
 							Tool.distance += 0.5

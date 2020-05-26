@@ -24,92 +24,96 @@ environment = SubResource( 1 )
 [node name="DirectionalLight" type="DirectionalLight" parent="WorldEnvironment"]
 transform = Transform( 0.967696, -0.103406, 0.229939, -0.25212, -0.396897, 0.882558, 0, -0.91202, -0.410146, 0, 8.89915, 0 )
 
-[node name="N_NetworkController" parent="." instance=ExtResource( 2 )]
+[node name="nodes" type="Node" parent="."]
+
+[node name="N_NetworkController" parent="nodes" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 3 )
 
-[node name="N_LeakyReLU48" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU48" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 4 )
 
-[node name="N_LeakyReLU47" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU47" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1, 4 )
 
-[node name="N_LeakyReLU46" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU46" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 3 )
 
-[node name="N_LeakyReLU45" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU45" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 4 )
 
-[node name="N_LeakyReLU44" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU44" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 3 )
 
-[node name="N_LeakyReLU43" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU43" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 4 )
 
-[node name="N_LeakyReLU42" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU42" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2 )
 
-[node name="N_LeakyReLU41" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU41" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 2 )
 
-[node name="N_LeakyReLU40" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU40" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 2 )
 
-[node name="N_LeakyReLU39" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU39" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1, 2 )
 
-[node name="N_LeakyReLU2" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU2" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
 
-[node name="N_LeakyReLU11" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU11" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2 )
 
-[node name="N_LeakyReLU8" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU8" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4 )
 
-[node name="N_LeakyReLU10" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU10" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 4 )
 
-[node name="N_LeakyReLU4" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU4" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 3 )
 
-[node name="N_LeakyReLU12" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU12" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 2 )
 
-[node name="N_LeakyReLU38" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU38" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1, 3 )
 
-[node name="N_LeakyReLU37" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU37" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 3 )
 
-[node name="N_LeakyReLU3" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU3" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3 )
 
-[node name="N_LeakyReLU9" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU9" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4 )
 
-[node name="N_LeakyReLU7" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU7" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2 )
 
-[node name="N_LeakyReLU30" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU30" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 3 )
 
-[node name="N_LeakyReLU29" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU29" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 4 )
 
-[node name="N_LeakyReLU28" parent="." instance=ExtResource( 1 )]
+[node name="N_LeakyReLU28" parent="nodes" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 2 )
 
-[node name="N_Input1" parent="." instance=ExtResource( 4 )]
+[node name="N_Input1" parent="nodes" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 3 )
 
-[node name="N_Input2" parent="." instance=ExtResource( 4 )]
+[node name="N_Input2" parent="nodes" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 3 )
 
-[node name="N_Input3" parent="." instance=ExtResource( 4 )]
+[node name="N_Input3" parent="nodes" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3, 3 )
 
-[node name="N_Tanh" parent="." instance=ExtResource( 5 )]
+[node name="N_Tanh" parent="nodes" instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1, 3 )
 
-[node name="N_Goal" parent="." instance=ExtResource( 6 )]
+[node name="N_Goal" parent="nodes" instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, 3 )
+
+[node name="links" type="Node" parent="."]

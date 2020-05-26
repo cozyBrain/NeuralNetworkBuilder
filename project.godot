@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "StaticBody",
+"class": "L_Synapse",
+"language": "GDScript",
+"path": "res://Links/L_Synapse/L_Synapse.gd"
+}, {
+"base": "StaticBody",
 "class": "N_Goal",
 "language": "GDScript",
 "path": "res://Nodes/N_Goal/N_Goal.gd"
@@ -28,11 +33,6 @@ _global_script_classes=[ {
 "class": "N_NetworkController",
 "language": "GDScript",
 "path": "res://Nodes/N_NetworkController/N_NetworkController.gd"
-}, {
-"base": "StaticBody",
-"class": "N_Synapse",
-"language": "GDScript",
-"path": "res://Nodes/N_Synapse/N_Synapse.gd"
 }, {
 "base": "StaticBody",
 "class": "N_Tanh",
@@ -65,11 +65,11 @@ _global_script_classes=[ {
 "path": "res://Player/Tools/SquareConnector.gd"
 } ]
 _global_script_class_icons={
+"L_Synapse": "",
 "N_Goal": "",
 "N_Input": "",
 "N_LeakyReLU": "",
 "N_NetworkController": "",
-"N_Synapse": "",
 "N_Tanh": "",
 "NodeCreator": "",
 "NodeInfoIndicator": "",

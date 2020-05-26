@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Nodes/N_Synapse/N_Synapse.gd" type="Script" id=1]
+[ext_resource path="res://Links/L_Synapse/L_Synapse.gd" type="Script" id=1]
 
 [sub_resource type="CylinderShape" id=1]
 
@@ -15,7 +15,7 @@ emission_on_uv2 = false
 [sub_resource type="CylinderMesh" id=3]
 material = SubResource( 2 )
 
-[node name="N_Synapse" type="StaticBody"]
+[node name="L_Synapse" type="StaticBody"]
 transform = Transform( 1, -1.19209e-07, 0, 1.19209e-07, 1, 0, 0, 0, 1, 0, 0, 0 )
 collision_layer = 0
 collision_mask = 0

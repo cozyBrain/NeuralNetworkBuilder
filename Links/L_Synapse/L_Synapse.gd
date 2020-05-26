@@ -1,36 +1,36 @@
-class_name N_Synapse
+class_name L_Synapse
 extends StaticBody
 
 var Weight : float = 1  # default value of Weight should be 1 for several reasons. for instance) when N_Goal bprop()
 var Onodes : Array
 var Inodes : Array
-const Type : int = G.ID.N_Synapse
+const ID : int = G.ID.L_Synapse
 
 func getInfo() -> Dictionary:
-	return {"Type":Type, "Weight":Weight, "Inodes":Inodes, "Onodes":Onodes}
+	return {"ID":ID, "Weight":Weight, "Inodes":Inodes, "Onodes":Onodes}
 
 func setLength(length : float) -> void:
 	var cs = get_node("CollisionShape")
 	cs.transform = cs.transform.scaled(Vector3(1,1,length))
 
 func connectFrom(target:Node) -> int:
-	var type = target.get("Type")
-	if type == null:
+	var ID = target.get("ID")
+	if ID == null:
 		return -1
-	match type:
+	match ID:
 		G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Tanh, G.ID.N_Goal, G.ID.N_NetworkController:
 			Inodes.push_front(target)
-		var _unknownType:
+		var _unknownID:
 			return -1
 	return 0
 func connectTo(target:Node) -> int:
-	var type = target.get("Type")
-	if type == null:
+	var ID = target.get("ID")
+	if ID == null:
 		return -1
-	match type:
+	match ID:
 		G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Tanh, G.ID.N_Goal:
 			Onodes.push_front(target)
-		var _unknownType:
+		var _unknownID:
 			return -1
 	return 0
 	

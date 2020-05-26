@@ -1,21 +1,13 @@
-#<NodeCreator>  # is somewhere weird?
-#An expected bug found: rightClick(create)+fastMovement overlaps already placed node!!
-#part of doc of get_overlapping_bodies() (this list is modified once during the physics step, not immediately after objects are moved. Consider using signals instead.
-#and signals doesn't look like a right solution.
-#How to get overlapping object immediately? in other words, how to get an object by its translation?
-#If I make this program with godot engineer!
-
 extends Node
 class_name NodeCreator
 
-export (NodePath) var session_path = G.default_session_path
-export (String) var pointPositionIndicatorResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
-var pointPositionIndicator
-var pointPosition : Vector3
-var prevPointPosition : Vector3
+const ID : int = G.ID.NC
 
-var leftClickCheckInterval : float = 5  # because of the issue described above. but this doesn't seem right to solve it.
-var leftClickCheckTick : float
+export (NodePath) var session_path = G.default_session_path
+export (String) var pointerResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
+var pointer
+var pointerPosition : Vector3
+var prevPointerPosition : Vector3
 
 var distance : float = 2
 
@@ -28,49 +20,47 @@ func create():
 #		body.translation = pointPosition
 #		G.default_session.add_child(body)
 #		print("create ", body)
-	var obj = G.getNode(pointPosition)
+	var obj = G.default_session.getNode(pointerPosition)
 	if obj == null:
 		var body = load("res://Nodes/" + G.IDtoString[hotbar[hotbarSelection]] + "/" + G.IDtoString[hotbar[hotbarSelection]] + ".tscn").instance()
-		body.translation = pointPosition
-		G.addNode(body)
+		body.translation = pointerPosition
+		G.default_session.addNode(body)
 		print("create ", body)
 
-func delete():
+func erase():
 #	for body in pointPositionIndicator.get_overlapping_bodies():
 #		if body.Type == G.ID.N_Synapse:
 #			continue
 #		print("delete ", body)
 #		body.queue_free()
-	var obj = G.getNode(pointPosition)
+	var obj = G.default_session.getNode(pointerPosition)
 	if obj != null:
-		G.eraseNode(obj)
+		G.default_session.eraseNode(obj)
+		print("erase ", obj)
 
 func update(translation : Vector3, aim : Basis, delta : float):
-	leftClickCheckTick += 1
 	if Input.is_mouse_button_pressed(BUTTON_RIGHT):
-		delete()
+		erase()
 	elif Input.is_mouse_button_pressed(BUTTON_LEFT):
-		if leftClickCheckTick >= leftClickCheckInterval:
-			leftClickCheckTick = 0
-			create() 
+		create() 
 
-	pointPosition = translation
-	pointPosition -= aim.z * distance
+	pointerPosition = translation
+	pointerPosition -= aim.z * distance
 
-	pointPosition = pointPosition.round()
-	if prevPointPosition != pointPosition:
-		prevPointPosition = pointPosition
-		pointPositionIndicator.translation = pointPosition
+	pointerPosition = pointerPosition.round()
+	if prevPointerPosition != pointerPosition:
+		prevPointerPosition = pointerPosition
+		pointer.translation = pointerPosition
 
 
 func activate(translation, aim : Basis):
-	var pointPosition = translation
-	pointPosition -= aim.z*distance
-	pointPosition = pointPosition.round()
-	pointPositionIndicator = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
-	pointPositionIndicator.translation = pointPosition
-	prevPointPosition = pointPositionIndicator.translation
-	add_child(pointPositionIndicator)
+	var pointerPosition = translation
+	pointerPosition -= aim.z*distance
+	pointerPosition = pointerPosition.round()
+	pointer = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
+	pointer.translation = pointerPosition
+	prevPointerPosition = pointer.translation
+	add_child(pointer)
 
 func deactivate():
-	pointPositionIndicator.queue_free()
+	pointer.queue_free()
