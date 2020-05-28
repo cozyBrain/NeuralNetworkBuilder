@@ -50,13 +50,13 @@ func handle(arg : String):
 		print(numOfShapeArguments, shapeArguments)
 		if numOfShapeArguments >= 1:
 			shapeArguments[0] = shapeArguments[0].to_lower()  # VoXeL -> voxel
+			if shapeArguments[0] == "hotbarselection":
+				shapeArguments[0] = hotbar[hotbarSelection]
 			var shape = shapes.get(shapeArguments[0])
 			if shape != null:  # if ("box")shapeArguments[0] is known
 				if numOfShapeArguments-1 >= shape[0] or shape[2] == "":
 					selection = shapeArguments[0]  # ex) selection status: voxel
 					
-				if shapeArguments[0] == "hotbarSelection":
-					shapeArguments[0] = hotbar[hotbarSelection][0]
 				var validForm : bool = true  # valid arguments?
 				
 				if numOfShapeArguments > 1:  # does any arg exists after voxel? "voxel 0,0,2"
@@ -89,7 +89,7 @@ func handle(arg : String):
 								selectionGroups[groupSelection] = selectionGroups.get(groupSelection, "") + shape[2]
 								output += "selectionGroup <"+groupSelection+">:\n"
 								output += "       "+selectionGroups[groupSelection].replace("\n", "\n       ")
-						print(shape[2])
+							shape[2] = ""
 				else:
 					output += "No arguments of shape!\n"
 			else:
