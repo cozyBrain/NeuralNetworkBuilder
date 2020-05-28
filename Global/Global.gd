@@ -4,12 +4,12 @@
 extends Node
 enum ID {
 	None, Player,
-	OII, PC, SC, H, NC, S,
+	OII, LC, BC, H, NC, S,
 	N_LeakyReLU, L_Synapse, N_NetworkController, N_Input, N_Tanh, N_Goal,
 }
 const IDtoString = [
 	"None", "Player",
-	"ObjectInfoIndicator", "PointConnector", "SquareConnector", "Hand", "NodeCreator", "Selector",
+	"ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector",
 	"N_LeakyReLU", "L_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
 ]
 const dx = 0.001
@@ -23,8 +23,19 @@ onready var default_session_links = default_session.get_node("links")
 func _ready():
 	pass
 
+static func isValidVector3(vector : String) -> bool:
+	# trim needless characters.  often when arg="(0,0,0,)"
+	vector = vector.replace("(", "")
+	vector = vector.replace(")", "")
+	vector = vector.replace(" ", "")
+	var xyz = vector.split(",", false, 2)
+	if xyz.size() != 3:
+		return false
+	for p in xyz:
+		if not p.is_valid_float():
+			return false
+	return true
 static func str2vector3(position : String):
-	# trim needless characters.  often when arg=str(Vector3)
 	position = position.replace("(", "")
 	position = position.replace(")", "")
 	position = position.replace(" ", "")

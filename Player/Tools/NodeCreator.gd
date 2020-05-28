@@ -39,11 +39,6 @@ func erase():
 		print("erase ", obj)
 
 func update(translation : Vector3, aim : Basis, delta : float):
-	if Input.is_mouse_button_pressed(BUTTON_RIGHT):
-		erase()
-	elif Input.is_mouse_button_pressed(BUTTON_LEFT):
-		create() 
-
 	pointerPosition = translation
 	pointerPosition -= aim.z * distance
 

@@ -1,7 +1,7 @@
 extends Node
-class_name PointConnector
+class_name LinkCreator
 
-const ID : int = G.ID.PC
+const ID : int = G.ID.LC
 
 onready var Link = preload("res://Links/L_Synapse/L_Synapse.tscn")
 
@@ -17,11 +17,11 @@ func handle(position) -> String:
 		output += str(self.name, ": From ", self.Anode)
 	else:
 		output += str(self.name, ": To ", node)
-		G.default_session.addLink(connectNode(self.Anode, node))
+		G.default_session.addLink(create(Anode, node))
 		Anode = null
 	return output
-	
-func connectNode(A : Object, B : Object) -> Object:
+
+func create(A : Object, B : Object) -> Object:
 	var newLink = Link.instance()
 	# config synapse
 	var distance = A.translation.distance_to(B.translation)

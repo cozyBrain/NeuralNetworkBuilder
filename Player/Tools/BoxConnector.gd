@@ -1,7 +1,7 @@
 extends Node
-class_name SquareConnector
+class_name BoxConnector
 
-const Type : int = G.ID.SC
+const Type : int = G.ID.BC
 
 var areas = [[], []]  # A[beginPoint, endPoint], B[begin, end]
 
@@ -21,14 +21,14 @@ func handle(arg : String) -> String:  # [AorB, pointPosition]
 		return initiate()
 	else:
 		return "Invalid argument"
-
+	
 	var aORb = "A" if AorB == 0 else "B"
 	
 	# pointPosition
 	var pointPosition = G.str2vector3(splitted[1])
 	if pointPosition == null:
 		return "Invalid argument"
-
+	
 	if areas[AorB].size() == 0:
 		output += str(aORb+" area begin point:", pointPosition)
 		areas[AorB].push_back(pointPosition)
@@ -46,7 +46,7 @@ func handle(arg : String) -> String:  # [AorB, pointPosition]
 		output += str(aORb+" area already selected.")
 	
 	return output
-		
+
 func initiate() -> String:
 	var Aselected = true
 	var Bselected = true
@@ -63,21 +63,22 @@ func initiate() -> String:
 		
 	if not Aselected or not Bselected:
 		return "not selected"
-		
-
-	var Anodes = G.default_session.squareGetNode(areas[0][0], areas[0][1])
-	var Bnodes = G.default_session.squareGetNode(areas[1][0], areas[1][1])
-
+	
+	var Anodes = G.default_session.boxGetNode(areas[0][0], areas[0][1])
+	var Bnodes = G.default_session.boxGetNode(areas[1][0], areas[1][1])
+	
+	var linkCreator = get_parent().get_node("LinkCreator")
+	
 	for Anode in Anodes:
 		if Anode.ID == G.ID.L_Synapse:
 			continue
 		for Bnode in Bnodes:
 			if Bnode.ID == G.ID.L_Synapse:
 				continue
-			var newSynapse = get_parent().get_node("PointConnector").connectNode(Anode, Bnode)
+			var newSynapse = linkCreator.create(Anode, Bnode)
 			if newSynapse != null:
 					G.default_session.addLink(newSynapse)
-
+	
 	#reset
 	areas = [[], []]
 	areaIndicators[0].queue_free()

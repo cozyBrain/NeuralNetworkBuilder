@@ -22,7 +22,7 @@ var prevHotbarSelection : int = -1
 var hotbarSubSelection : bool = false
 var ToolHotbar
 
-var hotbar = [G.ID.OII,G.ID.PC,G.ID.SC,G.ID.H,G.ID.NC,G.ID.None,G.ID.None,G.ID.None,G.ID.None,G.ID.None]  # size:10  hotbar lol! Korean people will see why
+var hotbar = [G.ID.OII,G.ID.LC,G.ID.BC,G.ID.H,G.ID.NC,G.ID.S,G.ID.None,G.ID.None,G.ID.None,G.ID.None]  # size:10  hotbar lol! Korean people will see why
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -51,13 +51,18 @@ func _process(delta):
 			if consoleInputModes.size() <= consoleInputModeSelection:
 				consoleInputModeSelection = 0
 			print(consoleInputModes[consoleInputModeSelection])
+		if Input.is_action_just_pressed("ui_up"):
+				console.crawlHistory(-1)
+		elif Input.is_action_just_pressed("ui_down"):
+				console.crawlHistory(+1)
+			
 		return
 
 	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
-				G.ID.SC:
-					console.processCommand(str("Tool SquareConnector initiate"))
+				G.ID.BC:
+					console.processCommand(str("Tool BoxConnector initiate"))
 				G.ID.H:  # Hand
 					if null == rayCastDetectedObject:
 						print("Hand: No Object Detected")
@@ -103,10 +108,12 @@ func _physics_process(delta):
 			match hotbar[hotbarSelection]:
 				G.ID.NC:
 					Tool.update(translation, aim, delta)
+				G.ID.S:
+					Tool.update(translation, aim, delta)
 	
 	if typingMode:
 		return
-		
+	
 	var direction = Vector3()
 	aim = $Yaxis/Camera.get_camera_transform().basis
 	if Input.is_key_pressed(KEY_W):
@@ -129,6 +136,15 @@ func _physics_process(delta):
 	var target = direction * flySpeed
 	velocity = velocity.linear_interpolate(target, flyAccel * delta)
 	move_and_slide(velocity)
+	
+	# check continuously unlike _input
+	if Tool != null: 
+		match hotbar[hotbarSelection]:
+			G.ID.NC:
+				if Input.is_mouse_button_pressed(BUTTON_RIGHT):
+					Tool.erase()
+				elif Input.is_mouse_button_pressed(BUTTON_LEFT):
+					Tool.create() 
 
 func _input(event):
 	if event is InputEventMouseMotion:  # cam movement
@@ -139,7 +155,7 @@ func _input(event):
 			$Yaxis/Camera.rotate_x(deg2rad(change))
 			cameraAngle += change
 
-	if typingMode:
+	if typingMode:  # when you use console
 		return
 
 	if event is InputEventKey:
@@ -178,6 +194,11 @@ func _input(event):
 										if ToolHotbar != null:
 											print("ToolHotbar: ", ToolHotbar)
 											# display on ui
+									G.ID.S:
+										Tool.activate(translation, aim)
+										ToolHotbar = Tool.get("hotbar")
+										if ToolHotbar != null:
+											print("ToolHotbar: ", ToolHotbar)
 											
 					else:  # when you select selected one again
 						if ToolHotbar != null:  # does the tool has hotbar?
@@ -193,18 +214,18 @@ func _input(event):
 							console.processCommand(str("Tool ObjectInfoIndicator ", str(rayCastDetectedObject.get_instance_id())))
 						else:
 							console.println("No node detected!")
-					G.ID.PC:
+					G.ID.LC:
 						if rayCastDetectedObject != null:
-							console.processCommand(str("Tool PointConnector ", str(rayCastDetectedObject.translation)))
+							console.processCommand(str("Tool LinkCreator ", str(rayCastDetectedObject.translation)))
 						else:
 							console.println("No node detected!")
-					G.ID.SC:
+					G.ID.BC:
 						if rayCastDetectedObject == null:
 							console.println("No node detected!")
 						elif event.button_index == BUTTON_LEFT:
-							console.processCommand(str("Tool SquareConnector A ", str(rayCastDetectedObject.translation)))
+							console.processCommand(str("Tool BoxConnector A ", str(rayCastDetectedObject.translation)))
 						elif event.button_index == BUTTON_RIGHT:
-							console.processCommand(str("Tool SquareConnector B ", str(rayCastDetectedObject.translation)))
+							console.processCommand(str("Tool BoxConnector B ", str(rayCastDetectedObject.translation)))
 					G.ID.H:  # Hand
 						if null == rayCastDetectedObject:
 							print(Tool.name, ": No Object Detected")

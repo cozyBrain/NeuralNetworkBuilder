@@ -14,7 +14,12 @@ onready var outputBox = get_node("VBoxContainer/Output")
 
 const toolsPath = "../Tools/"
 
+var history : Array
+var historyIndex : int
+
 func processCommand(text):
+	history.push_front(text)
+	historyIndex = history.size()
 	var words = text.split(" ", false, 1)  # [command, arguments]
 	while words.size() < 2:
 		words.push_back("")
@@ -39,6 +44,15 @@ func Tool(arg : String) -> String:
 	if typeof(output) == TYPE_STRING:
 		return output
 	return ""
+
+func crawlHistory(step : int) -> void:
+	if history.size() > 0:
+		historyIndex = clamp(historyIndex+step, 0, history.size())
+		if historyIndex >= history.size():
+			inputBox.text = ""
+		else:
+			inputBox.text = history[historyIndex]
+	pass
 
 func println(text):
 	outputBox.text = str(outputBox.text, "\n", text)

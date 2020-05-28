@@ -12,7 +12,6 @@ func _ready():
 	add_child(players[0])
 
 
-
 var nodeMap : Dictionary
 
 func updateNodeMap() -> void:
@@ -33,7 +32,7 @@ func eraseNode(node : Node) -> void:
 	node.queue_free()
 func getNode(position : Vector3) -> Node:
 	return nodeMap.get(position)
-func squareGetNode(begin:Vector3, end:Vector3) -> Array:
+func boxGetNode(begin:Vector3, end:Vector3) -> Array:
 	print("begin: ",begin)
 	print("end: ",end)
 	var nodes : Array

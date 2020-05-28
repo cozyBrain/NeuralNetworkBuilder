@@ -9,10 +9,25 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node",
+"class": "ArgParser",
+"language": "GDScript",
+"path": "res://argParser.gd"
+}, {
+"base": "Node",
+"class": "BoxConnector",
+"language": "GDScript",
+"path": "res://Player/Tools/BoxConnector.gd"
+}, {
 "base": "StaticBody",
 "class": "L_Synapse",
 "language": "GDScript",
 "path": "res://Links/L_Synapse/L_Synapse.gd"
+}, {
+"base": "Node",
+"class": "LinkCreator",
+"language": "GDScript",
+"path": "res://Player/Tools/LinkCreator.gd"
 }, {
 "base": "StaticBody",
 "class": "N_Goal",
@@ -53,19 +68,12 @@ _global_script_classes=[ {
 "class": "Player",
 "language": "GDScript",
 "path": "res://Player/Player.gd"
-}, {
-"base": "Node",
-"class": "PointConnector",
-"language": "GDScript",
-"path": "res://Player/Tools/PointConnector.gd"
-}, {
-"base": "Node",
-"class": "SquareConnector",
-"language": "GDScript",
-"path": "res://Player/Tools/SquareConnector.gd"
 } ]
 _global_script_class_icons={
+"ArgParser": "",
+"BoxConnector": "",
 "L_Synapse": "",
+"LinkCreator": "",
 "N_Goal": "",
 "N_Input": "",
 "N_LeakyReLU": "",
@@ -73,9 +81,7 @@ _global_script_class_icons={
 "N_Tanh": "",
 "NodeCreator": "",
 "NodeInfoIndicator": "",
-"Player": "",
-"PointConnector": "",
-"SquareConnector": ""
+"Player": ""
 }
 
 [application]
