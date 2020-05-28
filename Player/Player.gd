@@ -52,9 +52,9 @@ func _process(delta):
 				consoleInputModeSelection = 0
 			print(consoleInputModes[consoleInputModeSelection])
 		if Input.is_action_just_pressed("ui_up"):
-				console.crawlHistory(-1)
-		elif Input.is_action_just_pressed("ui_down"):
 				console.crawlHistory(+1)
+		elif Input.is_action_just_pressed("ui_down"):
+				console.crawlHistory(-1)
 			
 		return
 

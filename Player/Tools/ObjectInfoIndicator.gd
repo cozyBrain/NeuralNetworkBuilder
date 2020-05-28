@@ -14,10 +14,10 @@ func handle(position) -> String:
 	else:
 		position = G.str2vector3(position)
 		if position == null:
-			return "Invalid argument"
+			return "Invalid argument\n"
 		object = G.default_session.getNode(position)
 		if null == object:
-			return "No object detected"
+			return "No object detected\n"
 
 
 	var output : String = ""	

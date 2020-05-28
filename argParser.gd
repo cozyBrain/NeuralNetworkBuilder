@@ -20,7 +20,8 @@ func getStrings(flag : String):
 			
 		if word == flag:
 			push = true
-	
+	if strings.size() == 0 and push:
+		return null
 	return strings
 
 func getString(flag : String, default, retTrueWhenFlag : bool = true):

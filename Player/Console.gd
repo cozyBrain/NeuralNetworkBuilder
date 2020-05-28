@@ -19,19 +19,19 @@ var historyIndex : int
 
 func processCommand(text):
 	history.push_front(text)
-	historyIndex = history.size()
+	historyIndex = -1
 	var words = text.split(" ", false, 1)  # [command, arguments]
 	while words.size() < 2:
 		words.push_back("")
 
 	if validCommands.has(words[0]):
 		var output = call(words[0], words[1])
-		println(output)
-		return output
+		if output != null:
+			println(output)
 	else:
 		println("invalid command")
 
-func Tool(arg : String) -> String:
+func Tool(arg : String):
 	var splittedArg = arg.split(" ", false, 1)  # [command, arguments]
 	while splittedArg.size() < 2:
 		splittedArg.push_back("")
@@ -41,17 +41,16 @@ func Tool(arg : String) -> String:
 		return str("Tool \"", splittedArg[0], "\" doesn't exist!\n")
 		
 	var output = Tool.handle(splittedArg[1])
-	if typeof(output) == TYPE_STRING:
-		return output
-	return ""
+	return output
 
 func crawlHistory(step : int) -> void:
 	if history.size() > 0:
-		historyIndex = clamp(historyIndex+step, 0, history.size())
-		if historyIndex >= history.size():
+		historyIndex = clamp(historyIndex+step, -1, history.size()-1)
+		if historyIndex < 0:
 			inputBox.text = ""
 		else:
 			inputBox.text = history[historyIndex]
+			inputBox.set_cursor_position(inputBox.text.length())
 	pass
 
 func println(text):
