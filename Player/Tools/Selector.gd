@@ -12,13 +12,15 @@ var distance : float = 2
 var shapes : Dictionary = {
 	"voxel" : [1, [TYPE_VECTOR3], ""],  # min arguments, [arguments types], stacked arguments
 	"box" : [2, [TYPE_VECTOR3, TYPE_VECTOR3], ""],
-	#"sphere" : [2, TYPE_VECTOR3, TYPE_REAL], ""]
+	"sphere" : [2, [TYPE_VECTOR3, TYPE_REAL], ""]
 }
 
 var hotbar : Array = ["voxel", "box"]
 var hotbarSelection : int
 
-var selectionGroups : Dictionary
+var selectionGroups : Dictionary = {
+	"default" : ["",[]]  # [selection, selectionIndicatingObjects]
+}
 var groupSelection : String = "default"
 
 # Tool Selector -shape hotbarSelection voxel 0,0,2  -> default: "voxel 0,0,2\n"
@@ -32,39 +34,90 @@ func handle(arg : String):
 	
 	var selection : String  # "voxel 0,0,2\n"
 	groupSelection = argParser.getString("g", groupSelection, false)  # flag group
+	if not selectionGroups.has(groupSelection):
+		selectionGroups[groupSelection] = ["", []]
 	
-	var listOption = argParser.getString("list", null)
-	if listOption != null:
-		match listOption:
-			"groups":
-				output += "<selection groups>:\n"
-				var groups = selectionGroups.keys()
-				for group in groups:
-					output += "       " + group + "\n"
-			true:
-				output += "Unknown list option\n"
+	var listArguments = argParser.getStrings(["list", "ls"])  # flag list
+	if listArguments == null:  # flag is detected but no arguments
+		output += "No list arguments!\n"
+	else:
+		if listArguments.size() > 0:
+			listArguments[0] = listArguments[0].to_lower()
+			match listArguments[0]:
+				"g", "group":
+					if listArguments.size() >= 2:
+						for argIndex in range(1, listArguments.size()):
+							var group = selectionGroups.get(listArguments[argIndex], null)
+							if group == null:
+								output += "selectionGroup \""+listArguments[argIndex]+"\" doesn't exist"
+							else:
+								output += "selectionGroup <"+listArguments[argIndex]+">:\n" + "       "+group[0].replace("\n", "\n       ")
+							output += "\n"
+					else:
+						output += "<selection groups>:\n"
+						var groups = selectionGroups.keys()
+						for group in groups:
+							output += "       " + group + "\n"
+				_:
+					output += "Unknown list argument!\n"
 	
-	var shapeArguments = argParser.getStrings("shape")  # flag shape
-	if shapeArguments != null:
+	var eraseArguments = argParser.getStrings(["erase", "e"])  # flag erase
+	if eraseArguments == null:
+		output += "No erase arguments!\n"
+	else:
+		if eraseArguments.size() > 0:
+			eraseArguments[0] = eraseArguments[0].to_lower()
+			match eraseArguments[0]:
+				"g", "group":
+					if eraseArguments.size() >= 2:
+						for argIndex in range(1, eraseArguments.size()):
+							if not eraseGroup(eraseArguments[argIndex]):
+								output += "selectionGroup \""+eraseArguments[argIndex]+"\" doesn't exist"
+					else:
+						output += "No group argument!\n"
+				_:
+					output += "Unknown erase argument!\n"
+	
+	var shapeArguments = argParser.getStrings(["shape", "s"])  # flag shape
+	if shapeArguments == null:
+		output += "No shape arguments!\n"
+	else:  # only flag is detected
 		var numOfShapeArguments = shapeArguments.size()
-		print(numOfShapeArguments, shapeArguments)
+		# print(numOfShapeArguments, shapeArguments)
 		if numOfShapeArguments >= 1:
 			shapeArguments[0] = shapeArguments[0].to_lower()  # VoXeL -> voxel
 			if shapeArguments[0] == "hotbarselection":
 				shapeArguments[0] = hotbar[hotbarSelection]
 			var shape = shapes.get(shapeArguments[0])
-			if shape != null:  # if ("box")shapeArguments[0] is known
+			if shape == null:  # if ("box")shapeArguments[0] is unknown
+				output += "Unknown shape!\n"
+			else:
 				if numOfShapeArguments-1 >= shape[0] or shape[2] == "":
 					selection = shapeArguments[0]  # ex) selection status: voxel
 					
 				var validForm : bool = true  # valid arguments?
 				
-				if numOfShapeArguments > 1:  # does any arg exists after voxel? "voxel 0,0,2"
+				if not numOfShapeArguments > 1:  # does any arg exists after voxel? "voxel 0,0,2"
+					output += "No arguments of shape!\n"
+				else:
 					# verify arguments
-					for shapeArgumentIndex in range(1, numOfShapeArguments):
-						match shape[1][shapeArgumentIndex-1]:
+					for shapeArgumentIndex in range(1, clamp(numOfShapeArguments, 1, shape[0]+1)):  # voxel 0,0,2 0,0,4 -> voxel 0,0,2 : ignore needless arguments
+						var shapeTypeArgOffset : int = shape[2].split(" ", false).size()
+						if numOfShapeArguments-1 >= shape[0]:
+							shapeTypeArgOffset = 0
+						else:
+							if shapeTypeArgOffset > 0:
+								shapeTypeArgOffset -= 1
+						if shapeTypeArgOffset+shapeArgumentIndex-1 > shape[0]-1:
+							break
+						if shapeArguments[shapeArgumentIndex].to_lower() == "pointerposition":
+							shapeArguments[shapeArgumentIndex] = str(pointerPosition).replace(" ", "")
+						match shape[1][shapeTypeArgOffset+shapeArgumentIndex-1]:
 							TYPE_VECTOR3:
 								if not G.isValidVector3(shapeArguments[shapeArgumentIndex]):
+									validForm = false
+							TYPE_REAL:
+								if not shapeArguments[shapeArgumentIndex].is_valid_float():
 									validForm = false
 							_:
 								validForm = false
@@ -72,39 +125,31 @@ func handle(arg : String):
 							output += "Invalid shape argument!\n"
 							break
 						selection += " "+shapeArguments[shapeArgumentIndex]  # selection status: voxel 0,0,2
-					
-					if numOfShapeArguments-1 >= shape[0]:  # if enough shape arguments to get it done at once
-						selection += "\n"
-						if validForm:
-							selectionGroups[groupSelection] = selectionGroups.get(groupSelection, "") + selection
-							output += "selectionGroup <"+groupSelection+">:\n"
-							output += "       "+selectionGroups[groupSelection].replace("\n", "\n       ")
-					else:
-						if shape[2].split(" ", false).size()-1 < shape[0]:
-							shape[2] += selection
 						
-						if shape[2].split(" ", false).size()-1 == shape[0]:
-							shape[2] += "\n"
-							if validForm:
-								selectionGroups[groupSelection] = selectionGroups.get(groupSelection, "") + shape[2]
-								output += "selectionGroup <"+groupSelection+">:\n"
-								output += "       "+selectionGroups[groupSelection].replace("\n", "\n       ")
-							shape[2] = ""
-				else:
-					output += "No arguments of shape!\n"
-			else:
-				output += "Unknown shape!\n"
-	else:  # only flag is detected
-		output += "No shape arguments!\n"
+					if validForm:  # indicate selection
+						if numOfShapeArguments-1 >= shape[0]:  # if enough shape arguments to get it done at once
+							selection += "\n"
+							addSelection(selection)
+							output += "selectionGroup <"+groupSelection+">:\n" + "       "+selectionGroups[groupSelection][0].replace("\n", "\n       ")
+						else:
+							if shape[2].split(" ", false).size()-1 < shape[0]:
+								shape[2] += selection
+							if shape[2].split(" ", false).size()-1 >= shape[0]:
+								shape[2] += "\n"
+								addSelection(shape[2])
+								shape[2] = ""
+								output += "selectionGroup <"+groupSelection+">:\n" + "       "+selectionGroups[groupSelection][0].replace("\n", "\n       ")
 	
-	var toMerge = argParser.getStrings("merge")  # flag merge
-	if toMerge.size() > 0 :
-		var merged : String
-		for toM in toMerge:
-			merged += selectionGroups.get(toM, "")
-		selectionGroups[groupSelection] = selectionGroups.get(groupSelection, "") + merged
-		output += "selectionGroup <"+groupSelection+">:\n"
-		output += "       "+selectionGroups[groupSelection].replace("\n", "\n       ")
+	var toMerge = argParser.getStrings(["merge"])  # flag merge
+	if toMerge != null:
+		if toMerge.size() > 0 :
+			var merged : String
+			for toM in toMerge:
+				merged += selectionGroups.get(toM, "")[0]
+			addSelection(merged)
+			output += "selectionGroup <"+groupSelection+">:\n" + "       "+selectionGroups[groupSelection][0].replace("\n", "\n       ")
+	else:
+		output+="No merge arguments!\n"
 	
 	if output == "":
 		return null
@@ -131,3 +176,34 @@ func activate(translation, aim : Basis):
 
 func deactivate():
 	pointer.queue_free()
+
+func addSelection(selection : String):
+	selectionGroups[groupSelection][0] = selectionGroups.get(groupSelection, "")[0] + selection
+	# parse selection to add to for indication
+	var shapeArguments = selection.replace("\n", "").split(" ", false)  # remove \n and split
+	var selectionIndicator = load(pointerResource).instance()
+	match shapeArguments[0]:  # box? voxel? or what?
+		"voxel":
+			selectionIndicator.translation = G.str2vector3(shapeArguments[1])
+			G.default_session.addNode(selectionIndicator)
+			selectionGroups[groupSelection][1].append(selectionIndicator)
+		"box":  # boxAddNode(node, from, to)
+			var from : Vector3 = G.str2vector3(shapeArguments[1])
+			var to   : Vector3 = G.str2vector3(shapeArguments[2])
+			var xScale = abs(from.x - to.x) + 1
+			var yScale = abs(from.y - to.y) + 1
+			var zScale = abs(from.z - to.z) + 1
+			selectionIndicator.resize(Vector3(xScale, yScale, zScale))
+			selectionIndicator.translation = (from + to) / 2
+			G.default_session.addNode(selectionIndicator)
+			selectionGroups[groupSelection][1].append(selectionIndicator)
+		_:
+			pass
+func eraseGroup(groupName):
+	var sg = selectionGroups.get(groupName)
+	if sg == null:
+		return false
+	for selectionIndicator in sg[1]:
+		selectionIndicator.queue_free()
+	selectionGroups.erase(groupName)
+	return true

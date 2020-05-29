@@ -33,8 +33,6 @@ func eraseNode(node : Node) -> void:
 func getNode(position : Vector3) -> Node:
 	return nodeMap.get(position)
 func boxGetNode(begin:Vector3, end:Vector3) -> Array:
-	print("begin: ",begin)
-	print("end: ",end)
 	var nodes : Array
 	var dvec : Vector3
 	var ivec : Vector3 = begin
@@ -47,11 +45,26 @@ func boxGetNode(begin:Vector3, end:Vector3) -> Array:
 	for z in range(begin.z, end.z+dvec.z, dvec.z):
 		for y in range(begin.y, end.y+dvec.y, dvec.y):
 			for x in range(begin.x, end.x+dvec.x, dvec.x):
-				print(Vector3(x,y,z))
+				#print(Vector3(x,y,z))
 				var node = getNode(Vector3(x,y,z))
 				if node != null:
 					nodes.push_front(node)
 	return nodes
+#func boxAddNode(node, begin:Vector3, end:Vector3):
+#	var nodes : Array
+#	var dvec : Vector3
+#	var ivec : Vector3 = begin
+#
+#	dvec.x = 1 if begin.x < end.x else -1
+#	dvec.y = 1 if begin.y < end.y else -1
+#	dvec.z = 1 if begin.z < end.z else -1
+#
+#	# iteration
+#	for z in range(begin.z, end.z+dvec.z, dvec.z):
+#		for y in range(begin.y, end.y+dvec.y, dvec.y):
+#			for x in range(begin.x, end.x+dvec.x, dvec.x):
+#				node.translation = Vector3(x,y,z)
+#				addNode(node)
 
 
 func close():

@@ -36,12 +36,6 @@ func _process(delta):
 	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
 	#rayCastDetectedObject = instance_from_id(rayCastDetectedObject.get_instance_id())
 	
-	if Input.is_key_pressed(KEY_ESCAPE):
-		var session = get_node(session_path)
-		if session.has_method("close"):
-			session.close()
-		else:
-			print("session doesn't have close method")
 	if Input.is_action_just_pressed("fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
 
@@ -55,9 +49,18 @@ func _process(delta):
 				console.crawlHistory(+1)
 		elif Input.is_action_just_pressed("ui_down"):
 				console.crawlHistory(-1)
-			
+		elif Input.is_action_just_pressed("KEY_ESC"):
+			typingMode = false
+			console.inputBox.release_focus()
 		return
-
+	
+	if Input.is_action_just_pressed("KEY_ESC"):
+		var session = get_node(session_path)
+		if session.has_method("close"):
+			session.close()
+		else:
+			print("session doesn't have close method")
+	
 	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
@@ -211,21 +214,21 @@ func _input(event):
 				match hotbar[hotbarSelection]:
 					G.ID.OII:
 						if rayCastDetectedObject != null:
-							console.processCommand(str("Tool ObjectInfoIndicator ", str(rayCastDetectedObject.get_instance_id())))
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(rayCastDetectedObject.get_instance_id())))
 						else:
 							console.println("No node detected!")
 					G.ID.LC:
 						if rayCastDetectedObject != null:
-							console.processCommand(str("Tool LinkCreator ", str(rayCastDetectedObject.translation)))
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.LC], " ", str(rayCastDetectedObject.translation)))
 						else:
 							console.println("No node detected!")
 					G.ID.BC:
 						if rayCastDetectedObject == null:
 							console.println("No node detected!")
 						elif event.button_index == BUTTON_LEFT:
-							console.processCommand(str("Tool BoxConnector A ", str(rayCastDetectedObject.translation)))
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " A ", str(rayCastDetectedObject.translation)))
 						elif event.button_index == BUTTON_RIGHT:
-							console.processCommand(str("Tool BoxConnector B ", str(rayCastDetectedObject.translation)))
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " B ", str(rayCastDetectedObject.translation)))
 					G.ID.H:  # Hand
 						if null == rayCastDetectedObject:
 							print(Tool.name, ": No Object Detected")
@@ -256,6 +259,12 @@ func _input(event):
 							Tool.distance += 0.5
 						elif event.button_index == BUTTON_WHEEL_DOWN:
 							Tool.distance -= 0.5
+					G.ID.S:
+						if event.button_index == BUTTON_LEFT:
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.S], " -s hotbarSelection pointerPosition"))
+						#elif event.button_index == BUTTON_RIGHT:
+						#	console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(rayCastDetectedObject.translation)))
+
 					_:
 						print("The tool couldn't be recognized")
 			else:

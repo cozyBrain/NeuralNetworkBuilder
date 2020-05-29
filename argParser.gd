@@ -7,24 +7,27 @@ var argument : String
 func _init(arg : String):
 	argument = arg
 
-func getStrings(flag : String):
-	flag = "-"+flag
-	var words = argument.split(" ", false)
+func getStrings(flagsToDetect : Array):
+	for i in range(0, flagsToDetect.size()):
+		flagsToDetect[i] = "-"+flagsToDetect[i]
+	
+	var args = argument.split(" ", false)
 	var strings : Array
 	var push : bool = false
-	for word in words:
+	for arg in args:
 		if push:
-			if word[0] == "-":
+			if arg[0] == "-":
 				break
-			strings.push_back(word)
+			strings.push_back(arg)
 			
-		if word == flag:
-			push = true
+		for ftd in flagsToDetect:
+			if arg == ftd:
+				push = true
 	if strings.size() == 0 and push:
 		return null
 	return strings
 
-func getString(flag : String, default, retTrueWhenFlag : bool = true):
+func getString(flag : String, default = null, retTrueWhenFlag : bool = true):
 	flag = "-"+flag
 	var words = argument.split(" ", false)
 	var strings : Array
