@@ -1,19 +1,39 @@
 extends Node
 class_name Pointer
 
-#const ID : int = G.ID.NC
+const ID : int = G.ID.P
 
 export (String) var pointerResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
+onready var rayCast = get_parent().get_parent().get_node("Yaxis/Camera/RayCast")
+var rayCastDetectedObject : Object
 var pointer
-var pointerPosition : Vector3
 var prevPointerPosition : Vector3
-
+var pointerPosition : Vector3 setget ,getPointerPosition
+var distance : float = 2 setget setDistance
 enum mode {
 	pointer, rayCast,
 }
 var selectedMode : int = mode.pointer
 
-var distance : float = 2
+func getPointerPosition():
+	if selectedMode == mode.pointer:
+		return pointerPosition
+	else:
+		if rayCastDetectedObject != null:
+			return rayCastDetectedObject.translation
+		else:
+			return null
+func setDistance(dist):
+	if selectedMode == mode.pointer:
+		distance = dist
+
+func switchMode(translation, aim : Basis):
+	if selectedMode == mode.pointer:
+		selectedMode = mode.rayCast
+		deactivatePointer()
+	else:
+		selectedMode = mode.pointer
+		activatePointer(translation, aim)
 
 func update(translation : Vector3, aim : Basis, delta : float):
 	if selectedMode == mode.pointer:
@@ -26,12 +46,11 @@ func update(translation : Vector3, aim : Basis, delta : float):
 			pointer.translation = pointerPosition
 		return G.default_session.getNode(pointerPosition)
 	else:
-		return get_parent().get_parent().get_node("Yaxis/Camera/RayCast").get_collider()
-		
+		rayCastDetectedObject = rayCast.get_collider()
+		return rayCastDetectedObject
 	return null
 
-
-func activate(translation, aim : Basis):
+func activatePointer(translation, aim : Basis):
 	var pointerPosition = translation
 	pointerPosition -= aim.z*distance
 	pointerPosition = pointerPosition.round()
@@ -40,5 +59,5 @@ func activate(translation, aim : Basis):
 	prevPointerPosition = pointer.translation
 	add_child(pointer)
 
-func deactivate():
+func deactivatePointer():
 	pointer.queue_free()

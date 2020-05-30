@@ -3,9 +3,7 @@ extends Node
 const ID : int = G.ID.S
 
 export (String) var pointerResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
-var pointer
-var pointerPosition : Vector3
-var prevPointerPosition : Vector3
+onready var pointer = get_node("../Pointer")
 
 var distance : float = 2
 
@@ -115,7 +113,7 @@ func handle(arg : String):
 						if shapeTypeArgOffset+shapeArgumentIndex-1 > shape[0]-1:
 							break
 						if shapeArguments[shapeArgumentIndex].to_lower() == "pointerposition":
-							shapeArguments[shapeArgumentIndex] = str(pointerPosition).replace(" ", "")
+							shapeArguments[shapeArgumentIndex] = str(pointer.getPointerPosition()).replace(" ", "")
 						match shape[1][shapeTypeArgOffset+shapeArgumentIndex-1]:
 							TYPE_VECTOR3:
 								if not G.isValidVector3(shapeArguments[shapeArgumentIndex]):
@@ -157,28 +155,6 @@ func handle(arg : String):
 	if output == "":
 		return null
 	return output
-
-func update(translation : Vector3, aim : Basis, delta : float):
-	pointerPosition = translation
-	pointerPosition -= aim.z * distance
-
-	pointerPosition = pointerPosition.round()
-	if prevPointerPosition != pointerPosition:
-		prevPointerPosition = pointerPosition
-		pointer.translation = pointerPosition
-
-
-func activate(translation, aim : Basis):
-	var pointerPosition = translation
-	pointerPosition -= aim.z*distance
-	pointerPosition = pointerPosition.round()
-	pointer = load(pointerResource).instance()
-	pointer.translation = pointerPosition
-	prevPointerPosition = pointer.translation
-	add_child(pointer)
-
-func deactivate():
-	pointer.queue_free()
 
 func addSelection(selection : String):
 	selectionGroups[groupSelection][0] = selectionGroups.get(groupSelection, "")[0] + selection

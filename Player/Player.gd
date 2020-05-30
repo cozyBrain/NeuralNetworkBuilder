@@ -7,7 +7,6 @@ var flySpeed = 10
 var flyAccel = 40
 var velocity = Vector3()
 var detectedObject
-var session_path = G.default_session_path
 var ID : int = G.ID.Player
 var aim : Basis
 var Tool
@@ -32,7 +31,7 @@ func _ready():
 		playerHotbarIndication += str(" "+G.IDtoString[item]+" ")
 	playerHotbarIndication += "]"
 	console.println(playerHotbarIndication)
-	pointer.activate(translation, aim)
+	pointer.activatePointer(translation, aim)
 
 func _process(delta):
 	#detectedObject = $Yaxis/Camera/RayCast.get_collider()
@@ -57,12 +56,10 @@ func _process(delta):
 		return
 	
 	if Input.is_action_just_pressed("KEY_ESC"):
-		var session = get_node(session_path)
-		if session.has_method("close"):
-			session.close()
+		if G.default_session.has_method("close"):
+			G.default_session.close()
 		else:
 			print("session doesn't have close method")
-	
 	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
@@ -108,6 +105,8 @@ func _process(delta):
 		print("Engine.time_scale: ", Engine.time_scale)
 
 func _physics_process(delta):
+	if Input.is_action_just_pressed("KEY_TAB"):
+		pointer.switchMode(translation, aim)
 	detectedObject = pointer.update(translation, aim, delta)
 
 	if Tool != null: 
@@ -193,19 +192,9 @@ func _input(event):
 								prevTool.deactivate()
 						Tool = get_node_or_null("Tools/"+G.IDtoString[hotbar[prevHotbarSelection]])
 						if Tool != null:
-							if Tool.has_method("activate"):
-								match hotbar[hotbarSelection]:
-									G.ID.NC:
-										Tool.activate(translation, aim)
-										ToolHotbar = Tool.get("hotbar")
-										if ToolHotbar != null:
-											print("ToolHotbar: ", ToolHotbar)
-											# display on ui
-									G.ID.S:
-										Tool.activate(translation, aim)
-										ToolHotbar = Tool.get("hotbar")
-										if ToolHotbar != null:
-											print("ToolHotbar: ", ToolHotbar)
+							ToolHotbar = Tool.get("hotbar")
+							if ToolHotbar != null:
+								print("ToolHotbar: ", ToolHotbar)
 											
 					else:  # when you select selected one again
 						if ToolHotbar != null:  # does the tool has hotbar?
@@ -214,13 +203,21 @@ func _input(event):
 	
 	elif event is InputEventMouseButton:
 		if event.is_pressed():
+			if event.button_index == BUTTON_WHEEL_UP:
+				pointer.setDistance(pointer.distance + 0.5)
+				return
+			elif event.button_index == BUTTON_WHEEL_DOWN:
+				pointer.setDistance(pointer.distance - 0.5)
+				return
+				
 			if Tool != null: 
 				match hotbar[hotbarSelection]:
 					G.ID.OII:
-						if detectedObject != null:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(detectedObject.get_instance_id())))
-						else:
-							console.println("No node detected!")
+						if event.button_index == BUTTON_LEFT:
+							if detectedObject != null:
+								console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(detectedObject.get_instance_id())))
+							else:
+								console.println("No node detected!")
 					G.ID.LC:
 						if detectedObject != null:
 							console.processCommand(str("Tool ", G.IDtoString[G.ID.LC], " ", str(detectedObject.translation)))
@@ -259,10 +256,7 @@ func _input(event):
 									_:
 										print(Tool.name, ": no interaction with ", G.IDtoString[id])
 					G.ID.NC:
-						if event.button_index == BUTTON_WHEEL_UP:
-							Tool.distance += 0.5
-						elif event.button_index == BUTTON_WHEEL_DOWN:
-							Tool.distance -= 0.5
+						pass
 					G.ID.S:
 						if event.button_index == BUTTON_LEFT:
 							console.processCommand(str("Tool ", G.IDtoString[G.ID.S], " -s hotbarSelection pointerPosition"))
@@ -272,7 +266,7 @@ func _input(event):
 					_:
 						print("The tool couldn't be recognized")
 			else:
-				print("The tool couldn't be found. maybe programmer missed something.")
+				print("5302020CL279")
 
 func _on_Input_text_entered(text):
 	typingMode = false
