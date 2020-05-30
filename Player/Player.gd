@@ -34,12 +34,10 @@ func _ready():
 	pointer.activatePointer(translation, aim)
 
 func _process(delta):
-	#detectedObject = $Yaxis/Camera/RayCast.get_collider()
-	#detectedObject = instance_from_id(detectedObject.get_instance_id())
 	
 	if Input.is_action_just_pressed("fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
-
+	
 	if typingMode:
 		if Input.is_action_just_pressed("KEY_TAB"):
 			consoleInputModeSelection += 1

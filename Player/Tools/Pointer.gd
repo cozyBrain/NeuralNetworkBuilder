@@ -4,7 +4,7 @@ class_name Pointer
 const ID : int = G.ID.P
 
 export (String) var pointerResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
-onready var rayCast = get_parent().get_parent().get_node("Yaxis/Camera/RayCast")
+onready var rayCast = get_node("../../Yaxis/Camera/RayCast")
 var rayCastDetectedObject : Object
 var pointer
 var prevPointerPosition : Vector3
