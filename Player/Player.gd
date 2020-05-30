@@ -6,12 +6,13 @@ var keyboardsensitivity = 0.3
 var flySpeed = 10
 var flyAccel = 40
 var velocity = Vector3()
-var rayCastDetectedObject
+var detectedObject
 var session_path = G.default_session_path
 var ID : int = G.ID.Player
 var aim : Basis
 var Tool
 
+onready var pointer = $Tools/Pointer
 onready var console = $Console
 var consoleInputModes = ["command", "chat"]
 var consoleInputModeSelection : int = 0
@@ -31,10 +32,11 @@ func _ready():
 		playerHotbarIndication += str(" "+G.IDtoString[item]+" ")
 	playerHotbarIndication += "]"
 	console.println(playerHotbarIndication)
+	pointer.activate(translation, aim)
 
 func _process(delta):
-	rayCastDetectedObject = $Yaxis/Camera/RayCast.get_collider()
-	#rayCastDetectedObject = instance_from_id(rayCastDetectedObject.get_instance_id())
+	#detectedObject = $Yaxis/Camera/RayCast.get_collider()
+	#detectedObject = instance_from_id(detectedObject.get_instance_id())
 	
 	if Input.is_action_just_pressed("fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
@@ -67,18 +69,18 @@ func _process(delta):
 				G.ID.BC:
 					console.processCommand(str("Tool BoxConnector initiate"))
 				G.ID.H:  # Hand
-					if null == rayCastDetectedObject:
+					if null == detectedObject:
 						print("Hand: No Object Detected")
 					else:
-						print("Hand: < ", rayCastDetectedObject, " >")
-						var id = rayCastDetectedObject.get("ID")
+						print("Hand: < ", detectedObject, " >")
+						var id = detectedObject.get("ID")
 						if id == null:
 							print("Hand: could not interact")
 						else:
 							match id:
 								G.ID.N_NetworkController:
-									rayCastDetectedObject.propOnly = !rayCastDetectedObject.propOnly
-									print("propOnly: ", rayCastDetectedObject.propOnly)
+									detectedObject.propOnly = !detectedObject.propOnly
+									print("propOnly: ", detectedObject.propOnly)
 								_:
 									print("Hand: no interaction with ", G.IDtoString[id])
 				_:
@@ -106,6 +108,8 @@ func _process(delta):
 		print("Engine.time_scale: ", Engine.time_scale)
 
 func _physics_process(delta):
+	detectedObject = pointer.update(translation, aim, delta)
+
 	if Tool != null: 
 		if Tool.has_method("update"):
 			match hotbar[hotbarSelection]:
@@ -213,45 +217,45 @@ func _input(event):
 			if Tool != null: 
 				match hotbar[hotbarSelection]:
 					G.ID.OII:
-						if rayCastDetectedObject != null:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(rayCastDetectedObject.get_instance_id())))
+						if detectedObject != null:
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(detectedObject.get_instance_id())))
 						else:
 							console.println("No node detected!")
 					G.ID.LC:
-						if rayCastDetectedObject != null:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.LC], " ", str(rayCastDetectedObject.translation)))
+						if detectedObject != null:
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.LC], " ", str(detectedObject.translation)))
 						else:
 							console.println("No node detected!")
 					G.ID.BC:
-						if rayCastDetectedObject == null:
+						if detectedObject == null:
 							console.println("No node detected!")
 						elif event.button_index == BUTTON_LEFT:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " A ", str(rayCastDetectedObject.translation)))
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " A ", str(detectedObject.translation)))
 						elif event.button_index == BUTTON_RIGHT:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " B ", str(rayCastDetectedObject.translation)))
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " B ", str(detectedObject.translation)))
 					G.ID.H:  # Hand
-						if null == rayCastDetectedObject:
+						if null == detectedObject:
 							print(Tool.name, ": No Object Detected")
 						else:
-							print(Tool.name, ": < ", rayCastDetectedObject, " >")
-							var id = rayCastDetectedObject.get("ID")
+							print(Tool.name, ": < ", detectedObject, " >")
+							var id = detectedObject.get("ID")
 							if id == null:
 								print(Tool.name, ": could not interact")
 							else:
 								match id:
 									G.ID.N_NetworkController:
 										if event.button_index == BUTTON_RIGHT:
-											rayCastDetectedObject.initialize()
+											detectedObject.initialize()
 										elif event.button_index == BUTTON_LEFT:
 											var count = 100
 											for _i in range(count):
-												rayCastDetectedObject.wave()
+												detectedObject.wave()
 											print(Tool.name, ": iterated for ", count, " times")
 									G.ID.N_Input, G.ID.N_Goal:
 										if event.button_index == BUTTON_LEFT:
-											rayCastDetectedObject.addOutput(0.25)
+											detectedObject.addOutput(0.25)
 										elif event.button_index == BUTTON_RIGHT:
-											rayCastDetectedObject.addOutput(-0.25)
+											detectedObject.addOutput(-0.25)
 									_:
 										print(Tool.name, ": no interaction with ", G.IDtoString[id])
 					G.ID.NC:
@@ -263,7 +267,7 @@ func _input(event):
 						if event.button_index == BUTTON_LEFT:
 							console.processCommand(str("Tool ", G.IDtoString[G.ID.S], " -s hotbarSelection pointerPosition"))
 						#elif event.button_index == BUTTON_RIGHT:
-						#	console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(rayCastDetectedObject.translation)))
+						#	console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(detectedObject.translation)))
 
 					_:
 						print("The tool couldn't be recognized")

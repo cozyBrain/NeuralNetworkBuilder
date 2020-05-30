@@ -68,6 +68,11 @@ _global_script_classes=[ {
 "class": "Player",
 "language": "GDScript",
 "path": "res://Player/Player.gd"
+}, {
+"base": "Node",
+"class": "Pointer",
+"language": "GDScript",
+"path": "res://Player/Tools/Pointer.gd"
 } ]
 _global_script_class_icons={
 "ArgParser": "",
@@ -81,7 +86,8 @@ _global_script_class_icons={
 "N_Tanh": "",
 "NodeCreator": "",
 "NodeInfoIndicator": "",
-"Player": ""
+"Player": "",
+"Pointer": ""
 }
 
 [application]

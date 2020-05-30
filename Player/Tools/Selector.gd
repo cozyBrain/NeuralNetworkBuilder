@@ -19,9 +19,9 @@ var hotbar : Array = ["voxel", "box"]
 var hotbarSelection : int
 
 var selectionGroups : Dictionary = {
-	"default" : ["",[]]  # [selection, selectionIndicatingObjects]
+	"_default" : ["",[]]  # [selection, selectionIndicatingObjects]
 }
-var groupSelection : String = "default"
+var groupSelection : String = "_default"
 
 # Tool Selector -shape hotbarSelection voxel 0,0,2  -> default: "voxel 0,0,2\n"
 # Tool Selector -g group1 -shape voxel 0,0,2        -> group1 : "voxel 0,0,2\n"  
@@ -31,13 +31,17 @@ var groupSelection : String = "default"
 func handle(arg : String):
 	var output : String
 	var argParser = ArgParser.new(arg)
+	groupSelection = argParser.getString("g", groupSelection, false)  # flag group
+	var listArguments = argParser.getStrings(["list", "ls"])  # flag list
+	var eraseArguments = argParser.getStrings(["erase", "e"])  # flag erase
+	var shapeArguments = argParser.getStrings(["shape", "s"])  # flag shape
+	var mergeArguments = argParser.getStrings(["merge", "m"])  # flag merge
 	
 	var selection : String  # "voxel 0,0,2\n"
-	groupSelection = argParser.getString("g", groupSelection, false)  # flag group
+	
 	if not selectionGroups.has(groupSelection):
 		selectionGroups[groupSelection] = ["", []]
 	
-	var listArguments = argParser.getStrings(["list", "ls"])  # flag list
 	if listArguments == null:  # flag is detected but no arguments
 		output += "No list arguments!\n"
 	else:
@@ -61,7 +65,6 @@ func handle(arg : String):
 				_:
 					output += "Unknown list argument!\n"
 	
-	var eraseArguments = argParser.getStrings(["erase", "e"])  # flag erase
 	if eraseArguments == null:
 		output += "No erase arguments!\n"
 	else:
@@ -71,6 +74,8 @@ func handle(arg : String):
 				"g", "group":
 					if eraseArguments.size() >= 2:
 						for argIndex in range(1, eraseArguments.size()):
+							if eraseArguments[argIndex] == "_default":
+								output += eraseArguments[argIndex]+" can't be erased!"
 							if not eraseGroup(eraseArguments[argIndex]):
 								output += "selectionGroup \""+eraseArguments[argIndex]+"\" doesn't exist"
 					else:
@@ -78,7 +83,6 @@ func handle(arg : String):
 				_:
 					output += "Unknown erase argument!\n"
 	
-	var shapeArguments = argParser.getStrings(["shape", "s"])  # flag shape
 	if shapeArguments == null:
 		output += "No shape arguments!\n"
 	else:  # only flag is detected
@@ -140,11 +144,10 @@ func handle(arg : String):
 								shape[2] = ""
 								output += "selectionGroup <"+groupSelection+">:\n" + "       "+selectionGroups[groupSelection][0].replace("\n", "\n       ")
 	
-	var toMerge = argParser.getStrings(["merge"])  # flag merge
-	if toMerge != null:
-		if toMerge.size() > 0 :
+	if mergeArguments != null:
+		if mergeArguments.size() > 0 :
 			var merged : String
-			for toM in toMerge:
+			for toM in mergeArguments:
 				merged += selectionGroups.get(toM, "")[0]
 			addSelection(merged)
 			output += "selectionGroup <"+groupSelection+">:\n" + "       "+selectionGroups[groupSelection][0].replace("\n", "\n       ")

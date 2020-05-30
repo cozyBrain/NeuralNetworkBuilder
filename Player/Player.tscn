@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Player/Player.gd" type="Script" id=1]
 [ext_resource path="res://Player/crosshair.png" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Player/Tools/NodeCreator.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Player/Console.gd" type="Script" id=8]
 [ext_resource path="res://Player/Tools/Selector.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Player/Tools/Pointer.tscn" type="PackedScene" id=10]
 
 [sub_resource type="CapsuleShape" id=1]
 
@@ -111,4 +112,6 @@ __meta__ = {
 [node name="ObjectInfoIndicator" parent="Tools" instance=ExtResource( 4 )]
 
 [node name="Selector" parent="Tools" instance=ExtResource( 9 )]
+
+[node name="Pointer" parent="Tools" instance=ExtResource( 10 )]
 [connection signal="text_entered" from="Console/VBoxContainer/HBoxContainer/Input" to="." method="_on_Input_text_entered"]
