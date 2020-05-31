@@ -2,10 +2,8 @@ extends Node
 
 const ID : int = G.ID.S
 
-export (String) var pointerResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
+export (String) var selectionIndicatorResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
 onready var pointer = get_node("../Pointer")
-
-var distance : float = 2
 
 var shapes : Dictionary = {
 	"voxel" : [1, [TYPE_VECTOR3], ""],  # min arguments, [arguments types], stacked arguments
@@ -160,7 +158,7 @@ func addSelection(selection : String):
 	selectionGroups[groupSelection][0] = selectionGroups.get(groupSelection, "")[0] + selection
 	# parse selection to add to for indication
 	var shapeArguments = selection.replace("\n", "").split(" ", false)  # remove \n and split
-	var selectionIndicator = load(pointerResource).instance()
+	var selectionIndicator = load(selectionIndicatorResource).instance()
 	match shapeArguments[0]:  # box? voxel? or what?
 		"voxel":
 			selectionIndicator.translation = G.str2vector3(shapeArguments[1])
