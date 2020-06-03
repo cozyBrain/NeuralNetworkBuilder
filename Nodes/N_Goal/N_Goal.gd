@@ -12,7 +12,8 @@ func getInfo() -> Dictionary:
 	
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
-	
+	updateEmissionByOutput()
+
 func addOutput(x:float) -> void:
 	Output += x
 	updateEmissionByOutput()

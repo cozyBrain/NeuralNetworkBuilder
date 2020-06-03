@@ -11,15 +11,16 @@ func getInfo() -> Dictionary:
 	
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
-	
+	updateEmissionByOutput()
+
 func addOutput(x:float) -> void:
 	Output += x
 	updateEmissionByOutput()
-	
+
 func setOutput(x:float) -> void:
 	Output = x
 	updateEmissionByOutput()
-	
+
 func prop() -> void:
 	updateEmissionByOutput()
 func bprop() -> void:  # back-propagation
@@ -45,7 +46,7 @@ func connectFrom(target:Node) -> int:
 		_:
 			return -1
 	return 0
-	
+
 func disconnectTo(target:Node) -> void:
 	var index = Olinks.find(target)
 	if index >= 0:
@@ -54,6 +55,6 @@ func disconnectFrom(target:Node) -> void:
 	var index = Ilinks.find(target)
 	if index >= 0:
 		Ilinks.remove(index)
-		
+
 func updateEmissionByOutput() -> void:
 	$CollisionShape/MeshInstance.get_surface_material(0).emission_energy = Output

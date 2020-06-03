@@ -13,7 +13,8 @@ func getInfo() -> Dictionary:
 	
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
-	
+	updateEmissionByOutput()
+
 func prop() -> void:
 	Output = 0
 	for link in Ilinks:

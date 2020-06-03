@@ -41,7 +41,7 @@ func getString(flag : String, default = null, retTrueWhenFlag : bool = true):
 		return true
 	return default
 
-func getBool(flag : String, default):
+func getBool(flag : String, default : bool):  # detectFlag -> return default or return !default
 	flag = "-"+flag
 	var words = argument.split(" ", false)
 	for word in words:

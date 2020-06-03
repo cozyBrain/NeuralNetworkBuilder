@@ -22,7 +22,7 @@ var prevHotbarSelection : int = -1
 var hotbarSubSelection : bool = false
 var ToolHotbar
 
-var hotbar = [G.ID.OII,G.ID.LC,G.ID.BC,G.ID.H,G.ID.NC,G.ID.S,G.ID.None,G.ID.None,G.ID.None,G.ID.None]  # size:10  hotbar lol! Korean people will see why
+var hotbar = [G.ID.OII, G.ID.LC, G.ID.BC, G.ID.H, G.ID.NC, G.ID.S, G.ID.C, G.ID.None,G.ID.None,G.ID.None]  # size:10  hotbar lol! Korean people will see why
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

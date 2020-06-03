@@ -4,12 +4,12 @@
 extends Node
 enum ID {
 	None, Player,
-	OII, LC, BC, H, NC, S, P,
+	OII, LC, BC, H, NC, S, P, C
 	N_LeakyReLU, L_Synapse, N_NetworkController, N_Input, N_Tanh, N_Goal,
 }
 const IDtoString = [
 	"None", "Player",
-	"ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Pointer",
+	"ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Pointer", "Copier",
 	"N_LeakyReLU", "L_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
 ]
 const dx = 0.001
@@ -19,6 +19,7 @@ onready var default_session = get_node(default_session_path)
 onready var default_session_nodes = default_session.get_node("nodes")
 onready var default_session_links = default_session.get_node("links")
 
+const defaultGroupName="_default"
 
 func _ready():
 	pass
