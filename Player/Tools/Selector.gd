@@ -25,7 +25,7 @@ var groupSelection : String = G.defaultGroupName
 func handle(arg : String):
 	var output : String
 	var argParser = ArgParser.new(arg)
-	groupSelection = argParser.getString("g", groupSelection, false)  # flag group
+	groupSelection = argParser.getString(["group", "g"], groupSelection, false)  # flag group
 	var listArguments = argParser.getStrings(["list", "ls"])  # flag list
 	var eraseArguments = argParser.getStrings(["erase", "e"])  # flag erase
 	var shapeArguments = argParser.getStrings(["shape", "s"])  # flag shape

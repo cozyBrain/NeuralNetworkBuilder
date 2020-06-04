@@ -6,9 +6,6 @@ var Ilinks : Array
 var Output : float
 const ID : int = G.ID.N_Input
 
-func getInfo() -> Dictionary:
-	return {"ID":ID, "Output":Output, "Ilinks":Ilinks, "Olinks":Olinks}
-	
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
 	updateEmissionByOutput()

@@ -54,16 +54,12 @@ static func unsafe_str2vector3(position : String) -> Vector3:
 
 static func square(x:float) -> float:
 	return x*x
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+	
 
-
-# Called when the node enters the scene tree for the first time.
-#func _ready():
-#	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func copyVariables(source, dest):  # deep duplicate ARRAY and DICTIONARY
+	for property in source.get_property_list():
+		if(property.usage == PROPERTY_USAGE_SCRIPT_VARIABLE): 
+			if typeof(source[property.name]) == TYPE_ARRAY or typeof(source[property.name]) == TYPE_DICTIONARY:
+				dest[property.name] = source[property.name].duplicate(true)
+			else:
+				dest[property.name] = source[property.name]

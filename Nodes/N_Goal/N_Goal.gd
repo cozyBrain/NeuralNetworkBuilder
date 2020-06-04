@@ -7,9 +7,6 @@ var Output : float  # Output is Goal
 var BOutput : float 
 const ID : int = G.ID.N_Goal
 
-func getInfo() -> Dictionary:
-	return {"ID":ID, "Description":"OutputIsGoal", "Output":Output, "BOutput":BOutput, "Ilinks":Ilinks, "Olinks":Olinks}
-	
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
 	updateEmissionByOutput()

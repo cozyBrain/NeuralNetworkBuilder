@@ -31,9 +31,11 @@ func switchMode(translation, aim : Basis):
 	if selectedMode == mode.pointer:
 		selectedMode = mode.rayCast
 		deactivatePointer()
+		$Crosshair.show()
 	else:
 		selectedMode = mode.pointer
 		activatePointer(translation, aim)
+		$Crosshair.hide()
 
 func update(translation : Vector3, aim : Basis, delta : float):
 	if selectedMode == mode.pointer:

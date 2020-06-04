@@ -27,24 +27,28 @@ func getStrings(flagsToDetect : Array):
 		return null
 	return strings
 
-func getString(flag : String, default = null, retTrueWhenFlag : bool = true):
-	flag = "-"+flag
-	var words = argument.split(" ", false)
+func getString(flagsToDetect : Array, default = null, retTrueWhenFlag : bool = true):
+	for i in range(0, flagsToDetect.size()):
+		flagsToDetect[i] = "-"+flagsToDetect[i]
+	var args = argument.split(" ", false)
 	var strings : Array
 	var push : bool = false
-	for word in words:
+	for arg in args:
 		if push:
-			return word
-		if word == flag:
-			push = true
+			return arg
+		for ftd in flagsToDetect:
+			if arg == ftd:
+				push = true
 	if push and retTrueWhenFlag:
 		return true
 	return default
 
-func getBool(flag : String, default : bool):  # detectFlag -> return default or return !default
-	flag = "-"+flag
-	var words = argument.split(" ", false)
-	for word in words:
-		if word == flag:
-			return !default
+func getBool(flagsToDetect : Array, default : bool = false):  # detectFlag -> return default or return !default
+	for i in range(0, flagsToDetect.size()):
+		flagsToDetect[i] = "-"+flagsToDetect[i]
+	var args = argument.split(" ", false)
+	for arg in args:
+		for ftd in flagsToDetect:
+			if arg == ftd:
+				return !default
 	return default

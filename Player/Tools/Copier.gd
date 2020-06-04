@@ -1,6 +1,6 @@
 extends Node
 
-# how to duplicate inside variables too?
+# warning: deep copy is yet unstable(linkProblem) 145
 
 const ID : int = G.ID.C
 
@@ -12,18 +12,30 @@ var groupSelection : String = G.defaultGroupName
 
 # Tool Copier -g _default -copy _default                         # copy selection(_default) to copyGroups(_default)
 # Tool Copier -g _default -paste                                 # paste _default copyGroup
-# Tool Copier -g _default -paste 7 -link 0    					 # stride=7(frontDirectionAsDefault) linkDepth=0
+# Tool Copier -g _default -paste 7 0,0,2 -link 0    			 # n=7,stride=0,0,2(frontDirectionAsDefault) linkDepth=0
 
 func handle(arg : String):
+#	https://godotengine.org/qa/16647/copy-and-saving-nodes
+#	var new_node = source_node.duplicate()
+#	for property in source_node.get_property_list():
+#   	 # Script only properties/vars
+#    	if(property.usage == PROPERTY_USAGE_SCRIPT_VARIABLE): 
+#       	 new_node[property.name] = source_node[property.name]
+
 	var output : String
+	var pointerPosition = pointer.getPointerPosition()
 	var argParser = ArgParser.new(arg)
-	groupSelection = argParser.getString("g", groupSelection, false)
+	groupSelection = argParser.getString(["group", "g"], groupSelection, false)
 	var listArguments = argParser.getStrings(["list", "ls"])
 	var eraseArguments = argParser.getStrings(["erase", "e"])
 	
 	var copyArguments = argParser.getStrings(["copy", "c"]) 
+	var deepCopy = argParser.getBool(["deep", "d"])  # copy variables too.
 	var pasteArguments = argParser.getStrings(["paste", "p"])
-	# override
+	var strideArguments = argParser.getStrings(["stride", "s"])
+	var linkArguments = argParser.getStrings(["link", "l"])  # -link <Ilink:-1:IlinkDepthOrOlinkDepth> <Olink:2:IlinkDepthOrOlinkDepth>
+	var createNodeOverLink = argParser.getBool(["createNodeOverLink", "createOverLink", "col"])
+	
 	var overrideArguments = argParser.getStrings(["override", "o"])  # -override node : override only node
 	var overrideNode : bool = false
 	var overrideLink : bool = false
@@ -31,14 +43,13 @@ func handle(arg : String):
 		overrideNode = true
 		overrideLink = true
 	elif overrideArguments.size() > 0:
-		overrideArguments[0] = overrideArguments[0].to_lower()
-		if overrideArguments[0] == "node" or overrideArguments[0] == "n":
-			overrideNode = true
-		elif overrideArguments[0] == "link" or overrideArguments[0] == "l":
-			overrideLink = true
+		for arg in overrideArguments:
+			arg = arg.to_lower()
+			if arg == "node" or arg == "n":
+				overrideNode = true
+			elif arg == "link" or arg == "l":
+				overrideLink = true
 	
-	var linkArguments = argParser.getStrings(["link", "l"])
-	# var linkDepthArgument = argParser.getString()
 	
 	# group
 	if not copyGroups.has(groupSelection):
@@ -56,35 +67,90 @@ func handle(arg : String):
 			output += "SelectionGroup \""+selectionGroup2copy+"\" doesn't exist!\n"
 		else:
 			var nodes2copy = selector.getNodesFromSelectionGroup(selectionGroup2copy)
-			for node in nodes2copy:
-				# stance of pointer
-				var pointerPosition = pointer.getPointerPosition()
-				if pointerPosition == null:
-					output += "No pointer position detected!\nIf your pointer mode is rayCast please aim at detectable node.\n"
-				else:
+			# copiedNode.translation = copiedNode.translation - pointerPosition
+			if pointerPosition == null:
+				output += "No pointer position detected!\nIf your pointer mode is rayCast please aim at detectable node.\n"
+			else:
+				copyGroups[groupSelection].clear()
+				for node2copy in nodes2copy:
 					if not copyGroups.has(groupSelection):
 						output += "CopyGroup \""+groupSelection+"\" doesn't exist!\n"
 					else:
-						copyGroups[groupSelection].clear()
-						var copiedNode = node.duplicate(DUPLICATE_GROUPS|DUPLICATE_SIGNALS|DUPLICATE_SCRIPTS)
+						var copiedNode = node2copy.duplicate(DUPLICATE_GROUPS|DUPLICATE_SIGNALS|DUPLICATE_SCRIPTS)
 						copiedNode.translation -= pointerPosition
-						output += str("Copied ", copiedNode.translation, "\n")
+						if deepCopy:
+							G.copyVariables(node2copy, copiedNode)  # deep copy such as Output Ilinks DictionaryVar
 						copyGroups[groupSelection].append(copiedNode)
+				output += "Copied\n"
 	
 	if pasteArguments == null:
 		if copyGroups.has(groupSelection):
 			var copies2add = copyGroups[groupSelection]
-			var pointerPosition = pointer.getPointerPosition()
-			for copy in copies2add:
-				copy = copy.duplicate(DUPLICATE_GROUPS|DUPLICATE_SIGNALS|DUPLICATE_SCRIPTS)
+			if pointerPosition == null:
+				output += "No pointer position detected!\nIf your pointer mode is rayCast please aim at detectable node.\n"
+			else:
+				for copy2add in copies2add:
+					var copy = copy2add.duplicate(DUPLICATE_GROUPS|DUPLICATE_SIGNALS|DUPLICATE_SCRIPTS)
+					G.copyVariables(copy2add, copy)
+					if pointerPosition == null:
+						output += "No pointer position detected!\nIf your pointer mode is rayCast please aim at detectable object.\n"
+					else:
+						copy.translation += pointerPosition
+						G.default_session.addNode(copy, overrideNode)
+						output += "Pasted\n"
+	elif pasteArguments.size() > 0:
+		if not pasteArguments.size() >= 2:
+			output += "Yet, doesn't support default stride. more arguments required: -paste <3:howManyTimesToCopy> <0,0,1:stride>\n"
+		else:
+			if not pasteArguments[0].is_valid_integer() or not G.isValidVector3(pasteArguments[1]):
+				output += "Invalid arguments!\nusage: -paste <6:howManyTimesToCopy> <0,0,-11:stride>\n"
+			else:
 				if pointerPosition == null:
 					output += "No pointer position detected!\nIf your pointer mode is rayCast please aim at detectable node.\n"
 				else:
-					copy.translation += pointerPosition
-					G.default_session.addNode(copy)
-					output += str("Pasted ", copy.translation, "\n")
-	else:
-		pass
+					var pasteCount = int(pasteArguments[0])
+					var stride = G.str2vector3(pasteArguments[1])
+					var copies2add = copyGroups[groupSelection]
+					
+					# paste Nodes first
+					for step in range(1, pasteCount+1):
+						for copy2add in copies2add:
+							var copy = copy2add.duplicate(DUPLICATE_GROUPS|DUPLICATE_SIGNALS|DUPLICATE_SCRIPTS)
+							G.copyVariables(copy2add, copy)
+							copy.translation += pointerPosition + step*stride
+							G.default_session.addNode(copy, overrideNode)
+					output += "pasted nodes\n"
+					
+					# Links: get link depth
+					var IlinkDepth : int = 0
+					var OlinkDepth : int = 0
+					if linkArguments == null:
+						output += "No link arguments!\nusage: -link <Ilink:-1:IlinkDepthOrOlinkDepth> <Olink:2:IlinkDepthOrOlinkDepth>"
+					elif linkArguments.size() > 0:
+						for arg in linkArguments:
+							if not arg.is_valid_integer():
+								output += "Invalid arguments!\n"
+								break
+							arg = int(arg)
+							if arg > 0:
+								OlinkDepth = arg
+							elif arg < 0:
+								IlinkDepth = arg
+						# create links
+						var linkCreator = get_parent().get_node("LinkCreator")
+						for step in range(1, pasteCount+1):
+							for copy2add in copies2add:
+								var node2link = G.default_session.getNode(copy2add.translation + pointerPosition + step*stride)
+								var Olinks = copy2add.get("Olinks")
+								print(Olinks)  # couldn't get Olinks because I didn't deep copy.
+								if Olinks != null:
+									for Olink in Olinks:
+										# arg B == null problem
+										var newSynapse = linkCreator.create(node2link, G.default_session.getNode(Olink.Onodes[0].translation + pointerPosition + step*stride))
+										if newSynapse != null:
+											G.default_session.addLink(newSynapse)
+						
+						output += "Linked\n"
 	
 	# erase
 	if eraseArguments == null:

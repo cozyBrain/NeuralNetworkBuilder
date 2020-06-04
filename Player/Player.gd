@@ -105,6 +105,8 @@ func _process(delta):
 func _physics_process(delta):
 	if Input.is_action_just_pressed("KEY_TAB"):
 		pointer.switchMode(translation, aim)
+	
+	aim = $Yaxis/Camera.get_camera_transform().basis
 	detectedObject = pointer.update(translation, aim, delta)
 
 	if Tool != null: 
@@ -119,7 +121,6 @@ func _physics_process(delta):
 		return
 	
 	var direction = Vector3()
-	aim = $Yaxis/Camera.get_camera_transform().basis
 	if Input.is_key_pressed(KEY_W):
 		direction -= aim.z
 	if Input.is_key_pressed(KEY_S):
@@ -175,7 +176,7 @@ func _input(event):
 						print("escape")
 						hotbarSubSelection = false
 					else:
-						print("subSelection:", subSelection)
+						print("subSelection:", subSelection, ":", ToolHotbar[subSelection])
 						Tool.set("hotbarSelection", subSelection)
 				else:
 					hotbarSelection = scancode - 49

@@ -8,6 +8,7 @@ var overlappingBodyDetector = load("res://Nodes/N_OverlappingBodyDetectorNode/N_
 const ID : int = G.ID.OII
 
 func handle(position) -> String:
+	var output : String = ""	
 	var object
 	if position.is_valid_integer():  # is this an instance?
 		object = instance_from_id(int(position))
@@ -19,16 +20,12 @@ func handle(position) -> String:
 		if null == object:
 			return "No object detected\n"
 
+	output += str("< ", object, "  ", object.translation, " >\n")
+	var objID = object.get("ID")
+	if objID != null:
+		output += str("ID : ", objID, " : ", G.IDtoString[objID], '\n')
+	for property in object.get_property_list():
+		if(property.usage == PROPERTY_USAGE_SCRIPT_VARIABLE): 
+			output += property.name + ": " + str(object[property.name]) + "\n"
 
-	var output : String = ""	
-	output += str(self.name,": < ", object, "  ", object.translation, " >\n")
-	if not object.has_method("getInfo"):
-		output += str(self.name, ": could not get info as the object doesn't have method getInfo()\n")
-	else:
-		var infoDict = object.getInfo()
-		for key in infoDict:
-			if typeof(infoDict[key]) == TYPE_INT and key == "ID":
-				output += str(key, " : ", infoDict[key], " : ", G.IDtoString[infoDict[key]], '\n')
-				continue
-			output += str(key, " : ", infoDict[key], '\n')
 	return output

@@ -6,9 +6,6 @@ var Onodes : Array
 var Inodes : Array
 const ID : int = G.ID.L_Synapse
 
-func getInfo() -> Dictionary:
-	return {"ID":ID, "Weight":Weight, "Inodes":Inodes, "Onodes":Onodes}
-
 func setLength(length : float) -> void:
 	var cs = get_node("CollisionShape")
 	cs.transform = cs.transform.scaled(Vector3(1,1,length))

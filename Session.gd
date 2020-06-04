@@ -27,12 +27,19 @@ func eraseLink(link : Node) -> void:
 func overlapNode(node : Node):
 	$nodes.add_child(node)
 func addNode(node : Node, override = false) -> bool:  # true if did add_child
-	if nodeMap.has(node.translation) and not override:
+	if nodeMap.has(node.translation):
+		if override:
+			nodeMap[node.translation].queue_free()
+			nodeMap.erase(node.translation)
+			nodeMap[node.translation] = node
+			$nodes.add_child(node)
+			return true
 		return false
-	else:
-		nodeMap[node.translation] = node
-		$nodes.add_child(node)
+	
+	nodeMap[node.translation] = node
+	$nodes.add_child(node)
 	return true
+
 func eraseNode(node : Node) -> void:
 	nodeMap.erase(node.translation)
 	$nodes.node.queue_free()

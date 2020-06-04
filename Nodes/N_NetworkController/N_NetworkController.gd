@@ -8,9 +8,6 @@ var propOnly : bool = false
 
 const ID : int = G.ID.N_NetworkController  # IDData.N_NetworkController
 
-func getInfo() -> Dictionary:
-	return {"ID":ID, "Olinks":Olinks, "propSequence":propSequence, "bpropSequence":bpropSequence}
-
 func prop() -> void:
 	pass
 func bprop() -> void:
