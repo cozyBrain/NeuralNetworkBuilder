@@ -216,7 +216,10 @@ func _input(event):
 							if detectedObject != null:
 								console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(detectedObject.get_instance_id())))
 							else:
-								console.println("No node detected!")
+								var additionalMessage : String
+								if pointer.getPointerPosition() != null:
+									additionalMessage = str(": ",pointer.getPointerPosition())
+								console.println("No node detected!"+additionalMessage)
 					G.ID.LC:
 						if detectedObject != null:
 							console.processCommand(str("Tool ", G.IDtoString[G.ID.LC], " ", str(detectedObject.translation)))

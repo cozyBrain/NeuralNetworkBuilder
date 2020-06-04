@@ -18,7 +18,8 @@ func handle(position) -> String:
 			return "Invalid argument\n"
 		object = G.default_session.getNode(position)
 		if null == object:
-			return "No object detected\n"
+			output += str(position, ": No object detected\n")
+			return output
 
 	output += str("< ", object, "  ", object.translation, " >\n")
 	var objID = object.get("ID")

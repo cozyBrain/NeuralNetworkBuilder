@@ -116,7 +116,8 @@ func handle(arg : String):
 					for step in range(1, pasteCount+1):
 						for copy2add in copies2add:
 							var copy = copy2add.duplicate(DUPLICATE_GROUPS|DUPLICATE_SIGNALS|DUPLICATE_SCRIPTS)
-							G.copyVariables(copy2add, copy)
+							if deepCopy:
+								G.copyVariables(copy2add, copy)
 							copy.translation += pointerPosition + step*stride
 							G.default_session.addNode(copy, overrideNode)
 					output += "pasted nodes\n"
@@ -143,10 +144,11 @@ func handle(arg : String):
 								var node2link = G.default_session.getNode(copy2add.translation + pointerPosition + step*stride)
 								var Olinks = copy2add.get("Olinks")
 								print(Olinks)  # couldn't get Olinks because I didn't deep copy.
+								print("copy2link translation:",copy2add.translation + pointerPosition + step*stride)
 								if Olinks != null:
 									for Olink in Olinks:
 										# arg B == null problem
-										var newSynapse = linkCreator.create(node2link, G.default_session.getNode(Olink.Onodes[0].translation + pointerPosition + step*stride))
+										var newSynapse = linkCreator.create(node2link, G.default_session.getNode(Olink.Onodes[0].translation + step*stride))
 										if newSynapse != null:
 											G.default_session.addLink(newSynapse)
 						
