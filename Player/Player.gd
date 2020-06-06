@@ -108,7 +108,10 @@ func _physics_process(delta):
 	
 	aim = $Yaxis/Camera.get_camera_transform().basis
 	detectedObject = pointer.update(translation, aim, delta)
-
+	#print(aim.z.round())
+	#pointerPosition -= aim.z*distance
+	#pointerPosition = pointerPosition.round()
+	
 	if Tool != null: 
 		if Tool.has_method("update"):
 			match hotbar[hotbarSelection]:

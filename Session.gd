@@ -42,7 +42,7 @@ func addNode(node : Node, override = false) -> bool:  # true if did add_child
 
 func eraseNode(node : Node) -> void:
 	nodeMap.erase(node.translation)
-	$nodes.node.queue_free()
+	node.queue_free()
 func getNode(position : Vector3) -> Node:
 	return nodeMap.get(position)
 func boxGetNode(from:Vector3, to:Vector3) -> Array:

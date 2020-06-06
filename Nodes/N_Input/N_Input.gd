@@ -53,5 +53,6 @@ func disconnectFrom(target:Node) -> void:
 	if index >= 0:
 		Ilinks.remove(index)
 
+
 func updateEmissionByOutput() -> void:
 	$CollisionShape/MeshInstance.get_surface_material(0).emission_energy = Output

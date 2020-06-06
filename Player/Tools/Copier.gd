@@ -49,6 +49,21 @@ func handle(arg : String):
 				overrideNode = true
 			elif arg == "link" or arg == "l":
 				overrideLink = true
+	# get link depth; not_yet: use linkDepth when copy
+	var IlinkDepth : int = 0
+	var OlinkDepth : int = 0
+	if linkArguments == null:
+		output += "No link arguments!\nusage: -link <Ilink:-1:IlinkDepthOrOlinkDepth> <Olink:2:IlinkDepthOrOlinkDepth>"
+	elif linkArguments.size() > 0:
+		for arg in linkArguments:
+			if not arg.is_valid_integer():
+				output += "Invalid arguments!\n"
+				break
+			arg = int(arg)
+			if arg > 0:
+				OlinkDepth = arg
+			elif arg < 0:
+				IlinkDepth = arg
 	
 	
 	# group
@@ -111,8 +126,7 @@ func handle(arg : String):
 					var pasteCount = int(pasteArguments[0])
 					var stride = G.str2vector3(pasteArguments[1])
 					var copies2add = copyGroups[groupSelection]
-					
-					# paste Nodes first
+					# paste Nodes first #######################################
 					for step in range(1, pasteCount+1):
 						for copy2add in copies2add:
 							var copy = copy2add.duplicate(DUPLICATE_GROUPS|DUPLICATE_SIGNALS|DUPLICATE_SCRIPTS)
@@ -121,37 +135,23 @@ func handle(arg : String):
 							copy.translation += pointerPosition + step*stride
 							G.default_session.addNode(copy, overrideNode)
 					output += "pasted nodes\n"
-					
-					# Links: get link depth
-					var IlinkDepth : int = 0
-					var OlinkDepth : int = 0
-					if linkArguments == null:
-						output += "No link arguments!\nusage: -link <Ilink:-1:IlinkDepthOrOlinkDepth> <Olink:2:IlinkDepthOrOlinkDepth>"
-					elif linkArguments.size() > 0:
-						for arg in linkArguments:
-							if not arg.is_valid_integer():
-								output += "Invalid arguments!\n"
-								break
-							arg = int(arg)
-							if arg > 0:
-								OlinkDepth = arg
-							elif arg < 0:
-								IlinkDepth = arg
-						# create links
-						var linkCreator = get_parent().get_node("LinkCreator")
-						for step in range(1, pasteCount+1):
-							for copy2add in copies2add:
-								var node2link = G.default_session.getNode(copy2add.translation + pointerPosition + step*stride)
-								var Olinks = copy2add.get("Olinks")
-								print(Olinks)  # couldn't get Olinks because I didn't deep copy.
-								print("copy2link translation:",copy2add.translation + pointerPosition + step*stride)
-								if Olinks != null:
-									for Olink in Olinks:
-										# arg B == null problem
-										var newSynapse = linkCreator.create(node2link, G.default_session.getNode(Olink.Onodes[0].translation + step*stride))
-										if newSynapse != null:
+					# create links ############################################
+					var linkCreator = get_parent().get_node("LinkCreator")
+					for step in range(1, pasteCount+1):
+						for copy2add in copies2add:
+							var node2link = G.default_session.getNode(copy2add.translation + pointerPosition + step*stride)
+							var Olinks = copy2add.get("Olinks")
+							if Olinks != null:
+								for Olink in Olinks:
+									var newSynapse = linkCreator.create(node2link, G.default_session.getNode(Olink.Onodes[0].translation + step*stride))
+									if newSynapse != null:
+										G.default_session.addLink(newSynapse)
+							var Ilinks = copy2add.get("Ilinks")
+							if Ilinks != null:
+								for Ilink in Ilinks:
+									var newSynapse = linkCreator.create(G.default_session.getNode(Ilink.Inodes[0].translation + step*stride), node2link)
+									if newSynapse != null:
 											G.default_session.addLink(newSynapse)
-						
 						output += "Linked\n"
 	
 	# erase
