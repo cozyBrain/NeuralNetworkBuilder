@@ -176,8 +176,9 @@ func _input(event):
 						print("escape")
 						hotbarSubSelection = false
 					else:
-						print("subSelection:", subSelection, ":", ToolHotbar[subSelection])
-						Tool.set("hotbarSelection", subSelection)
+						if ToolHotbar.size() > subSelection:
+							print("subSelection:", subSelection, ":", ToolHotbar[subSelection])
+							Tool.set("hotbarSelection", subSelection)
 				else:
 					hotbarSelection = scancode - 49
 					if hotbarSelection == -1:

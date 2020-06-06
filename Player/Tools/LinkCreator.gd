@@ -22,6 +22,8 @@ func handle(position) -> String:
 	return output
 
 func create(A : Object, B : Object) -> Object:
+	if A == null or B == null:
+		return null
 	var newLink = Link.instance()
 	# config synapse
 	var distance = A.translation.distance_to(B.translation)
