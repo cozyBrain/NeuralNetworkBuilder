@@ -29,7 +29,7 @@ func bprop() -> void:  # back-propagation
 	for link in Ilinks:
 		for node in link.Inodes:
 			link.Weight -= BOutput * node.Output * G.learningRate
-		
+	
 func activation() -> void:
 	if Output < 0:
 		Output *= 0.1
