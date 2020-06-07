@@ -8,16 +8,23 @@ onready var Link = preload("res://Links/L_Synapse/L_Synapse.tscn")
 var Anode : Object
 func handle(position) -> String:
 	var output : String
-	var node = G.default_session.getNode(G.str2vector3(position))
-	if node == null:
-		return "No node detected"
+	var object
+	if position.is_valid_integer():  # is this an instance?
+		object = instance_from_id(int(position))
+	else:
+		position = G.str2vector3(position)
+		if position == null:
+			return "Invalid argument\n"
+		object = G.default_session.getNode(position)
+		if null == object:
+			return str(position, ": No object detected\n")
 		
 	if Anode == null:
-		Anode = node
+		Anode = object
 		output += str(self.name, ": From ", self.Anode)
 	else:
-		output += str(self.name, ": To ", node)
-		G.default_session.addLink(create(Anode, node))
+		output += str(self.name, ": To ", object)
+		G.default_session.addLink(create(Anode, object))
 		Anode = null
 	return output
 
@@ -35,6 +42,7 @@ func create(A : Object, B : Object) -> Object:
 	d.y = 1 if d.y == 0 else 0
 	d.z = 1 if d.y == 0 else 0
 	newLink.look_at_from_position(position, A.translation, d)
+	#if A.get("ID") != G.ID.L_Synapse and B.get("ID") != G.ID.L_Synapse:
 	if newLink.connectFrom(A) == -1:
 		print(self.name, ": link failed: connectFrom ", A)
 		return null

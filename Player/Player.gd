@@ -226,7 +226,7 @@ func _input(event):
 								console.println("No node detected!"+additionalMessage)
 					G.ID.LC:
 						if detectedObject != null:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.LC], " ", str(detectedObject.translation)))
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.LC], " ", str(detectedObject.get_instance_id())))
 						else:
 							console.println("No node detected!")
 					G.ID.BC:
