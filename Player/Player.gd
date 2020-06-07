@@ -51,6 +51,7 @@ func _process(delta):
 		elif Input.is_action_just_pressed("KEY_ESC"):
 			typingMode = false
 			console.inputBox.release_focus()
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		return
 	
 	if Input.is_action_just_pressed("KEY_ESC"):
@@ -92,6 +93,7 @@ func _process(delta):
 	if Input.is_action_just_pressed("KEY_T"):
 		typingMode = true
 		console.inputBox.grab_focus()
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		return
 	if Input.is_action_just_pressed("KEY_C"):
 		pass

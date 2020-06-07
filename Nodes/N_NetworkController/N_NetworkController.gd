@@ -46,8 +46,9 @@ func initialize() -> void:
 				if objOlinks == null:
 					continue
 				for link in objOlinks:
-					for node in link.Onodes:
-						nextLayer[node] = true
+					nextLayer[link.Onode] = true
+#					for node in link.Onodes:
+#						nextLayer[node] = true
 
 		if not nextLayer.empty():
 			propSequence.push_back(nextLayer)
@@ -80,8 +81,9 @@ func initialize() -> void:
 			if objIlinks == null:
 				continue
 			for link in objIlinks:
-				for node in link.Inodes:
-					nextLayer[node] = true
+				nextLayer[link.Inode] = true
+#				for node in link.Inodes:
+#					nextLayer[node] = true
 		if not nextLayer.empty():
 			bpropSequence.push_back(nextLayer)
 		layerIndex += 1

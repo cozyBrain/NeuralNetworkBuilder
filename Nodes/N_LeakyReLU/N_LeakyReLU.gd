@@ -15,6 +15,8 @@ func _ready():
 func prop() -> void:
 	Output = 0
 	for link in Ilinks:
+#		Output += link.Inode.Output * link.Weight
+#		Output += link.Output
 		for node in link.Inodes:
 			Output += node.Output * link.Weight
 	activation()

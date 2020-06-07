@@ -2,8 +2,8 @@ class_name L_Synapse
 extends StaticBody
 
 var Weight : float = 1  # default value of Weight should be 1 for several reasons. for instance) when N_Goal bprop()
-var Onodes : Array
-var Inodes : Array
+var Onode : Node
+var Inode : Node
 const ID : int = G.ID.L_Synapse
 
 func setLength(length : float) -> void:
@@ -16,7 +16,7 @@ func connectFrom(target:Node) -> int:
 		return -1
 	match ID:
 		G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Tanh, G.ID.N_Goal, G.ID.N_NetworkController:
-			Inodes.push_front(target)
+			Inode = target
 		var _unknownID:
 			return -1
 	return 0
@@ -26,16 +26,12 @@ func connectTo(target:Node) -> int:
 		return -1
 	match ID:
 		G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Tanh, G.ID.N_Goal:
-			Onodes.push_front(target)
+			Onode = target
 		var _unknownID:
 			return -1
 	return 0
 	
 func disconnectFrom(target:Node) -> void:
-	var index = Inodes.find(target)
-	if index >= 0:
-		Inodes.remove(index)
+	Inode = null
 func disconnectTo(target:Node) -> void:
-	var index = Onodes.find(target)
-	if index >= 0:
-		Onodes.remove(index)
+	Onode = null
