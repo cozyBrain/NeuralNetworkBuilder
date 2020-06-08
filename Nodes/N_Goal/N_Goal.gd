@@ -32,14 +32,16 @@ func bprop() -> void:  # back-propagation
 	#for synapse in Osynapses:
 	#	for node in synapse.Onodes:
 	#		BOutput += node.BOutput * synapse.Weight
+	var f : String
 	for link in Ilinks:
-		for node in link.Inodes:
-			var preErr = G.square(node.Output - Output)
-			var aftErr = G.square((node.Output-G.dx) - Output)
-			BOutput += ((preErr - aftErr) / G.dx)
+		var preErr = G.square(link.getOutput() - Output)  # == link.Inode.Output - Goal
+		var aftErr = G.square((link.getOutput()-G.dx) - Output)
+		f = str(preErr," - ", aftErr, " / ", G.dx, "= ")
+		BOutput += ((preErr - aftErr) / G.dx)
 	BOutput /= Ilinks.size()
-		
-	
+	BOutput *= 0.03
+	print(f,BOutput)
+
 func connectTo(target:Node) -> int:
 	var id = target.get("ID")
 	if id == null:
@@ -60,7 +62,7 @@ func connectFrom(target:Node) -> int:
 		_:
 			return -1
 	return 0
-	
+
 func disconnectTo(target:Node) -> void:
 	var index = Olinks.find(target)
 	if index >= 0:

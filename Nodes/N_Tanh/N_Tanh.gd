@@ -15,26 +15,26 @@ func _ready():
 func prop() -> void:
 	Output = 0
 	for link in Ilinks:
-		for node in link.Inodes:
-			Output += node.Output * link.Weight
-	activation()
+		Output += link.getOutput()
+	Output = activationFunc(Output)
 	updateEmissionByOutput()
-	
+
 func bprop() -> void:  # back-propagation
 	BOutput = 0
 	for link in Olinks:
-		for node in link.Onodes:
-			BOutput += node.BOutput * link.Weight
-	derivateActivationFunc()
+		BOutput += link.getBOutput()
+	BOutput *= derivateActivationFunc(BOutput)
+	print(BOutput)
 	for link in Ilinks:
-		for node in link.Inodes:
-			link.Weight -= BOutput * node.Output * G.learningRate
-		
-func activation() -> void:
-	Output = tanh(Output)
-func derivateActivationFunc() -> void:
-	BOutput *= (tanh(Output + dx) - Output) / dx
-	
+		link.updateWeight(BOutput)
+
+static func activationFunc(x:float) -> float:
+	return tanh(x)
+#	return x / (1 + abs(x))
+static func derivateActivationFunc(x) -> float:
+	return (tanh(x + dx) - tanh(x)) / dx
+#	return (activationFunc(x + dx) - activationFunc(x)) / dx
+
 func connectTo(target:Node) -> int:
 	var id = target.get("ID")
 	if id == null:
@@ -51,7 +51,7 @@ func connectFrom(target:Node) -> int:
 		return -1
 	match id:
 		G.ID.L_Synapse:
-			Ilinks.push_front(target) 
+			Ilinks.push_front(target)
 		_:
 			return -1
 	return 0

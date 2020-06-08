@@ -42,14 +42,13 @@ func create(A : Object, B : Object) -> Object:
 	d.y = 1 if d.y == 0 else 0
 	d.z = 1 if d.y == 0 else 0
 	newLink.look_at_from_position(position, A.translation, d)
-	#if A.get("ID") != G.ID.L_Synapse and B.get("ID") != G.ID.L_Synapse:
 	if newLink.connectFrom(A) == -1:
 		print(self.name, ": link failed: connectFrom ", A)
 		return null
 	if newLink.connectTo(B) == -1:
 		print(self.name, ": link failed: connectTo ", B)
 		return null
-		
+	
 	var success : int = 0
 	# connect both node with the newLink
 	if A.has_method("connectTo"):

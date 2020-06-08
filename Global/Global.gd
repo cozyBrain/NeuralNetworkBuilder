@@ -12,8 +12,7 @@ const IDtoString = [
 	"ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Pointer", "Copier",
 	"N_LeakyReLU", "L_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
 ]
-const dx = 0.001
-const learningRate = 0.001
+const dx = 0.0001
 const default_session_path = "/root/session"
 onready var default_session = get_node(default_session_path)
 onready var default_session_nodes = default_session.get_node("nodes")

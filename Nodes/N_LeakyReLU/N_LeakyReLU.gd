@@ -15,29 +15,26 @@ func _ready():
 func prop() -> void:
 	Output = 0
 	for link in Ilinks:
-#		Output += link.Inode.Output * link.Weight
-#		Output += link.Output
-		for node in link.Inodes:
-			Output += node.Output * link.Weight
-	activation()
+		Output += link.getOutput()
+	Output = activationFunc(Output)
 	updateEmissionByOutput()
 	
 func bprop() -> void:  # back-propagation
 	BOutput = 0
 	for link in Olinks:
-		for node in link.Onodes:
-			BOutput += node.BOutput * link.Weight
-	derivateActivationFunc()
+		BOutput += link.getBOutput()
+	BOutput *= derivateActivationFunc(BOutput)
 	for link in Ilinks:
-		for node in link.Inodes:
-			link.Weight -= BOutput * node.Output * G.learningRate
+		link.updateWeight(BOutput)
 	
-func activation() -> void:
-	if Output < 0:
-		Output *= 0.1
-func derivateActivationFunc() -> void:
-	if BOutput < 0:
-		BOutput *= 0.1
+static func activationFunc(x:float) -> float:
+	if x < 0:
+		return x * 0.1
+	return x
+static func derivateActivationFunc(x:float) -> float:
+	if x < 0:
+		return 0.1
+	return 1.0
 	
 func connectTo(target:Node) -> int:
 	var id = target.get("ID")

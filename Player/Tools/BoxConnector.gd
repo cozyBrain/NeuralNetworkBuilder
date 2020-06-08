@@ -10,6 +10,11 @@ var areaIndicators = [null, null]
 
 func handle(arg : String) -> String:  # [AorB, pointPosition]
 	var output : String
+	var argParser = ArgParser.new(arg)
+	if argParser.getBool(["reset", "r"]):
+		reset()
+		return "reset done.\n"
+	
 	var splitted = arg.split(" ", false, 1)
 	# AorB
 	var AorB
@@ -79,9 +84,13 @@ func initiate() -> String:
 			if newSynapse != null:
 					G.default_session.addLink(newSynapse)
 	
-	#reset
-	areas = [[], []]
-	areaIndicators[0].queue_free()
-	areaIndicators[1].queue_free()
+	reset()
 	
 	return "done"
+
+func reset():
+	areas = [[], []]
+	if areaIndicators[0] != null:
+		areaIndicators[0].queue_free()
+	if areaIndicators[1] != null:
+		areaIndicators[1].queue_free()

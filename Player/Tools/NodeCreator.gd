@@ -9,15 +9,19 @@ var hotbar : Array = [G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Goal, G.ID.N_Tanh, 
 var hotbarSelection : int
 
 func create():
-	var obj = G.default_session.getNode(pointer.pointerPosition)
-	if obj == null:
-		var body = load("res://Nodes/" + G.IDtoString[hotbar[hotbarSelection]] + "/" + G.IDtoString[hotbar[hotbarSelection]] + ".tscn").instance()
-		body.translation = pointer.pointerPosition
-		G.default_session.addNode(body)
-		print("create ", body)
+	var pointerPosition = pointer.getPointerPosition()
+	if pointerPosition != null:
+		var obj = G.default_session.getNode(pointerPosition)
+		if obj == null:
+			var body = load("res://Nodes/" + G.IDtoString[hotbar[hotbarSelection]] + "/" + G.IDtoString[hotbar[hotbarSelection]] + ".tscn").instance()
+			body.translation = pointer.pointerPosition
+			G.default_session.addNode(body)
+			print("create ", body)
 
 func erase():
-	var obj = G.default_session.getNode(pointer.pointerPosition)
-	if obj != null:
-		G.default_session.eraseNode(obj)
-		print("erase ", obj)
+	var pointerPosition = pointer.getPointerPosition()
+	if pointerPosition != null:
+		var obj = G.default_session.getNode(pointerPosition)
+		if obj != null:
+			G.default_session.eraseNode(obj)
+			print("erase ", obj)

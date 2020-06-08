@@ -39,6 +39,7 @@ func initialize() -> void:
 						if objIlinks != null:
 							var numOfObjIlinks = objIlinks.size()
 							for link in objIlinks:  # init weight
+								#Back to the (1,3,.5) example. At .5, you're at 50%, which the number halfway between 1 and 3 is 2. - answered Feb 10, 2017 by avencherus 
 								link.Weight = lerp(-1, 1, randf()) / sqrt(numOfObjIlinks)
 								print("initialize weight:", link.Weight)
 

@@ -167,7 +167,16 @@ func _input(event):
 
 	if typingMode:  # when you use console
 		return
-
+	
+	if event is InputEventMouseButton:
+		if event.is_pressed():
+			if event.button_index == BUTTON_WHEEL_UP:
+				pointer.setDistance(pointer.distance + 0.5)
+				return
+			elif event.button_index == BUTTON_WHEEL_DOWN:
+				pointer.setDistance(pointer.distance - 0.5)
+				return
+	
 	if event is InputEventKey:
 		if event.is_pressed():
 			# hotBarSelection
@@ -206,18 +215,11 @@ func _input(event):
 							print("hotbarSubSelection. 0 to escape.")
 							hotbarSubSelection = true
 	
-	elif event is InputEventMouseButton:
-		if event.is_pressed():
-			if event.button_index == BUTTON_WHEEL_UP:
-				pointer.setDistance(pointer.distance + 0.5)
-				return
-			elif event.button_index == BUTTON_WHEEL_DOWN:
-				pointer.setDistance(pointer.distance - 0.5)
-				return
-				
-			if Tool != null: 
-				match hotbar[hotbarSelection]:
-					G.ID.OII:
+	if Tool != null: 
+		match hotbar[hotbarSelection]:
+			G.ID.OII:
+				if event is InputEventMouseButton:
+					if event.is_pressed():
 						if event.button_index == BUTTON_LEFT:
 							if detectedObject != null:
 								console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(detectedObject.get_instance_id())))
@@ -226,19 +228,29 @@ func _input(event):
 								if pointer.getPointerPosition() != null:
 									additionalMessage = str(": ",pointer.getPointerPosition())
 								console.println("No node detected!"+additionalMessage)
-					G.ID.LC:
+			G.ID.LC:
+				if event is InputEventMouseButton:
+					if event.is_pressed():
 						if detectedObject != null:
 							console.processCommand(str("Tool ", G.IDtoString[G.ID.LC], " ", str(detectedObject.get_instance_id())))
 						else:
 							console.println("No node detected!")
-					G.ID.BC:
+			G.ID.BC:
+				if event is InputEventMouseButton:
+					if event.is_pressed():
 						if detectedObject == null:
 							console.println("No node detected!")
 						elif event.button_index == BUTTON_LEFT:
 							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " A ", str(detectedObject.translation)))
 						elif event.button_index == BUTTON_RIGHT:
 							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " B ", str(detectedObject.translation)))
-					G.ID.H:  # Hand
+				elif event is InputEventKey:
+					if event.is_pressed():
+						if event.get_scancode() == KEY_C:
+							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " -reset"))
+			G.ID.H:  # Hand
+				if event is InputEventMouseButton:
+					if event.is_pressed():
 						if null == detectedObject:
 							print(Tool.name, ": No Object Detected")
 						else:
@@ -252,7 +264,7 @@ func _input(event):
 										if event.button_index == BUTTON_RIGHT:
 											detectedObject.initialize()
 										elif event.button_index == BUTTON_LEFT:
-											var count = 100
+											var count = 40
 											for _i in range(count):
 												detectedObject.wave()
 											print(Tool.name, ": iterated for ", count, " times")
@@ -263,18 +275,17 @@ func _input(event):
 											detectedObject.addOutput(-0.25)
 									_:
 										print(Tool.name, ": no interaction with ", G.IDtoString[id])
-					G.ID.NC:
-						pass
-					G.ID.S:
+			G.ID.NC:
+				pass
+			G.ID.S:
+				if event is InputEventMouseButton:
+					if event.is_pressed():
 						if event.button_index == BUTTON_LEFT:
 							console.processCommand(str("Tool ", G.IDtoString[G.ID.S], " -s hotbarSelection pointerPosition"))
 						#elif event.button_index == BUTTON_RIGHT:
 						#	console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(detectedObject.translation)))
-
-					_:
-						print("The tool couldn't be recognized")
-			else:
-				print("5302020CL279")
+			_:
+				print("The tool couldn't be recognized")
 
 func _on_Input_text_entered(text):
 	typingMode = false
