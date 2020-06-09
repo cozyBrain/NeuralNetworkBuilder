@@ -42,7 +42,7 @@ func initialize() -> void:
 								#Back to the (1,3,.5) example. At .5, you're at 50%, which the number halfway between 1 and 3 is 2. - answered Feb 10, 2017 by avencherus 
 								link.Weight = lerp(-1, 1, randf()) / sqrt(numOfObjIlinks)
 								print("initialize weight:", link.Weight)
-
+	
 				var objOlinks = keyAKAobject.get("Olinks")
 				if objOlinks == null:
 					continue
@@ -50,10 +50,10 @@ func initialize() -> void:
 					nextLayer[link.Onode] = true
 #					for node in link.Onodes:
 #						nextLayer[node] = true
-
+	
 		if not nextLayer.empty():
 			propSequence.push_back(nextLayer)
-
+	
 		layerIndex += 1
 		
 	# Convert Dictionary to Array
@@ -96,7 +96,7 @@ func initialize() -> void:
 			bpropSequence[layerIndex].push_back(keyAKAobject)
 		layerIndex += 1
 	print("analyzed for backpropagation sequence!")
-	
+
 func wave() -> void:
 	for layer in propSequence:
 		for node in layer:
@@ -105,7 +105,7 @@ func wave() -> void:
 		for layer in bpropSequence:
 			for node in layer:
 				node.bprop()
-	
+
 func connectTo(target:Node) -> int:
 	# U can cancel Onodes.push if target is not compatible by using has_meta, has_method, has_node, if not etc..
 	var id = target.get("ID")
@@ -117,7 +117,7 @@ func connectTo(target:Node) -> int:
 		var _unknownID:
 			return -1
 	return 0
-	
+
 func disconnectTo(target:Node) -> void:
 	var index = Olinks.find(target)
 	if index >= 0:

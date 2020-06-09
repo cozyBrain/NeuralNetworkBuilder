@@ -24,7 +24,7 @@ func bprop() -> void:  # back-propagation
 	for link in Olinks:
 		BOutput += link.getBOutput()
 	BOutput *= derivateActivationFunc(BOutput)
-	print(BOutput)
+	print(var2str(BOutput))
 	for link in Ilinks:
 		link.updateWeight(BOutput)
 

@@ -26,6 +26,9 @@ func handle(position) -> String:
 		output += str("ID : ", objID, " : ", G.IDtoString[objID], '\n')
 	for property in object.get_property_list():
 		if(property.usage == PROPERTY_USAGE_SCRIPT_VARIABLE): 
-			output += property.name + ": " + str(object[property.name]) + "\n"
+			if typeof(object[property.name]) == TYPE_REAL:
+				output += property.name + ": " + var2str(object[property.name]) + "\n"
+			else:
+				output += property.name + ": " + str(object[property.name]) + "\n"
 
 	return output

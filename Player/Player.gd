@@ -264,15 +264,15 @@ func _input(event):
 										if event.button_index == BUTTON_RIGHT:
 											detectedObject.initialize()
 										elif event.button_index == BUTTON_LEFT:
-											var count = 40
+											var count = 100
 											for _i in range(count):
 												detectedObject.wave()
 											print(Tool.name, ": iterated for ", count, " times")
 									G.ID.N_Input, G.ID.N_Goal:
 										if event.button_index == BUTTON_LEFT:
-											detectedObject.addOutput(0.25)
+											detectedObject.addOutput(1)
 										elif event.button_index == BUTTON_RIGHT:
-											detectedObject.addOutput(-0.25)
+											detectedObject.addOutput(-1)
 									_:
 										print(Tool.name, ": no interaction with ", G.IDtoString[id])
 			G.ID.NC:

@@ -36,11 +36,11 @@ func bprop() -> void:  # back-propagation
 	for link in Ilinks:
 		var preErr = G.square(link.getOutput() - Output)  # == link.Inode.Output - Goal
 		var aftErr = G.square((link.getOutput()-G.dx) - Output)
-		f = str(preErr," - ", aftErr, " / ", G.dx, "= ")
+		f = str(var2str(preErr)," - ", var2str(aftErr), " / ", G.dx, "= ")
 		BOutput += ((preErr - aftErr) / G.dx)
 	BOutput /= Ilinks.size()
 	BOutput *= 0.03
-	print(f,BOutput)
+	print(f,var2str(BOutput))
 
 func connectTo(target:Node) -> int:
 	var id = target.get("ID")

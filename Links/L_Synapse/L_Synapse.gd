@@ -1,3 +1,4 @@
+# Nodes getBOutput after updateWeight, so not that precise. may causes issue later..
 class_name L_Synapse
 extends StaticBody
 
