@@ -7,6 +7,7 @@ var Ilinks : Array
 var Output : float
 var BOutput : float 
 const ID : int = G.ID.N_LeakyReLU
+const leakage : float = .1
 
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
@@ -23,17 +24,17 @@ func bprop() -> void:  # back-propagation
 	BOutput = 0
 	for link in Olinks:
 		BOutput += link.getBOutput()
-	BOutput *= derivateActivationFunc(BOutput)
+	BOutput *= derivateActivationFunc(Output)
 	for link in Ilinks:
 		link.updateWeight(BOutput)
 	
 static func activationFunc(x:float) -> float:
 	if x < 0:
-		return x * 0.1
+		return x * leakage
 	return x
 static func derivateActivationFunc(x:float) -> float:
 	if x < 0:
-		return 0.1
+		return leakage
 	return 1.0
 	
 func connectTo(target:Node) -> int:

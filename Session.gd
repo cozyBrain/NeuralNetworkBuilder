@@ -9,15 +9,7 @@ func _ready():
 	var preloadedPlayer = newPlayer.instance()
 	preloadedPlayer.set_name("P1")
 	players.push_front(preloadedPlayer)
-	add_child(players[0])
-	var x = -0.00000000000000152
-	print(x)  # print -0 but print 0.1 Wow.. but how to print fully
-	print(var2str(x))  # ok var2str print -1.52e-15. great
-	if x < 0:
-		print("0.1")
-	else:
-		print("1.0")
-
+	add_child(players[0])    
 
 var nodeMap : Dictionary
 
@@ -86,6 +78,16 @@ func boxGetNode(from:Vector3, to:Vector3) -> Array:
 #				node.translation = Vector3(x,y,z)
 #				addNode(node)
 
+var HideLinksToggleStatus : bool = true
+func toggleHideLinks():
+	var links = $links.get_children()
+	if HideLinksToggleStatus:
+		for link in links:
+			link.hide()
+	else:
+		for link in links:
+			link.show()
+	HideLinksToggleStatus = !HideLinksToggleStatus
 
 func close():
 	print('close Session..')

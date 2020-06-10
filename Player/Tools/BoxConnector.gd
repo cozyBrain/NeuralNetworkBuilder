@@ -90,7 +90,10 @@ func initiate() -> String:
 
 func reset():
 	areas = [[], []]
-	if areaIndicators[0] != null:
+#	if areaIndicators[0] != null:
+	if is_instance_valid(areaIndicators[0]):
 		areaIndicators[0].queue_free()
-	if areaIndicators[1] != null:
+#	if areaIndicators[1] != null:
+#		areaIndicators[1].queue_free()
+	if is_instance_valid(areaIndicators[1]):
 		areaIndicators[1].queue_free()

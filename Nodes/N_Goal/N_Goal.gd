@@ -29,17 +29,14 @@ func bprop() -> void:  # back-propagation
 	# aftErr := square32((n.O-dx)-N.G) / BI
 	# N.BO = ((preErr - aftErr) / dx) * 0.5
 	
-	#for synapse in Osynapses:
-	#	for node in synapse.Onodes:
-	#		BOutput += node.BOutput * synapse.Weight
 	var f : String
 	for link in Ilinks:
 		var preErr = G.square(link.getOutput() - Output)  # == link.Inode.Output - Goal
 		var aftErr = G.square((link.getOutput()-G.dx) - Output)
-		f = str(var2str(preErr)," - ", var2str(aftErr), " / ", G.dx, "= ")
+		f = str(var2str(preErr)," - ", var2str(aftErr), " / ", G.dx, " = ")
 		BOutput += ((preErr - aftErr) / G.dx)
 	BOutput /= Ilinks.size()
-	BOutput *= 0.03
+	BOutput *= 0.001
 	print(f,var2str(BOutput))
 
 func connectTo(target:Node) -> int:

@@ -14,8 +14,8 @@ func bprop() -> void:
 	pass
 
 func initialize() -> void:
-	randomize()  # reseeds using a number based on time.
-
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
 	# analyze for propSequence
 	print("analyzing for propagation sequence....")
 	propSequence.clear()
@@ -29,7 +29,7 @@ func initialize() -> void:
 		for keyAKAobject in propSequence[layerIndex]:  # iterating map of the layer
 			var objID = keyAKAobject.get("ID")
 			if objID != null:
-
+	
 				# init weights
 				match objID:
 					G.ID.N_Goal:
@@ -37,10 +37,9 @@ func initialize() -> void:
 					_:
 						var objIlinks = keyAKAobject.get("Ilinks")
 						if objIlinks != null:
-							var numOfObjIlinks = objIlinks.size()
+							var numOfObjIlinks : float = objIlinks.size()
 							for link in objIlinks:  # init weight
-								#Back to the (1,3,.5) example. At .5, you're at 50%, which the number halfway between 1 and 3 is 2. - answered Feb 10, 2017 by avencherus 
-								link.Weight = lerp(-1, 1, randf()) / sqrt(numOfObjIlinks)
+								link.Weight = rng.randfn() / sqrt(numOfObjIlinks/2)
 								print("initialize weight:", link.Weight)
 	
 				var objOlinks = keyAKAobject.get("Olinks")

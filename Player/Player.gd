@@ -95,8 +95,8 @@ func _process(delta):
 		console.inputBox.grab_focus()
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		return
-	if Input.is_action_just_pressed("KEY_C"):
-		pass
+	if Input.is_action_just_pressed("SHIFT+L"):
+		G.default_session.toggleHideLinks()
 	if Input.is_key_pressed(KEY_O):
 		Engine.time_scale = clamp(Engine.time_scale+0.02,0,2)
 		print("Engine.time_scale: ", Engine.time_scale)

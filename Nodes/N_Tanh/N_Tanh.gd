@@ -17,23 +17,23 @@ func prop() -> void:
 	for link in Ilinks:
 		Output += link.getOutput()
 	Output = activationFunc(Output)
+	print("O:",var2str(Output))
 	updateEmissionByOutput()
 
 func bprop() -> void:  # back-propagation
 	BOutput = 0
 	for link in Olinks:
 		BOutput += link.getBOutput()
-	BOutput *= derivateActivationFunc(BOutput)
-	print(var2str(BOutput))
+	BOutput *= derivateActivationFunc(Output)
+	print("BO:",var2str(BOutput))
 	for link in Ilinks:
 		link.updateWeight(BOutput)
 
 static func activationFunc(x:float) -> float:
 	return tanh(x)
-#	return x / (1 + abs(x))
+	#return 1 / (1 + exp(x))
 static func derivateActivationFunc(x) -> float:
-	return (tanh(x + dx) - tanh(x)) / dx
-#	return (activationFunc(x + dx) - activationFunc(x)) / dx
+	return (activationFunc(x + dx) - activationFunc(x)) / dx
 
 func connectTo(target:Node) -> int:
 	var id = target.get("ID")
