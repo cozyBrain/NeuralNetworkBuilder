@@ -1,13 +1,12 @@
 extends Node
 
-# warning: deep copy is yet unstable(linkProblem) 145
-
 const ID : int = G.ID.C
 
 onready var pointer = get_node("../Pointer")
 onready var selector = get_node("../Selector")
 
-var copyGroups : Dictionary = {G.defaultGroupName : []}
+const groupComponent = []
+var copyGroups : Dictionary = {G.defaultGroupName : groupComponent.duplicate(true)}
 var groupSelection : String = G.defaultGroupName
 
 # Tool Copier -g _default -copy _default                         # copy selection(_default) to copyGroups(_default)
@@ -25,7 +24,7 @@ func handle(arg : String):
 	var output : String
 	var pointerPosition = pointer.getPointerPosition()
 	var argParser = ArgParser.new(arg)
-	groupSelection = argParser.getString(["group", "g"], groupSelection, false)
+	groupSelection = argParser.getString(["group", "g"], groupSelection)
 	var listArguments = argParser.getStrings(["list", "ls"])
 	var eraseArguments = argParser.getStrings(["erase", "e"])
 	
@@ -68,14 +67,14 @@ func handle(arg : String):
 	
 	# group
 	if not copyGroups.has(groupSelection):
-		copyGroups[groupSelection] = []
+		copyGroups[groupSelection] = groupComponent.duplicate(true)
 	
 	var selectionGroup2copy : String = G.defaultGroupName
 	var copyArgumentsSize : int
 	if copyArguments != null:
 		copyArgumentsSize = copyArguments.size()
-	if copyArgumentsSize > 0:
-		selectionGroup2copy = copyArguments[0]
+		if copyArgumentsSize > 0:
+			selectionGroup2copy = copyArguments[0]
 	if copyArguments == null or copyArgumentsSize > 0:
 		# get nodes from selection group
 		if not selector.selectionGroups.has(selectionGroup2copy):
@@ -163,7 +162,7 @@ func handle(arg : String):
 			"g", "group":
 				if eraseArguments.size() >= 2:
 					for argIndex in range(1, eraseArguments.size()):
-						if not eraseGroup(eraseArguments[argIndex]):
+						if not copyGroups.erase(eraseArguments[argIndex]):
 							output += "copyGroups \""+eraseArguments[argIndex]+"\" doesn't exist\n"
 				else:
 					output += "No group argument!\n"
@@ -191,10 +190,3 @@ func handle(arg : String):
 	if output == "":
 		return null
 	return output
-
-func eraseGroup(groupName):
-	var cg = copyGroups.get(groupName)
-	if cg == null:
-		return false
-	copyGroups.erase(groupName)
-	return true

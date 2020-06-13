@@ -2,5 +2,5 @@
 
 [ext_resource path="res://Player/Tools/SupervisedLearningTrainer.gd" type="Script" id=1]
 
-[node name="Copier" type="Node"]
+[node name="SupervisedLearningTrainer" type="Node"]
 script = ExtResource( 1 )

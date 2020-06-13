@@ -27,7 +27,7 @@ func getStrings(flagsToDetect : Array):
 		return null
 	return strings
 
-func getString(flagsToDetect : Array, default = null, retTrueWhenFlag : bool = true):
+func getString(flagsToDetect : Array, default = null, retTrueWhenFlag : bool = false):
 	for i in range(0, flagsToDetect.size()):
 		flagsToDetect[i] = "-"+flagsToDetect[i]
 	var args = argument.split(" ", false)

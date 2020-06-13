@@ -4,12 +4,12 @@
 extends Node
 enum ID {
 	None, Player,
-	OII, LC, BC, H, NC, S, P, C
+	OII, LC, BC, H, NC, S, P, C, SLT
 	N_LeakyReLU, L_Synapse, N_NetworkController, N_Input, N_Tanh, N_Goal,
 }
 const IDtoString = [
 	"None", "Player",
-	"ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Pointer", "Copier",
+	"ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Pointer", "Copier", "SupervisedLearningTrainer",
 	"N_LeakyReLU", "L_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
 ]
 const dx = 0.0001
@@ -53,7 +53,6 @@ static func unsafe_str2vector3(position : String) -> Vector3:
 
 static func square(x:float) -> float:
 	return x*x
-	
 
 func copyVariables(source, dest):  # deep duplicate ARRAY and DICTIONARY
 	for property in source.get_property_list():

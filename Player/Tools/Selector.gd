@@ -14,7 +14,8 @@ var shapes : Dictionary = {
 var hotbar : Array = ["voxel", "box"]
 var hotbarSelection : int
 
-var selectionGroups : Dictionary = {G.defaultGroupName : ["",[]]}  # [selection, selectionIndicatingObjects]
+const groupComponent = ["",[]]
+var selectionGroups : Dictionary = {G.defaultGroupName : groupComponent.duplicate(true)}  # [selection, selectionIndicatingObjects]
 var groupSelection : String = G.defaultGroupName
 
 # Tool Selector -shape hotbarSelection voxel 0,0,2  -> default: "voxel 0,0,2\n"
@@ -25,7 +26,7 @@ var groupSelection : String = G.defaultGroupName
 func handle(arg : String):
 	var output : String
 	var argParser = ArgParser.new(arg)
-	groupSelection = argParser.getString(["group", "g"], groupSelection, false)  # flag group
+	groupSelection = argParser.getString(["group", "g"], groupSelection)  # flag group
 	var listArguments = argParser.getStrings(["list", "ls"])  # flag list
 	var eraseArguments = argParser.getStrings(["erase", "e"])  # flag erase
 	var shapeArguments = argParser.getStrings(["shape", "s"])  # flag shape
@@ -35,7 +36,7 @@ func handle(arg : String):
 	
 	# group
 	if not selectionGroups.has(groupSelection):
-		selectionGroups[groupSelection] = ["", []]
+		selectionGroups[groupSelection] = groupComponent.duplicate(true)
 	
 	# shape
 	if shapeArguments == null:
@@ -106,7 +107,7 @@ func handle(arg : String):
 	elif mergeArguments.size() > 0 :
 		var merged : String
 		for toM in mergeArguments:
-			merged += selectionGroups.get(toM, "")[0]
+			merged += selectionGroups.get(toM, groupComponent.duplicate(true))[0]
 		addSelection(merged)
 		output += "selectionGroup <"+groupSelection+">:\n" + "       "+selectionGroups[groupSelection][0].replace("\n", "\n       ")
 	
@@ -155,7 +156,7 @@ func handle(arg : String):
 
 func addSelection(selection : String) -> String:
 	var output : String = selection
-	selectionGroups[groupSelection][0] = selectionGroups.get(groupSelection, "")[0] + selection
+	selectionGroups[groupSelection][0] = selectionGroups.get(groupSelection, groupComponent.duplicate(true))[0] + selection
 	# parse selection to indicate selection area
 	var shapeArguments = selection.replace("\n", "").split(" ", false)  # remove \n and split
 	var selectionIndicator = load(selectionIndicatorResource).instance()
@@ -179,7 +180,7 @@ func addSelection(selection : String) -> String:
 	return output
 
 func getNodesFromSelectionGroup(groupName2parse : String = G.defaultGroupName) -> Array:
-	var selections = selectionGroups.get(groupName2parse, "")[0].split("\n", false)
+	var selections = selectionGroups.get(groupName2parse, groupComponent.duplicate(true))[0].split("\n", false)
 	
 	var nodes : Array
 	for selection in selections:
