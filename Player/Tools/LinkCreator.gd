@@ -15,7 +15,7 @@ func handle(position) -> String:
 		position = G.str2vector3(position)
 		if position == null:
 			return "Invalid argument\n"
-		object = G.default_session.getNode(position)
+		object = G.default_world.getNode(position)
 		if null == object:
 			return str(position, ": No object detected\n")
 		
@@ -24,7 +24,7 @@ func handle(position) -> String:
 		output += str(self.name, ": From ", self.Anode)
 	else:
 		output += str(self.name, ": To ", object)
-		G.default_session.addLink(create(Anode, object))
+		G.default_world.addLink(create(Anode, object))
 		Anode = null
 	return output
 

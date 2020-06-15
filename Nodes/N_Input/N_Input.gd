@@ -53,6 +53,15 @@ func disconnectFrom(target:Node) -> void:
 	if index >= 0:
 		Ilinks.remove(index)
 
-
 func updateEmissionByOutput() -> void:
 	$CollisionShape/MeshInstance.get_surface_material(0).emission_energy = Output
+
+func getSaveData() -> Dictionary:
+	return {
+		"ID" : ID,
+		"Output" : Output,
+		"translation" : translation,
+	}
+func loadSaveData(sd:Dictionary):
+	for propertyName in sd:
+		set(propertyName, sd[propertyName])

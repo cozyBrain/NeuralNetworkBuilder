@@ -46,7 +46,7 @@ func update(translation : Vector3, aim : Basis, delta : float):
 		if prevPointerPosition != pointerPosition:
 			prevPointerPosition = pointerPosition
 			pointer.translation = pointerPosition
-		return G.default_session.getNode(pointerPosition)
+		return G.default_world.getNode(pointerPosition)
 	else:
 		rayCastDetectedObject = rayCast.get_collider()
 		return rayCastDetectedObject

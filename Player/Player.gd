@@ -55,8 +55,8 @@ func _process(delta):
 		return
 	
 	if Input.is_action_just_pressed("KEY_ESC"):
-		if G.default_session.has_method("close"):
-			G.default_session.close()
+		if G.default_world.has_method("close"):
+			G.default_world.close()
 		else:
 			print("session doesn't have close method")
 	if Input.is_action_just_pressed("KEY_F"):
@@ -97,7 +97,7 @@ func _process(delta):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		return
 	if Input.is_action_just_pressed("SHIFT+L"):
-		G.default_session.toggleHideLinks()
+		G.default_world.toggleHideLinks()
 	if Input.is_key_pressed(KEY_O):
 		Engine.time_scale = clamp(Engine.time_scale+0.02,0,2)
 		print("Engine.time_scale: ", Engine.time_scale)

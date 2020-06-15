@@ -67,5 +67,14 @@ func disconnectFrom(target:Node) -> void:
 
 func updateEmissionByOutput() -> void:
 	$CollisionShape/MeshInstance.get_surface_material(0).emission_energy = Output
-	# WOW FINALLY I CAN DO SET EMISSION_ENERGYYYYYYYYYYYYYYYYY!!! but This change applies to others too
 
+func getSaveData() -> Dictionary:
+	return {
+		"ID" : ID,
+		"Output" : Output,
+		"BOutput" : BOutput,
+		"translation" : translation,
+	}
+func loadSaveData(sd:Dictionary):
+	for propertyName in sd:
+		set(propertyName, sd[propertyName])

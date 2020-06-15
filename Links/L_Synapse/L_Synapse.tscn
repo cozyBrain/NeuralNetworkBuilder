@@ -16,7 +16,10 @@ emission_on_uv2 = false
 [sub_resource type="CylinderMesh" id=3]
 material = SubResource( 2 )
 
-[node name="L_Synapse" type="StaticBody"]
+[node name="L_Synapse" type="StaticBody" groups=[
+"link",
+"save",
+]]
 transform = Transform( 1, -1.19209e-07, 0, 1.19209e-07, 1, 0, 0, 0, 1, 0, 0, 0 )
 script = ExtResource( 1 )
 

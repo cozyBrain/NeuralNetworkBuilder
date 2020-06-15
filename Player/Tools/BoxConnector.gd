@@ -69,8 +69,8 @@ func initiate() -> String:
 	if not Aselected or not Bselected:
 		return "not selected"
 	
-	var Anodes = G.default_session.boxGetNode(areas[0][0], areas[0][1])
-	var Bnodes = G.default_session.boxGetNode(areas[1][0], areas[1][1])
+	var Anodes = G.default_world.boxGetNode(areas[0][0], areas[0][1])
+	var Bnodes = G.default_world.boxGetNode(areas[1][0], areas[1][1])
 	
 	var linkCreator = get_parent().get_node("LinkCreator")
 	
@@ -82,7 +82,7 @@ func initiate() -> String:
 				continue
 			var newSynapse = linkCreator.create(Anode, Bnode)
 			if newSynapse != null:
-					G.default_session.addLink(newSynapse)
+					G.default_world.addLink(newSynapse)
 	
 	reset()
 	

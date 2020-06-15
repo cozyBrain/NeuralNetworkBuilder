@@ -5,13 +5,14 @@ func _ready():
 
 const validCommands = {
 	"Tool" : "Use console compatible tools.\n	Usage: Tool (Tool you want) (arguments).\n	Press shift+T to access selected tool quickly.",
+	"saveWorld" : "Save data\n",
+	"loadWorld" : "Load data\n",
 }
+const toolsPath = "../Tools/"
 
 onready var player = get_parent()
 onready var inputBox = get_node("VBoxContainer/HBoxContainer/Input")
 onready var outputBox = get_node("VBoxContainer/Output")
-
-const toolsPath = "../Tools/"
 
 var history : Array
 var historyIndex : int
@@ -29,6 +30,50 @@ func processCommand(text):
 			println(output)
 	else:
 		println("invalid command")
+
+func saveWorld(fileName : String):
+	var sd = saveData.new()
+	sd.data["nodes"] = []
+	sd.data["links"] = []
+	#var save = File.new()
+	#save.open("user://bob", File.WRITE)
+	for component in get_tree().get_nodes_in_group("save"):
+		if component.has_method("getSaveData"):
+			var componentSaveData = component.getSaveData()
+			if component.is_in_group("node"):
+				sd.data["nodes"].append(componentSaveData)
+			elif component.is_in_group("link"):
+				sd.data["links"].append(componentSaveData)
+	ResourceSaver.save("res://saves/"+fileName+".res", sd, ResourceSaver.FLAG_COMPRESS)
+
+func loadWorld(fileName : String):
+	#free all components in group save
+	for component in get_tree().get_nodes_in_group("save"):
+		component.queue_free()
+	
+	#load sd(SaveData)
+	var sdDir = Directory.new()
+	if not sdDir.file_exists("res://saves/"+fileName+".res"):
+		return "failed to load world: file \""+fileName+"\" doesn't exist!\n"
+	var sd = load("res://saves/"+fileName+".res")
+	
+	#load nodes fist
+	for componentData in sd.data["nodes"]:
+		var componentDataID = componentData.get("ID")
+		if componentDataID:
+			var loadedComponent = load("res://Nodes/" + G.IDtoString[componentDataID] + "/" + G.IDtoString[componentDataID] + ".tscn").instance()
+			loadedComponent.loadSaveData(componentData)
+			G.default_world.addNode(loadedComponent)
+	G.default_world.updateNodeMap()
+	
+	#load links
+	for componentData in sd.data["links"]:
+		var componentDataID = componentData.get("ID")
+		if componentDataID:
+			var loadedComponent = load("res://Links/" + G.IDtoString[componentDataID] + "/" + G.IDtoString[componentDataID] + ".tscn").instance()
+			loadedComponent.loadSaveData(componentData)
+			G.default_world.addLink(loadedComponent)
+
 
 func Tool(arg : String):
 	var splittedArg = arg.split(" ", false, 1)  # [command, arguments]

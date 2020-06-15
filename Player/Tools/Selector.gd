@@ -163,7 +163,7 @@ func addSelection(selection : String) -> String:
 	match shapeArguments[0]:
 		"voxel":
 			selectionIndicator.translation = G.str2vector3(shapeArguments[1])
-			G.default_session.overlapNode(selectionIndicator)
+			G.default_world.overlapNode(selectionIndicator)
 			selectionGroups[groupSelection][1].append(selectionIndicator)
 		"box":  # boxAddNode(node, from, to)
 			var from : Vector3 = G.str2vector3(shapeArguments[1])
@@ -173,7 +173,7 @@ func addSelection(selection : String) -> String:
 			var zScale = abs(from.z - to.z) + 1
 			selectionIndicator.resize(Vector3(xScale, yScale, zScale))
 			selectionIndicator.translation = (from + to) / 2
-			G.default_session.overlapNode(selectionIndicator)
+			G.default_world.overlapNode(selectionIndicator)
 			selectionGroups[groupSelection][1].append(selectionIndicator)
 		var exception:
 			print("Exception in Selector func addSelection: ", exception)
@@ -187,7 +187,7 @@ func getNodesFromSelectionGroup(groupName2parse : String = G.defaultGroupName) -
 		var shapeArguments = selection.replace("\n", "").split(" ", false)  # remove \n and split
 		match shapeArguments[0]:
 			"voxel":
-				nodes.append(G.default_session.getNode(G.str2vector3(shapeArguments[1])))
+				nodes.append(G.default_world.getNode(G.str2vector3(shapeArguments[1])))
 			"box":  # box 0,0,0 -2,0,2
 				var from : Vector3 = G.str2vector3(shapeArguments[1])
 				var to   : Vector3 = G.str2vector3(shapeArguments[2])
@@ -201,7 +201,7 @@ func getNodesFromSelectionGroup(groupName2parse : String = G.defaultGroupName) -
 					for y in range(from.y, to.y+dvec.y, dvec.y):
 						for x in range(from.x, to.x+dvec.x, dvec.x):
 							#print(Vector3(x,y,z))
-							var node = G.default_session.getNode(Vector3(x,y,z))
+							var node = G.default_world.getNode(Vector3(x,y,z))
 							if node != null:
 								nodes.append(node)
 			var exception:

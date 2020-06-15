@@ -62,7 +62,7 @@ func handle(arg : String):
 			for _i in range(int(trainArgument)):
 				for dataSet in networkGroups[groupSelection][gi.DataSetsGroups][dataSetsGroupSelection]:  # for dataSet in dataSets
 					for data2applyIndex in range(dataSet.size()):  # data2apply:[t, o],  dataSet:[[t,o],[t,o],[t,o]]
-						var node2set = G.default_session.getNode(dataSet[data2applyIndex][0])
+						var node2set = G.default_world.getNode(dataSet[data2applyIndex][0])
 						if node2set == null:
 							dataSet.remove(data2applyIndex)
 							continue

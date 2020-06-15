@@ -1,7 +1,6 @@
 class_name N_LeakyReLU
 extends StaticBody  # don't consume any CPU resources as long as they don't move. (from docs)
 
-
 var Olinks : Array
 var Ilinks : Array
 var Output : float
@@ -11,15 +10,13 @@ const leakage : float = .1
 
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
-	updateEmissionByOutput()
 
 func prop() -> void:
 	Output = 0
 	for link in Ilinks:
 		Output += link.getOutput()
 	Output = activationFunc(Output)
-	updateEmissionByOutput()
-	
+
 func bprop() -> void:  # back-propagation
 	BOutput = 0
 	for link in Olinks:
@@ -27,7 +24,7 @@ func bprop() -> void:  # back-propagation
 	BOutput *= derivateActivationFunc(Output)
 	for link in Ilinks:
 		link.updateWeight(BOutput)
-	
+
 static func activationFunc(x:float) -> float:
 	if x < 0:
 		return x * leakage
@@ -69,3 +66,14 @@ func disconnectFrom(target:Node) -> void:
 
 func updateEmissionByOutput() -> void:
 	$CollisionShape/MeshInstance.get_surface_material(0).emission_energy = Output
+
+func getSaveData() -> Dictionary:
+	return {
+		"ID" : ID,
+		"Output" : Output,
+		"BOutput" : BOutput,
+		"translation" : translation,
+	}
+func loadSaveData(sd:Dictionary):
+	for propertyName in sd:
+		set(propertyName, sd[propertyName])

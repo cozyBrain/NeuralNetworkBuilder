@@ -44,3 +44,39 @@ func getBOutput() -> float:
 	if Onode == null:
 		return .0
 	return Onode.get("BOutput") * Weight
+
+func getSaveData() -> Dictionary:
+	return {
+		"ID" : ID,
+		"Weight" : Weight,
+		"Onode" : Onode.translation,
+		"Inode" : Inode.translation,
+		"transform" : transform,
+	}
+
+func loadSaveData(sd : Dictionary):
+	var A = G.default_world.getNode(sd["Inode"])
+	var B = G.default_world.getNode(sd["Onode"])
+	if A == null or B == null:
+		return null
+	# config synapse
+	var distance = A.translation.distance_to(B.translation)
+	var position = (A.translation + B.translation) / 2
+	var direction = A.translation.direction_to(B.translation)
+	setLength(distance)
+	var d = direction
+	d.x = 1 if d.x == 0 else 0
+	d.y = 1 if d.y == 0 else 0
+	d.z = 1 if d.y == 0 else 0
+	look_at_from_position(position, A.translation, d)
+	connectFrom(A)
+	connectTo(B)
+	
+	A.connectTo(self)
+	B.connectFrom(self)
+	
+	sd.erase("Inode")
+	sd.erase("Onode")
+	
+	for propertyName in sd:
+		set(propertyName, sd[propertyName])

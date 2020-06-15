@@ -50,7 +50,7 @@ func initialize() -> void:
 #					for node in link.Onodes:
 #						nextLayer[node] = true
 	
-		if not nextLayer.empty():
+		if not nextLayer.empty():  # if detect next connection
 			propSequence.push_back(nextLayer)
 	
 		layerIndex += 1
@@ -72,7 +72,7 @@ func initialize() -> void:
 	layerIndex = propSequence.size() - 1  # last layer
 	for node in propSequence[layerIndex]:
 		bpropSequence[0][node] = true
-	print("backpropagation sequence starting point: ", bpropSequence)
+	print("backpropagation sequence starting points: ", bpropSequence)
 	layerIndex = 0  # bpropSequence
 	while layerIndex < bpropSequence.size():
 		var nextLayer : Dictionary
@@ -121,3 +121,23 @@ func disconnectTo(target:Node) -> void:
 	var index = Olinks.find(target)
 	if index >= 0:
 		Olinks.remove(index)
+
+func getSaveData() -> Dictionary:
+	var sd : Dictionary = {
+		"ID" : ID,
+		"translation" : translation,
+	}
+	var propSequenceData = [].resize(propSequence.size())
+	for layerIndex in range(propSequenceData.size()):
+		propSequenceData[layerIndex] = [].resize(propSequence[layerIndex].size())
+		for nodeIndex in range(propSequenceData[layerIndex].size()):
+			propSequenceData[layerIndex][nodeIndex] = propSequence[layerIndex][nodeIndex].translation  # save translation(vector) not instance(node)
+#	sd["propSequence"] = propSequenceData
+#	for layer in bpropSequence:
+#		for node in layer:
+#			node.translation
+	
+	return sd
+func loadSaveData(sd:Dictionary):
+	for propertyName in sd:
+		set(propertyName, sd[propertyName])

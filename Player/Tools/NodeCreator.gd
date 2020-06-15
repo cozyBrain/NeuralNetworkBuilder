@@ -11,17 +11,17 @@ var hotbarSelection : int
 func create():
 	var pointerPosition = pointer.getPointerPosition()
 	if pointerPosition != null:
-		var obj = G.default_session.getNode(pointerPosition)
+		var obj = G.default_world.getNode(pointerPosition)
 		if obj == null:
 			var body = load("res://Nodes/" + G.IDtoString[hotbar[hotbarSelection]] + "/" + G.IDtoString[hotbar[hotbarSelection]] + ".tscn").instance()
 			body.translation = pointer.pointerPosition
-			G.default_session.addNode(body)
+			G.default_world.addNode(body)
 			print("create ", body)
 
 func erase():
 	var pointerPosition = pointer.getPointerPosition()
 	if pointerPosition != null:
-		var obj = G.default_session.getNode(pointerPosition)
+		var obj = G.default_world.getNode(pointerPosition)
 		if obj != null:
-			G.default_session.eraseNode(obj)
+			G.default_world.eraseNode(obj)
 			print("erase ", obj)

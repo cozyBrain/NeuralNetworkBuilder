@@ -1,8 +1,6 @@
 extends Node
 class_name NodeInfoIndicator
 
-
-export (NodePath) var session_path = G.default_session_path
 var overlappingBodyDetector = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
 
 const ID : int = G.ID.OII

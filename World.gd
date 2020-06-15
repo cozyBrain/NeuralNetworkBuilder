@@ -11,32 +11,31 @@ func _ready():
 	players.push_front(preloadedPlayer)
 	add_child(players[0])    
 
-var nodeMap : Dictionary
+var nodeMap : Dictionary  # register only nodes
 
 func updateNodeMap() -> void:
-	var nodes = $nodes.get_children()
-	for node in nodes:
+	for node in get_tree().get_nodes_in_group("node"):
 		nodeMap[node.translation] = node
 
 func addLink(link : Node) -> void:
-	$links.add_child(link)
+	$components.add_child(link)
 func eraseLink(link : Node) -> void:
 	link.queue_free()
 
 func overlapNode(node : Node):
-	$nodes.add_child(node)
+	$components.add_child(node)
 func addNode(node : Node, override = false) -> bool:  # true if did add_child
 	if nodeMap.has(node.translation):
 		if override:
 			nodeMap[node.translation].queue_free()
 			nodeMap.erase(node.translation)
 			nodeMap[node.translation] = node
-			$nodes.add_child(node)
+			$components.add_child(node)
 			return true
 		return false
 	
 	nodeMap[node.translation] = node
-	$nodes.add_child(node)
+	$components.add_child(node)
 	return true
 
 func eraseNode(node : Node) -> void:

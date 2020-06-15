@@ -13,10 +13,8 @@ const IDtoString = [
 	"N_LeakyReLU", "L_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
 ]
 const dx = 0.0001
-const default_session_path = "/root/session"
-onready var default_session = get_node(default_session_path)
-onready var default_session_nodes = default_session.get_node("nodes")
-onready var default_session_links = default_session.get_node("links")
+const default_world_path = "/root/World"
+onready var default_world = get_node(default_world_path)
 
 const defaultGroupName="_default"
 
