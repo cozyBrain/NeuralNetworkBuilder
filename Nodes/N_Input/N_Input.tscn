@@ -9,7 +9,7 @@
 
 [node name="N_Input" type="StaticBody" groups=[
 "node",
-"save",
+"saveLayer0",
 ]]
 script = ExtResource( 1 )
 

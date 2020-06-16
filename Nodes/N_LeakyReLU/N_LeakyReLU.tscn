@@ -2,8 +2,6 @@
 
 [ext_resource path="res://Nodes/N_LeakyReLU/N_LeakyReLU.gd" type="Script" id=1]
 
-
-
 [sub_resource type="BoxShape" id=1]
 
 [sub_resource type="CubeMesh" id=2]
@@ -18,7 +16,7 @@ emission_on_uv2 = false
 
 [node name="N_LeakyReLU" type="StaticBody" groups=[
 "node",
-"save",
+"saveLayer0",
 ]]
 script = ExtResource( 1 )
 

@@ -17,15 +17,12 @@ func prop() -> void:
 	for link in Ilinks:
 		Output += link.getOutput()
 	Output = activationFunc(Output)
-	print("O:",var2str(Output))
-	updateEmissionByOutput()
 
 func bprop() -> void:  # back-propagation
 	BOutput = 0
 	for link in Olinks:
 		BOutput += link.getBOutput()
 	BOutput *= derivateActivationFunc(Output)
-	print("BO:",var2str(BOutput))
 	for link in Ilinks:
 		link.updateWeight(BOutput)
 
@@ -78,3 +75,4 @@ func getSaveData() -> Dictionary:
 func loadSaveData(sd:Dictionary):
 	for propertyName in sd:
 		set(propertyName, sd[propertyName])
+	updateEmissionByOutput()

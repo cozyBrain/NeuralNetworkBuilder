@@ -16,7 +16,7 @@ emission_on_uv2 = false
 
 [node name="N_Tanh" type="StaticBody" groups=[
 "node",
-"save",
+"saveLayer0",
 ]]
 script = ExtResource( 1 )
 

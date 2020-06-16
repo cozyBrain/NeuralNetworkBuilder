@@ -19,7 +19,7 @@ func setOutput(x:float) -> void:
 	updateEmissionByOutput()
 
 func prop() -> void:
-	updateEmissionByOutput()
+	pass
 func bprop() -> void:  # back-propagation
 	pass
 
@@ -65,3 +65,4 @@ func getSaveData() -> Dictionary:
 func loadSaveData(sd:Dictionary):
 	for propertyName in sd:
 		set(propertyName, sd[propertyName])
+	updateEmissionByOutput()

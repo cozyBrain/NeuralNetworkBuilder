@@ -9,7 +9,7 @@
 
 [node name="N_NetworkController" type="StaticBody" groups=[
 "node",
-"save",
+"saveLayer1",
 ]]
 script = ExtResource( 1 )
 

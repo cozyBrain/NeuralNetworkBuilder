@@ -77,3 +77,4 @@ func getSaveData() -> Dictionary:
 func loadSaveData(sd:Dictionary):
 	for propertyName in sd:
 		set(propertyName, sd[propertyName])
+	updateEmissionByOutput()

@@ -33,46 +33,62 @@ func processCommand(text):
 
 func saveWorld(fileName : String):
 	var sd = saveData.new()
-	sd.data["nodes"] = []
-	sd.data["links"] = []
-	#var save = File.new()
-	#save.open("user://bob", File.WRITE)
-	for component in get_tree().get_nodes_in_group("save"):
-		if component.has_method("getSaveData"):
-			var componentSaveData = component.getSaveData()
-			if component.is_in_group("node"):
-				sd.data["nodes"].append(componentSaveData)
-			elif component.is_in_group("link"):
-				sd.data["links"].append(componentSaveData)
+	
+	for saveLayerIndex in range(sd.saveLayerRangeBegin, sd.saveLayerRangeEnd):
+		var saveLayerGroupName = "saveLayer"+str(saveLayerIndex)
+		var saveLayer : Dictionary = {}
+		sd.data[saveLayerGroupName] = saveLayer
+		sd.data[saveLayerGroupName]["nodes"] = []
+		sd.data[saveLayerGroupName]["links"] = []
+		for component in get_tree().get_nodes_in_group(saveLayerGroupName):
+			if component.has_method("getSaveData"):
+				var componentSaveData = component.getSaveData()
+				if component.is_in_group("node"):
+					saveLayer["nodes"].append(componentSaveData)
+				elif component.is_in_group("link"):
+					saveLayer["links"].append(componentSaveData)
 	ResourceSaver.save("res://saves/"+fileName+".res", sd, ResourceSaver.FLAG_COMPRESS)
 
 func loadWorld(fileName : String):
-	#free all components in group save
-	for component in get_tree().get_nodes_in_group("save"):
-		component.queue_free()
-	
 	#load sd(SaveData)
 	var sdDir = Directory.new()
 	if not sdDir.file_exists("res://saves/"+fileName+".res"):
 		return "failed to load world: file \""+fileName+"\" doesn't exist!\n"
 	var sd = load("res://saves/"+fileName+".res")
 	
-	#load nodes fist
-	for componentData in sd.data["nodes"]:
-		var componentDataID = componentData.get("ID")
-		if componentDataID:
-			var loadedComponent = load("res://Nodes/" + G.IDtoString[componentDataID] + "/" + G.IDtoString[componentDataID] + ".tscn").instance()
-			loadedComponent.loadSaveData(componentData)
-			G.default_world.addNode(loadedComponent)
-	G.default_world.updateNodeMap()
+	#free all components in group save
+	for saveLayerIndex in range(sd.saveLayerRangeBegin, sd.saveLayerRangeEnd):
+		var saveLayerGroupName = "saveLayer"+str(saveLayerIndex)
+		for component in get_tree().get_nodes_in_group(saveLayerGroupName):
+			if component.is_in_group("node"):
+				G.default_world.eraseNode(component)
+			elif component.is_in_group("link"):
+				G.default_world.eraseLink(component)
 	
-	#load links
-	for componentData in sd.data["links"]:
-		var componentDataID = componentData.get("ID")
-		if componentDataID:
-			var loadedComponent = load("res://Links/" + G.IDtoString[componentDataID] + "/" + G.IDtoString[componentDataID] + ".tscn").instance()
-			loadedComponent.loadSaveData(componentData)
-			G.default_world.addLink(loadedComponent)
+	#load all components from saveData
+	for saveLayerIndex in range(sd.saveLayerRangeBegin, sd.saveLayerRangeEnd):
+		var saveLayerGroupName = "saveLayer"+str(saveLayerIndex)
+		var saveLayer = sd.data.get(saveLayerGroupName)
+		if saveLayer:
+			#load nodes fist  ah ha.. networkControllerNodeNeedToBeLoadedLater. hmm
+			for componentData in saveLayer["nodes"]:
+				var componentData_ID = componentData.get("ID")
+				if componentData_ID:
+					var loadedComponent = load("res://Nodes/" + G.IDtoString[componentData_ID] + "/" + G.IDtoString[componentData_ID] + ".tscn").instance()
+					#set translation before addNode then, loadSaveData from componentData
+					loadedComponent.set("translation", componentData["translation"])
+					componentData.erase("translation")
+#					addNode before loadSaveData
+#					because loadSaveData before addNode causes issue on networkControllerNode: can't analyze itself
+					G.default_world.addNode(loadedComponent)
+					loadedComponent.loadSaveData(componentData)
+			#load links
+			for componentData in saveLayer["links"]:
+				var componentData_ID = componentData.get("ID")
+				if componentData_ID:
+					var loadedComponent = load("res://Links/" + G.IDtoString[componentData_ID] + "/" + G.IDtoString[componentData_ID] + ".tscn").instance()
+					loadedComponent.loadSaveData(componentData)
+					G.default_world.addLink(loadedComponent)
 
 
 func Tool(arg : String):

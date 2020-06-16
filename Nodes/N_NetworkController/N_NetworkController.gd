@@ -104,6 +104,10 @@ func wave() -> void:
 		for layer in bpropSequence:
 			for node in layer:
 				node.bprop()
+	for layer in propSequence:
+		for node in layer:
+			if node.has_method("updateEmissionByOutput"):
+				node.call("updateEmissionByOutput")
 
 func connectTo(target:Node) -> int:
 	# U can cancel Onodes.push if target is not compatible by using has_meta, has_method, has_node, if not etc..
@@ -127,17 +131,34 @@ func getSaveData() -> Dictionary:
 		"ID" : ID,
 		"translation" : translation,
 	}
-	var propSequenceData = [].resize(propSequence.size())
-	for layerIndex in range(propSequenceData.size()):
-		propSequenceData[layerIndex] = [].resize(propSequence[layerIndex].size())
-		for nodeIndex in range(propSequenceData[layerIndex].size()):
-			propSequenceData[layerIndex][nodeIndex] = propSequence[layerIndex][nodeIndex].translation  # save translation(vector) not instance(node)
-#	sd["propSequence"] = propSequenceData
-#	for layer in bpropSequence:
-#		for node in layer:
-#			node.translation
-	
+	sd["propSequence"] = convertPropSequence2Translation(propSequence)
+	sd["bpropSequence"] = convertPropSequence2Translation(bpropSequence)
 	return sd
+	
 func loadSaveData(sd:Dictionary):
+	propSequence = convertTranslation2PropSequence(sd.get("propSequence", []))
+	bpropSequence = convertTranslation2PropSequence(sd.get("bpropSequence", []))
+	sd.erase("propSequence")
+	sd.erase("bpropSequence")
 	for propertyName in sd:
 		set(propertyName, sd[propertyName])
+
+func convertPropSequence2Translation(ps:Array) -> Array:
+	var propSequenceData = []
+	propSequenceData.resize(ps.size())
+	for layerIndex in range(propSequenceData.size()):
+		propSequenceData[layerIndex] = []
+		propSequenceData[layerIndex].resize(ps[layerIndex].size())
+		for nodeIndex in range(propSequenceData[layerIndex].size()):
+			propSequenceData[layerIndex][nodeIndex] = ps[layerIndex][nodeIndex].translation  # save translation(vector) not instance(node)	
+	return propSequenceData
+func convertTranslation2PropSequence(ps:Array) -> Array:
+	var propSequenceData = []
+	propSequenceData.resize(ps.size())
+	for layerIndex in range(propSequenceData.size()):
+		propSequenceData[layerIndex] = []
+		propSequenceData[layerIndex].resize(ps[layerIndex].size())
+		for nodeIndex in range(propSequenceData[layerIndex].size()):
+			print(ps[layerIndex][nodeIndex])
+			propSequenceData[layerIndex][nodeIndex] = G.default_world.getNode(ps[layerIndex][nodeIndex])  # save translation(vector) not instance(node)	
+	return propSequenceData

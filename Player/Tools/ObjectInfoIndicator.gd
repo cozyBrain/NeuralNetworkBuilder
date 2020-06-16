@@ -28,5 +28,5 @@ func handle(position) -> String:
 				output += property.name + ": " + var2str(object[property.name]) + "\n"
 			else:
 				output += property.name + ": " + str(object[property.name]) + "\n"
-
+	print(output)
 	return output

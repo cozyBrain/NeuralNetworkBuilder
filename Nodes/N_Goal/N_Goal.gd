@@ -28,16 +28,12 @@ func bprop() -> void:  # back-propagation
 	# preErr := square32(n.O-N.G) / BI
 	# aftErr := square32((n.O-dx)-N.G) / BI
 	# N.BO = ((preErr - aftErr) / dx) * 0.5
-	
-	var f : String
 	for link in Ilinks:
-		var preErr = G.square(link.getOutput() - Output)  # == link.Inode.Output - Goal
+		var preErr = G.square(link.getOutput() - Output)  # Output == Goal
 		var aftErr = G.square((link.getOutput()-G.dx) - Output)
-		f = str(var2str(preErr)," - ", var2str(aftErr), " / ", G.dx, " = ")
 		BOutput += ((preErr - aftErr) / G.dx)
 	BOutput /= Ilinks.size()
 	BOutput *= 0.001
-	print(f,var2str(BOutput))
 
 func connectTo(target:Node) -> int:
 	var id = target.get("ID")
@@ -83,3 +79,4 @@ func getSaveData() -> Dictionary:
 func loadSaveData(sd:Dictionary):
 	for propertyName in sd:
 		set(propertyName, sd[propertyName])
+	updateEmissionByOutput()
