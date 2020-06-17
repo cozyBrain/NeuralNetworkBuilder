@@ -1,11 +1,14 @@
-# Nodes getBOutput after updateWeight, so not that precise. may causes issue later..
-class_name L_Synapse
+# Nodes getBOutput() after updateWeight(), so not that precise. may causes issue later..
+class_name L_SCWeight
 extends StaticBody
 
 var Weight : float = 1
 var Onode : Node
 var Inode : Node
-const ID : int = G.ID.L_Synapse
+const ID : int = G.ID.L_SCWeight
+
+#func _ready():
+#	$CollisionShape.set_disabled(true)  # optimize
 
 func setLength(length : float) -> void:
 	var cs = get_node("CollisionShape")

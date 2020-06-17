@@ -20,9 +20,14 @@ _global_script_classes=[ {
 "path": "res://Player/Tools/BoxConnector.gd"
 }, {
 "base": "StaticBody",
-"class": "L_Synapse",
+"class": "L_SCSharedWeight",
 "language": "GDScript",
-"path": "res://Links/L_Synapse/L_Synapse.gd"
+"path": "res://Links/L_SCSharedWeight/L_SCSharedWeight.gd"
+}, {
+"base": "StaticBody",
+"class": "L_SCWeight",
+"language": "GDScript",
+"path": "res://Links/L_SCWeight/L_SCWeight.gd"
 }, {
 "base": "Node",
 "class": "LinkCreator",
@@ -82,7 +87,8 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "ArgParser": "",
 "BoxConnector": "",
-"L_Synapse": "",
+"L_SCSharedWeight": "",
+"L_SCWeight": "",
 "LinkCreator": "",
 "N_Goal": "",
 "N_Input": "",

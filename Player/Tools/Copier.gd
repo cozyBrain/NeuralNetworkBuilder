@@ -20,7 +20,6 @@ func handle(arg : String):
 #   	 # Script only properties/vars
 #    	if(property.usage == PROPERTY_USAGE_SCRIPT_VARIABLE): 
 #       	 new_node[property.name] = source_node[property.name]
-
 	var output : String
 	var pointerPosition = pointer.getPointerPosition()
 	var argParser = ArgParser.new(arg)
@@ -110,7 +109,7 @@ func handle(arg : String):
 						output += "No pointer position detected!\nIf your pointer mode is rayCast please aim at detectable object.\n"
 					else:
 						copy.translation += pointerPosition
-						G.default_session.addNode(copy, overrideNode)
+						G.default_world.addNode(copy, overrideNode)
 						output += "Pasted\n"
 	elif pasteArguments.size() > 0:
 		if not pasteArguments.size() >= 2:
@@ -132,25 +131,25 @@ func handle(arg : String):
 							if deepCopy:
 								G.copyVariables(copy2add, copy)
 							copy.translation += pointerPosition + step*stride
-							G.default_session.addNode(copy, overrideNode)
+							G.default_world.addNode(copy, overrideNode)
 					output += "pasted nodes\n"
 					# create links ############################################
 					var linkCreator = get_parent().get_node("LinkCreator")
 					for step in range(1, pasteCount+1):
 						for copy2add in copies2add:
-							var node2link = G.default_session.getNode(copy2add.translation + pointerPosition + step*stride)
+							var node2link = G.default_world.getNode(copy2add.translation + pointerPosition + step*stride)
 							var Olinks = copy2add.get("Olinks")
 							if Olinks != null:
 								for Olink in Olinks:
-									var newSynapse = linkCreator.create(node2link, G.default_session.getNode(Olink.Onodes[0].translation + step*stride))
+									var newSynapse = linkCreator.create(node2link, G.default_world.getNode(Olink.Onodes[0].translation + step*stride))
 									if newSynapse != null:
-										G.default_session.addLink(newSynapse)
+										G.default_world.addLink(newSynapse)
 							var Ilinks = copy2add.get("Ilinks")
 							if Ilinks != null:
 								for Ilink in Ilinks:
-									var newSynapse = linkCreator.create(G.default_session.getNode(Ilink.Inodes[0].translation + step*stride), node2link)
+									var newSynapse = linkCreator.create(G.default_world.getNode(Ilink.Inodes[0].translation + step*stride), node2link)
 									if newSynapse != null:
-											G.default_session.addLink(newSynapse)
+											G.default_world.addLink(newSynapse)
 						output += "Linked\n"
 	
 	# erase

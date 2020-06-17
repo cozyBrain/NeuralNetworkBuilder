@@ -3,7 +3,7 @@ class_name LinkCreator
 
 const ID : int = G.ID.LC
 
-onready var Link = preload("res://Links/L_Synapse/L_Synapse.tscn")
+onready var Link = preload("res://Links/L_SCWeight/L_SCWeight.tscn")
 
 var Anode : Object
 func handle(position) -> String:

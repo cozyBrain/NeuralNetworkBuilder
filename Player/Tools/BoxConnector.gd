@@ -75,10 +75,10 @@ func initiate() -> String:
 	var linkCreator = get_parent().get_node("LinkCreator")
 	
 	for Anode in Anodes:
-		if Anode.ID == G.ID.L_Synapse:
+		if Anode.ID == G.ID.L_SCWeight:
 			continue
 		for Bnode in Bnodes:
-			if Bnode.ID == G.ID.L_Synapse:
+			if Bnode.ID == G.ID.L_SCWeight:
 				continue
 			var newSynapse = linkCreator.create(Anode, Bnode)
 			if newSynapse != null:

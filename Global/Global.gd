@@ -5,12 +5,14 @@ extends Node
 enum ID {
 	None, Player,
 	OII, LC, BC, H, NC, S, P, C, SLT
-	N_LeakyReLU, L_Synapse, N_NetworkController, N_Input, N_Tanh, N_Goal,
+	N_LeakyReLU, N_NetworkController, N_Input, N_Tanh, N_Goal,
+	L_SCWeight, L_SCSharedWeight,
 }
 const IDtoString = [
 	"None", "Player",
 	"ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Pointer", "Copier", "SupervisedLearningTrainer",
-	"N_LeakyReLU", "L_Synapse", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
+	"N_LeakyReLU", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
+	"L_SCWeight", "L_SCSharedWeight"
 ]
 const dx = 0.0001
 const default_world_path = "/root/World"

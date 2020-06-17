@@ -37,7 +37,7 @@ func connectTo(target:Node) -> int:
 	if id == null:
 		return -1
 	match id:
-		G.ID.L_Synapse:
+		G.ID.L_SCWeight:
 			Olinks.push_front(target)
 		_:
 			return -1
@@ -47,7 +47,7 @@ func connectFrom(target:Node) -> int:
 	if id == null:
 		return -1
 	match id:
-		G.ID.L_Synapse:
+		G.ID.L_SCWeight:
 			Ilinks.push_front(target)
 		_:
 			return -1

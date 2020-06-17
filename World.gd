@@ -77,16 +77,6 @@ func boxGetNode(from:Vector3, to:Vector3) -> Array:
 #				node.translation = Vector3(x,y,z)
 #				addNode(node)
 
-var HideLinksToggleStatus : bool = true
-func toggleHideLinks():
-	var links = $links.get_children()
-	if HideLinksToggleStatus:
-		for link in links:
-			link.hide()
-	else:
-		for link in links:
-			link.show()
-	HideLinksToggleStatus = !HideLinksToggleStatus
 
 func close():
 	print('close Session..')

@@ -14,7 +14,7 @@ func handle(position) -> String:
 		position = G.str2vector3(position)
 		if position == null:
 			return "Invalid argument\n"
-		object = G.default_session.getNode(position)
+		object = G.default_world.getNode(position)
 		if null == object:
 			return str(position, ": No object detected\n")
 
