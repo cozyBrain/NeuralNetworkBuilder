@@ -1,11 +1,11 @@
 extends Node
 class_name NodeCreator
 
-const ID : int = G.ID.NC
+const ID : String = "NodeCreator"
 
 onready var pointer = get_node("../Pointer")
 
-var hotbar : Array = [G.ID.N_LeakyReLU, G.ID.N_Input, G.ID.N_Goal, G.ID.N_Tanh, G.ID.N_NetworkController]
+var hotbar : Array = ["N_LeakyReLU", "N_Input", "N_Goal", "N_Tanh", "N_NetworkController"]
 var hotbarSelection : int
 
 func create():
@@ -13,7 +13,7 @@ func create():
 	if pointerPosition != null:
 		var obj = G.default_world.getNode(pointerPosition)
 		if obj == null:
-			var body = load("res://Nodes/" + G.IDtoString[hotbar[hotbarSelection]] + "/" + G.IDtoString[hotbar[hotbarSelection]] + ".tscn").instance()
+			var body = load("res://Nodes/" + hotbar[hotbarSelection] + "/" + hotbar[hotbarSelection] + ".tscn").instance()
 			body.translation = pointer.pointerPosition
 			G.default_world.addNode(body)
 			print("create ", body)

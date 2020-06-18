@@ -1,7 +1,7 @@
 extends Node
 class_name BoxConnector
 
-const Type : int = G.ID.BC
+const ID : String = "BoxConnector"
 
 var areas = [[], []]  # A[beginPoint, endPoint], B[begin, end]
 
@@ -75,10 +75,10 @@ func initiate() -> String:
 	var linkCreator = get_parent().get_node("LinkCreator")
 	
 	for Anode in Anodes:
-		if Anode.ID == G.ID.L_SCWeight:
+		if Anode.ID == "L_SCWeight":
 			continue
 		for Bnode in Bnodes:
-			if Bnode.ID == G.ID.L_SCWeight:
+			if Bnode.ID == "L_SCWeight":
 				continue
 			var newSynapse = linkCreator.create(Anode, Bnode)
 			if newSynapse != null:

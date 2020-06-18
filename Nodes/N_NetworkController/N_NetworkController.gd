@@ -6,7 +6,7 @@ var propSequence : Array
 var bpropSequence : Array
 var propOnly : bool = false
 
-const ID : int = G.ID.N_NetworkController  # IDData.N_NetworkController
+const ID : String = "N_NetworkController"  # IDData.N_NetworkController
 
 func prop() -> void:
 	pass
@@ -32,7 +32,7 @@ func initialize() -> void:
 	
 				# init weights
 				match objID:
-					G.ID.N_Goal:
+					"N_Goal":
 						pass
 					_:
 						var objIlinks = keyAKAobject.get("Ilinks")
@@ -109,22 +109,22 @@ func wave() -> void:
 			if node.has_method("updateEmissionByOutput"):
 				node.call("updateEmissionByOutput")
 
-func connectTo(target:Node) -> int:
-	# U can cancel Onodes.push if target is not compatible by using has_meta, has_method, has_node, if not etc..
-	var id = target.get("ID")
-	if id == null:
-		return -1
-	match id:
-		G.ID.L_SCWeight:
-			Olinks.push_front(target) #  target
-		var _unknownID:
-			return -1
-	return 0
+func connectPort(target:Node, port:String) -> int:
+	match port:
+		"Olinks":
+			match target.get("ID"):
+				"L_SCWeight", "L_SCSharedWeight":
+					Olinks.push_front(target)
+				_:
+					return -1
+	return 00
 
-func disconnectTo(target:Node) -> void:
-	var index = Olinks.find(target)
-	if index >= 0:
-		Olinks.remove(index)
+func disconnectPort(target:Node, port:String) -> void:
+	match port:
+		"Olinks":
+			var index = Olinks.find(target)
+			if index >= 0:
+				Olinks.remove(index)
 
 func getSaveData() -> Dictionary:
 	var sd : Dictionary = {

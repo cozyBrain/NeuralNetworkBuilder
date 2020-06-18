@@ -1,6 +1,6 @@
 extends Node
 
-const ID : int = G.ID.C
+const ID : String = "Copier"
 
 onready var pointer = get_node("../Pointer")
 onready var selector = get_node("../Selector")

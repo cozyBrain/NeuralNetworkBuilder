@@ -3,7 +3,7 @@ class_name NodeInfoIndicator
 
 var overlappingBodyDetector = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
 
-const ID : int = G.ID.OII
+const ID : String = "ObjectInfoIndicator"
 
 func handle(position) -> String:
 	var output : String = ""	
@@ -21,7 +21,7 @@ func handle(position) -> String:
 	output += str("< ", object, "  ", object.translation, " >\n")
 	var objID = object.get("ID")
 	if objID != null:
-		output += str("ID : ", objID, " : ", G.IDtoString[objID], '\n')
+		output += str("ID : ", objID, " : ", [objID], '\n')
 	for property in object.get_property_list():
 		if(property.usage == PROPERTY_USAGE_SCRIPT_VARIABLE): 
 			if typeof(object[property.name]) == TYPE_REAL:

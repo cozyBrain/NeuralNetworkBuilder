@@ -4,7 +4,7 @@ extends StaticBody
 var Olinks : Array
 var Ilinks : Array
 var Output : float
-const ID : int = G.ID.N_Input
+const ID : String = "N_Input"
 
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
@@ -23,35 +23,32 @@ func prop() -> void:
 func bprop() -> void:  # back-propagation
 	pass
 
-func connectTo(target:Node) -> int:
-	var id = target.get("ID")
-	if id == null:
-		return -1
-	match id:
-		G.ID.L_SCWeight:
-			Olinks.push_front(target)
-		_:
-			return -1
-	return 0
-func connectFrom(target:Node) -> int:
-	var id = target.get("ID")
-	if id == null:
-		return -1
-	match id:
-		G.ID.L_SCWeight:
-			Ilinks.push_front(target) 
-		_:
-			return -1
-	return 0
+func connectPort(target:Node, port:String) -> int:
+	match port:
+		"Olinks":
+			match target.get("ID"):
+				"L_SCWeight", "L_SCSharedWeight":
+					Olinks.push_front(target)
+				_:
+					return -1
+		"Ilinks":
+			match target.get("ID"):
+				"L_SCWeight", "L_SCSharedWeight":
+					Olinks.push_front(target)
+				_:
+					return -1
+	return 00
 
-func disconnectTo(target:Node) -> void:
-	var index = Olinks.find(target)
-	if index >= 0:
-		Olinks.remove(index)
-func disconnectFrom(target:Node) -> void:
-	var index = Ilinks.find(target)
-	if index >= 0:
-		Ilinks.remove(index)
+func disconnectPort(target:Node, port:String) -> void:
+	match port:
+		"Olinks":
+			var index = Olinks.find(target)
+			if index >= 0:
+				Olinks.remove(index)
+		"Ilinks":
+			var index = Ilinks.find(target)
+			if index >= 0:
+				Ilinks.remove(index)
 
 func updateEmissionByOutput() -> void:
 	$CollisionShape/MeshInstance.get_surface_material(0).emission_energy = Output

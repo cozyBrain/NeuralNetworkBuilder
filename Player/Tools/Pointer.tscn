@@ -1,12 +1,12 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Player/Tools/Pointer.gd" type="Script" id=1]
-[ext_resource path="res://Player/crosshair.png" type="Texture" id=2]
+[ext_resource path="res://Player/rayCastPointer.png" type="Texture" id=2]
 
 [node name="Pointer" type="Node"]
 script = ExtResource( 1 )
 
-[node name="Crosshair" type="TextureRect" parent="."]
+[node name="rayCastPointer" type="TextureRect" parent="."]
 visible = false
 margin_right = 2048.0
 margin_bottom = 1200.0

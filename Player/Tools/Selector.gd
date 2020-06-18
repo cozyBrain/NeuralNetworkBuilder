@@ -1,6 +1,6 @@
 extends Node
 
-const ID : int = G.ID.S
+const ID : String = "Selector"
 
 export (String) var selectionIndicatorResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
 onready var pointer = get_node("../Pointer")

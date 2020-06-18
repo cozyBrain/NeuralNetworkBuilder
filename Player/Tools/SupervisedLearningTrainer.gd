@@ -1,6 +1,6 @@
 extends Node
 
-const ID : int = G.ID.SLT
+const ID : String = "SupervisedLearningTrainer"
 
 onready var selector = get_node("../Selector")
 

@@ -1,9 +1,14 @@
 extends Node
 class_name LinkCreator
 
-const ID : int = G.ID.LC
+const ID : String = "LinkCreator"
 
-onready var Link = preload("res://Links/L_SCWeight/L_SCWeight.tscn")
+var Link
+
+var hotbar : Array = ["L_SCWeight", "L_SCSharedWeight"]
+var hotbarSelection : int setget setHotbarSelection
+func setHotbarSelection(selection : int):
+	Link = load("res://Components/" + hotbar[hotbarSelection] + "/" + hotbar[hotbarSelection] + ".tscn").instance()
 
 var Anode : Object
 func handle(position) -> String:

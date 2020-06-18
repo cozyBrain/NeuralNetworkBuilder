@@ -7,7 +7,7 @@ var flySpeed = 10
 var flyAccel = 40
 var velocity = Vector3()
 var detectedObject
-var ID : int = G.ID.Player
+var ID : String = "Player"
 var aim : Basis
 var Tool
 
@@ -22,19 +22,19 @@ var prevHotbarSelection : int = -1
 var hotbarSubSelection : bool = false
 var ToolHotbar
 
-var hotbar = [G.ID.OII, G.ID.LC, G.ID.BC, G.ID.H, G.ID.NC, G.ID.S, G.ID.C, G.ID.SLT,G.ID.None,G.ID.None]  # size:10  hotbar lol! Korean people will see why
+var hotbar = ["ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Copier", "SupervisedLearningTrainer","None","None"]  # size:10  hotbar lol! Korean people will see why
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	var playerHotbarIndication = str("PlayerHotbar: [")
 	for item in hotbar:
-		playerHotbarIndication += str(" "+G.IDtoString[item]+" ")
+		playerHotbarIndication += str(" "+item+" ")
 	playerHotbarIndication += "]"
 	console.println(playerHotbarIndication)
 	pointer.activatePointer(translation, aim)
 
 func _process(delta):
-	
+#	print(translation.round())
 	if Input.is_action_just_pressed("fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
 	
@@ -62,9 +62,9 @@ func _process(delta):
 	if Input.is_action_just_pressed("KEY_F"):
 		if Tool != null: 
 			match hotbar[hotbarSelection]:
-				G.ID.BC:
+				"BoxConnector":
 					console.processCommand(str("Tool BoxConnector initiate"))
-				G.ID.H:  # Hand
+				"Hand":  # Hand
 					if null == detectedObject:
 						print("Hand: No Object Detected")
 					else:
@@ -74,11 +74,11 @@ func _process(delta):
 							print("Hand: could not interact")
 						else:
 							match id:
-								G.ID.N_NetworkController:
+								"N_NetworkController":
 									detectedObject.propOnly = !detectedObject.propOnly
 									print("propOnly: ", detectedObject.propOnly)
 								_:
-									print("Hand: no interaction with ", G.IDtoString[id])
+									print("Hand: no interaction with ", id)
 				_:
 					print("no action")
 		else:
@@ -86,7 +86,7 @@ func _process(delta):
 	if Input.is_action_just_pressed("SHIFT+T"):
 		typingMode = true
 		console.inputBox.grab_focus()
-		var inputText = str("Tool ", G.IDtoString[hotbar[hotbarSelection]], " ")
+		var inputText = str("Tool ", hotbar[hotbarSelection], " ")
 		console.inputBox.set_text(inputText)
 		console.inputBox.set_cursor_position(inputText.length())
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -116,9 +116,9 @@ func _physics_process(delta):
 	if Tool != null: 
 		if Tool.has_method("update"):
 			match hotbar[hotbarSelection]:
-				G.ID.NC:
+				"NodeCreator":
 					Tool.update(translation, aim, delta)
-				G.ID.S:
+				"Selector":
 					Tool.update(translation, aim, delta)
 	
 	if typingMode:
@@ -149,7 +149,7 @@ func _physics_process(delta):
 	# check continuously unlike _input
 	if Tool != null: 
 		match hotbar[hotbarSelection]:
-			G.ID.NC:
+			"NodeCreator":
 				if Input.is_mouse_button_pressed(BUTTON_RIGHT):
 					Tool.erase()
 				elif Input.is_mouse_button_pressed(BUTTON_LEFT):
@@ -198,12 +198,12 @@ func _input(event):
 						hotbarSelection = 9
 					# when you select another tool
 					if prevHotbarSelection != hotbarSelection:  
-						var prevTool = get_node_or_null("Tools/"+G.IDtoString[hotbar[prevHotbarSelection]])
+						var prevTool = get_node_or_null("Tools/"+hotbar[prevHotbarSelection])
 						prevHotbarSelection = hotbarSelection
 						if prevTool != null:
 							if prevTool.has_method("deactivate"):
 								prevTool.deactivate()
-						Tool = get_node_or_null("Tools/"+G.IDtoString[hotbar[prevHotbarSelection]])
+						Tool = get_node_or_null("Tools/"+hotbar[prevHotbarSelection])
 						if Tool != null:
 							ToolHotbar = Tool.get("hotbar")
 							if ToolHotbar != null:
@@ -216,38 +216,38 @@ func _input(event):
 	
 	if Tool != null: 
 		match hotbar[hotbarSelection]:
-			G.ID.OII:
+			"ObjectInfoIndicator":
 				if event is InputEventMouseButton:
 					if event.is_pressed():
 						if event.button_index == BUTTON_LEFT:
 							if detectedObject != null:
-								console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(detectedObject.get_instance_id())))
+								console.processCommand(str("Tool ", "ObjectInfoIndicator", " ", str(detectedObject.get_instance_id())))
 							else:
 								var additionalMessage : String
 								if pointer.getPointerPosition() != null:
 									additionalMessage = str(": ",pointer.getPointerPosition())
 								console.println("No node detected!"+additionalMessage)
-			G.ID.LC:
+			"LinkCreator":
 				if event is InputEventMouseButton:
 					if event.is_pressed():
 						if detectedObject != null:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.LC], " ", str(detectedObject.get_instance_id())))
+							console.processCommand(str("Tool ", "LinkCreator", " ", str(detectedObject.get_instance_id())))
 						else:
 							console.println("No node detected!")
-			G.ID.BC:
+			"BoxConnector":
 				if event is InputEventMouseButton:
 					if event.is_pressed():
 						if detectedObject == null:
 							console.println("No node detected!")
 						elif event.button_index == BUTTON_LEFT:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " A ", str(detectedObject.translation)))
+							console.processCommand(str("Tool ", "BoxConnector", " A ", str(detectedObject.translation)))
 						elif event.button_index == BUTTON_RIGHT:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " B ", str(detectedObject.translation)))
+							console.processCommand(str("Tool ", "BoxConnector", " B ", str(detectedObject.translation)))
 				elif event is InputEventKey:
 					if event.is_pressed():
 						if event.get_scancode() == KEY_C:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.BC], " -reset"))
-			G.ID.H:  # Hand
+							console.processCommand(str("Tool ", "BoxConnector", " -reset"))
+			"Hand":  # Hand
 				if event is InputEventMouseButton:
 					if event.is_pressed():
 						if null == detectedObject:
@@ -259,7 +259,7 @@ func _input(event):
 								print(Tool.name, ": could not interact")
 							else:
 								match id:
-									G.ID.N_NetworkController:
+									"N_NetworkController":
 										if event.button_index == BUTTON_RIGHT:
 											detectedObject.initialize()
 										elif event.button_index == BUTTON_LEFT:
@@ -267,22 +267,20 @@ func _input(event):
 											for _i in range(count):
 												detectedObject.wave()
 											print(Tool.name, ": iterated for ", count, " times")
-									G.ID.N_Input, G.ID.N_Goal:
+									"N_Input", "N_Goal":
 										if event.button_index == BUTTON_LEFT:
 											detectedObject.addOutput(1)
 										elif event.button_index == BUTTON_RIGHT:
 											detectedObject.addOutput(-1)
 									_:
-										print(Tool.name, ": no interaction with ", G.IDtoString[id])
-			G.ID.NC:
+										print(Tool.name, ": no interaction with ", id)
+			"NodeCreator":
 				pass
-			G.ID.S:
+			"Selector":
 				if event is InputEventMouseButton:
 					if event.is_pressed():
 						if event.button_index == BUTTON_LEFT:
-							console.processCommand(str("Tool ", G.IDtoString[G.ID.S], " -s hotbarSelection pointerPosition"))
-						#elif event.button_index == BUTTON_RIGHT:
-						#	console.processCommand(str("Tool ", G.IDtoString[G.ID.OII], " ", str(detectedObject.translation)))
+							console.processCommand(str("Tool ", "Selector", " -s hotbarSelection pointerPosition"))
 			_:
 				pass
 

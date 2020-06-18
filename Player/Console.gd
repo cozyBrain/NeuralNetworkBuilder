@@ -74,7 +74,7 @@ func loadWorld(fileName : String):
 			for componentData in saveLayer["nodes"]:
 				var componentData_ID = componentData.get("ID")
 				if componentData_ID:
-					var loadedComponent = load("res://Nodes/" + G.IDtoString[componentData_ID] + "/" + G.IDtoString[componentData_ID] + ".tscn").instance()
+					var loadedComponent = load("res://Nodes/" + [componentData_ID] + "/" + [componentData_ID] + ".tscn").instance()
 					#set translation before addNode then, loadSaveData from componentData
 					loadedComponent.set("translation", componentData["translation"])
 					componentData.erase("translation")
@@ -86,7 +86,7 @@ func loadWorld(fileName : String):
 			for componentData in saveLayer["links"]:
 				var componentData_ID = componentData.get("ID")
 				if componentData_ID:
-					var loadedComponent = load("res://Links/" + G.IDtoString[componentData_ID] + "/" + G.IDtoString[componentData_ID] + ".tscn").instance()
+					var loadedComponent = load("res://Links/" + [componentData_ID] + "/" + [componentData_ID] + ".tscn").instance()
 					loadedComponent.loadSaveData(componentData)
 					G.default_world.addLink(loadedComponent)
 

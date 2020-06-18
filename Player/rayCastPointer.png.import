@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/crosshair.png-533a20c4b7565d94adab242887a55d54.stex"
+path="res://.import/rayCastPointer.png-1ea48ecc34e7508b308653964a541bbf.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Player/crosshair.png"
-dest_files=[ "res://.import/crosshair.png-533a20c4b7565d94adab242887a55d54.stex" ]
+source_file="res://Player/rayCastPointer.png"
+dest_files=[ "res://.import/rayCastPointer.png-1ea48ecc34e7508b308653964a541bbf.stex" ]
 
 [params]
 

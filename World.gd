@@ -1,7 +1,7 @@
 # related with Global.gd
 extends Node
 
-onready var newPlayer = preload("res://Player/Player.tscn")
+var newPlayer = preload("res://Player/Player.tscn")
 var players = []
 
 func _ready():
@@ -9,7 +9,7 @@ func _ready():
 	var preloadedPlayer = newPlayer.instance()
 	preloadedPlayer.set_name("P1")
 	players.push_front(preloadedPlayer)
-	add_child(players[0])    
+	add_child(players[0])
 
 var nodeMap : Dictionary  # register only nodes
 

@@ -1,7 +1,7 @@
 extends Node
 class_name Pointer
 
-const ID : int = G.ID.P
+const ID : String = "Pointer"
 
 export (String) var pointerResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
 onready var rayCast = get_node("../../Yaxis/Camera/RayCast")
@@ -31,11 +31,11 @@ func switchMode(translation, aim : Basis):
 	if selectedMode == mode.pointer:
 		selectedMode = mode.rayCast
 		deactivatePointer()
-		$Crosshair.show()
+		$rayCastPointer.show()
 	else:
 		selectedMode = mode.pointer
 		activatePointer(translation, aim)
-		$Crosshair.hide()
+		$rayCastPointer.hide()
 
 func update(translation : Vector3, aim : Basis, delta : float):
 	if selectedMode == mode.pointer:

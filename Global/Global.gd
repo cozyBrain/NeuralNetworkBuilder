@@ -2,18 +2,20 @@
 # Global.gd: many stuffs that most others need.
 
 extends Node
-enum ID {
-	None, Player,
-	OII, LC, BC, H, NC, S, P, C, SLT
-	N_LeakyReLU, N_NetworkController, N_Input, N_Tanh, N_Goal,
-	L_SCWeight, L_SCSharedWeight,
-}
-const IDtoString = [
-	"None", "Player",
-	"ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Pointer", "Copier", "SupervisedLearningTrainer",
-	"N_LeakyReLU", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
-	"L_SCWeight", "L_SCSharedWeight"
-]
+#enum ID {
+#	None, Player,
+#	OII, LC, BC, H, NC, S, P, C, SLT
+#	N_LeakyReLU, N_NetworkController, N_Input, N_Tanh, N_Goal,
+#	L_SCWeight, L_SCSharedWeight,
+#	Port_Inode, Port_Onode, Port_Wnode,
+#}
+#const IDtoString = [
+#	"None", "Player",
+#	"ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Pointer", "Copier", "SupervisedLearningTrainer",
+#	"N_LeakyReLU", "N_NetworkController", "N_Input", "N_Tanh", "N_Goal",
+#	"L_SCWeight", "L_SCSharedWeight",
+#	"Port_Inode", "Port_Onode", "Port_Wnode",
+#]
 const dx = 0.0001
 const default_world_path = "/root/World"
 onready var default_world = get_node(default_world_path)
