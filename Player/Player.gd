@@ -37,6 +37,7 @@ func _process(delta):
 #	print(translation.round())
 	if Input.is_action_just_pressed("fullscreen"):
 		OS.window_fullscreen = !OS.window_fullscreen
+		print(OS.window_size)
 	
 	if typingMode:
 		if Input.is_action_just_pressed("KEY_TAB"):
@@ -75,8 +76,7 @@ func _process(delta):
 						else:
 							match id:
 								"N_NetworkController":
-									detectedObject.propOnly = !detectedObject.propOnly
-									print("propOnly: ", detectedObject.propOnly)
+									detectedObject.initialize()
 								_:
 									print("Hand: no interaction with ", id)
 				_:
@@ -104,14 +104,6 @@ func _process(delta):
 		print("Engine.time_scale: ", Engine.time_scale)
 
 func _physics_process(delta):
-	if Input.is_action_just_pressed("KEY_TAB"):
-		pointer.switchMode(translation, aim)
-	
-	aim = $Yaxis/Camera.get_camera_transform().basis
-	detectedObject = pointer.update(translation, aim, delta)
-	#print(aim.z.round())
-	#pointerPosition -= aim.z*distance
-	#pointerPosition = pointerPosition.round()
 	
 	if Tool != null: 
 		if Tool.has_method("update"):
@@ -123,6 +115,15 @@ func _physics_process(delta):
 	
 	if typingMode:
 		return
+	
+	if Input.is_action_just_pressed("KEY_TAB"):
+		pointer.switchMode(translation, aim)
+	
+	aim = $Yaxis/Camera.get_camera_transform().basis
+	detectedObject = pointer.update(translation, aim, delta)
+	#print(aim.z.round())
+	#pointerPosition -= aim.z*distance
+	#pointerPosition = pointerPosition.round()
 	
 	var direction = Vector3()
 	if Input.is_key_pressed(KEY_W):
@@ -221,7 +222,7 @@ func _input(event):
 					if event.is_pressed():
 						if event.button_index == BUTTON_LEFT:
 							if detectedObject != null:
-								console.processCommand(str("Tool ", "ObjectInfoIndicator", " ", str(detectedObject.get_instance_id())))
+								console.processCommand(str("Tool ", hotbar[hotbarSelection], " ", str(detectedObject.get_instance_id())))
 							else:
 								var additionalMessage : String
 								if pointer.getPointerPosition() != null:
@@ -231,7 +232,7 @@ func _input(event):
 				if event is InputEventMouseButton:
 					if event.is_pressed():
 						if detectedObject != null:
-							console.processCommand(str("Tool ", "LinkCreator", " ", str(detectedObject.get_instance_id())))
+							console.processCommand(str("Tool ", hotbar[hotbarSelection], " -hotbarLinkSelection -data ", str(detectedObject.translation).replace(" ", "")))
 						else:
 							console.println("No node detected!")
 			"BoxConnector":
@@ -240,13 +241,13 @@ func _input(event):
 						if detectedObject == null:
 							console.println("No node detected!")
 						elif event.button_index == BUTTON_LEFT:
-							console.processCommand(str("Tool ", "BoxConnector", " A ", str(detectedObject.translation)))
+							console.processCommand(str("Tool ", hotbar[hotbarSelection], " A ", str(detectedObject.translation)))
 						elif event.button_index == BUTTON_RIGHT:
-							console.processCommand(str("Tool ", "BoxConnector", " B ", str(detectedObject.translation)))
+							console.processCommand(str("Tool ", hotbar[hotbarSelection], " B ", str(detectedObject.translation)))
 				elif event is InputEventKey:
 					if event.is_pressed():
 						if event.get_scancode() == KEY_C:
-							console.processCommand(str("Tool ", "BoxConnector", " -reset"))
+							console.processCommand(str("Tool ", hotbar[hotbarSelection], " -reset"))
 			"Hand":  # Hand
 				if event is InputEventMouseButton:
 					if event.is_pressed():
@@ -255,18 +256,22 @@ func _input(event):
 						else:
 							print(Tool.name, ": < ", detectedObject, " >")
 							var id = detectedObject.get("ID")
-							if id == null:
+							if not id:
 								print(Tool.name, ": could not interact")
 							else:
 								match id:
 									"N_NetworkController":
 										if event.button_index == BUTTON_RIGHT:
-											detectedObject.initialize()
-										elif event.button_index == BUTTON_LEFT:
+											#detectedObject.setVisualizedLearningCount(60)  # let it learn for a second
 											var count = 100
 											for _i in range(count):
-												detectedObject.wave()
-											print(Tool.name, ": iterated for ", count, " times")
+												detectedObject.propagate()
+												detectedObject.backpropagate()
+											detectedObject.visualize()
+											console.println(str(Tool.name, ": iterated for ", count, " times"))
+										elif event.button_index == BUTTON_LEFT:
+											detectedObject.propagate()
+											detectedObject.visualize()
 									"N_Input", "N_Goal":
 										if event.button_index == BUTTON_LEFT:
 											detectedObject.addOutput(1)
@@ -280,7 +285,7 @@ func _input(event):
 				if event is InputEventMouseButton:
 					if event.is_pressed():
 						if event.button_index == BUTTON_LEFT:
-							console.processCommand(str("Tool ", "Selector", " -s hotbarSelection pointerPosition"))
+							console.processCommand(str("Tool ", hotbar[hotbarSelection], " -s hotbarSelection pointerPosition"))
 			_:
 				pass
 

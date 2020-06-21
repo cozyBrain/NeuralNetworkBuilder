@@ -1,12 +1,30 @@
 class_name N_NetworkController
 extends StaticBody
 
+const ID : String = "N_NetworkController"
+
 var Olinks : Array
 var propSequence : Array
 var bpropSequence : Array
-var propOnly : bool = false
 
-const ID : String = "N_NetworkController"  # IDData.N_NetworkController
+#var visualizedLearningCount : int = 0 setget setVisualizedLearningCount
+#func setVisualizedLearningCount(count : int):
+#	set_physics_process(true)
+#	visualizedLearningCount = count
+#
+#
+#func _ready():
+#	set_physics_process(false)
+#
+## visualize learning progress
+#func _physics_process(delta):
+#	if visualizedLearningCount > 0:
+#		propagate()
+#		backpropagate()
+#		visualize()
+#		visualizedLearningCount -= 1
+#	else:
+#		set_physics_process(false)
 
 func prop() -> void:
 	pass
@@ -28,31 +46,30 @@ func initialize() -> void:
 		var nextLayer : Dictionary
 		for keyAKAobject in propSequence[layerIndex]:  # iterating map of the layer
 			var objID = keyAKAobject.get("ID")
-			if objID != null:
-	
+			if objID:
 				# init weights
 				match objID:
 					"N_Goal":
 						pass
 					_:
 						var objIlinks = keyAKAobject.get("Ilinks")
-						if objIlinks != null:
+						if objIlinks:
 							var numOfObjIlinks : float = objIlinks.size()
 							for link in objIlinks:  # init weight
 								link.Weight = rng.randfn() / sqrt(numOfObjIlinks/2)
 								print("initialize weight:", link.Weight)
-	
+				
 				var objOlinks = keyAKAobject.get("Olinks")
-				if objOlinks == null:
-					continue
-				for link in objOlinks:
-					nextLayer[link.Onode] = true
-#					for node in link.Onodes:
-#						nextLayer[node] = true
+				if not objOlinks:
+					continue  # this is intended don't change. from past..
+				else:
+					for link in objOlinks:
+						nextLayer[link.Onode] = true
+	#					for node in link.Onodes:
+	#						nextLayer[node] = true
 	
 		if not nextLayer.empty():  # if detect next connection
 			propSequence.push_back(nextLayer)
-	
 		layerIndex += 1
 		
 	# Convert Dictionary to Array
@@ -96,14 +113,18 @@ func initialize() -> void:
 		layerIndex += 1
 	print("analyzed for backpropagation sequence!")
 
-func wave() -> void:
+func propagate() -> void:
 	for layer in propSequence:
 		for node in layer:
 			node.prop()
-	if not propOnly:
-		for layer in bpropSequence:
-			for node in layer:
-				node.bprop()
+			
+func backpropagate() -> void:
+	for layer in bpropSequence:
+		for node in layer:
+			node.bprop()
+			
+func visualize() -> void:
+	# visualize
 	for layer in propSequence:
 		for node in layer:
 			if node.has_method("updateEmissionByOutput"):

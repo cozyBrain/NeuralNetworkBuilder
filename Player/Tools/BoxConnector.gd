@@ -5,7 +5,7 @@ const ID : String = "BoxConnector"
 
 var areas = [[], []]  # A[beginPoint, endPoint], B[begin, end]
 
-onready var AreaIndicator = preload("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn")
+onready var AreaIndicator = preload("res://Components/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn")
 var areaIndicators = [null, null]
 
 func handle(arg : String) -> String:  # [AorB, pointPosition]
@@ -53,6 +53,7 @@ func handle(arg : String) -> String:  # [AorB, pointPosition]
 	return output
 
 func initiate() -> String:
+	var output : String
 	var Aselected = true
 	var Bselected = true
 	if areas[0].size() != 2:
@@ -75,17 +76,15 @@ func initiate() -> String:
 	var linkCreator = get_parent().get_node("LinkCreator")
 	
 	for Anode in Anodes:
-		if Anode.ID == "L_SCWeight":
-			continue
 		for Bnode in Bnodes:
-			if Bnode.ID == "L_SCWeight":
-				continue
-			var newSynapse = linkCreator.create(Anode, Bnode)
-			if newSynapse != null:
-					G.default_world.addLink(newSynapse)
+			linkCreator.handle("-l L_SCWeight -hotbarLinkSelection -data "+str(Anode.translation).replace(" ","")+ " "+str(Bnode.translation).replace(" ",""))
+#			var newSynapse = linkCreator.create(Anode, Bnode)
+#			if newSynapse != null:
+#					G.default_world.addLink(newSynapse)
 	
 	reset()
 	
+	print(output)
 	return "done"
 
 func reset():

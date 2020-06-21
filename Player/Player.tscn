@@ -38,9 +38,9 @@ collide_with_areas = true
 
 [node name="Console" type="Control" parent="."]
 margin_left = 10.0
-margin_top = 400.0
-margin_right = 1034.0
-margin_bottom = 1000.0
+margin_top = 6.0
+margin_right = 482.0
+margin_bottom = 202.0
 script = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -55,7 +55,7 @@ __meta__ = {
 }
 
 [node name="Output" type="RichTextLabel" parent="Console/VBoxContainer"]
-margin_right = 619.0
+margin_right = 468.0
 margin_bottom = 150.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -65,14 +65,14 @@ scroll_following = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Console/VBoxContainer"]
 margin_top = 154.0
-margin_right = 619.0
+margin_right = 468.0
 margin_bottom = 178.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Input" type="LineEdit" parent="Console/VBoxContainer/HBoxContainer"]
-margin_right = 619.0
+margin_right = 468.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 3

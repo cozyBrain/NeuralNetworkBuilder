@@ -46,7 +46,7 @@ func connectPort(target:Node, port:String) -> int:
 		"Ilinks":
 			match target.get("ID"):
 				"L_SCWeight", "L_SCSharedWeight":
-					Olinks.push_front(target)
+					Ilinks.push_front(target)
 				_:
 					return -1
 	return 00

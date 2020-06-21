@@ -26,6 +26,12 @@ func handle(arg : String):
 	var eraseArguments = argParser.getStrings(["erase", "e"])
 	var addArguments = argParser.getStrings(["add", "a"])
 	var trainArgument = argParser.getString(["train", "t"])
+	var visualizeProgress = argParser.getBool(["visualizeProgress", "v"])
+	var iterationPerDataSet = argParser.getString(["iterationPerDataSet", "i"], "20")
+	if iterationPerDataSet.is_valid_integer():
+		iterationPerDataSet = int(iterationPerDataSet)
+	else:
+		iterationPerDataSet = 20
 	
 	# group
 	if not networkGroups.has(groupSelection):
@@ -67,8 +73,13 @@ func handle(arg : String):
 							dataSet.remove(data2applyIndex)
 							continue
 						node2set.set("Output", dataSet[data2applyIndex][1])
-					for NetworkControllerNode in networkControllerNodes:
-						NetworkControllerNode.wave()
+					for networkControllerNode in networkControllerNodes:
+						for _i in range(iterationPerDataSet):
+							networkControllerNode.propagate()
+							networkControllerNode.backpropagate()
+							networkControllerNode.visualize()
+							if visualizeProgress:
+								yield(get_tree(), "physics_frame")
 	
 	# erase
 	if eraseArguments == null:

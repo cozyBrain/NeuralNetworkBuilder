@@ -1,7 +1,7 @@
 extends Node
 class_name NodeInfoIndicator
 
-var overlappingBodyDetector = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
+var overlappingBodyDetector = load("res://Components/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
 
 const ID : String = "ObjectInfoIndicator"
 
@@ -21,7 +21,7 @@ func handle(position) -> String:
 	output += str("< ", object, "  ", object.translation, " >\n")
 	var objID = object.get("ID")
 	if objID != null:
-		output += str("ID : ", objID, " : ", [objID], '\n')
+		output += str("ID : ", objID, '\n')
 	for property in object.get_property_list():
 		if(property.usage == PROPERTY_USAGE_SCRIPT_VARIABLE): 
 			if typeof(object[property.name]) == TYPE_REAL:

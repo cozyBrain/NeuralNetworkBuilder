@@ -1,15 +1,17 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Nodes/N_NetworkController/N_NetworkController.gd" type="Script" id=1]
-[ext_resource path="res://Nodes/_N_Materials/N_Blue.tres" type="Material" id=2]
+[ext_resource path="res://Components/N_Input/N_Input.gd" type="Script" id=1]
+[ext_resource path="res://Components/_N_Materials/Green.tres" type="Material" id=2]
+
+
 
 [sub_resource type="BoxShape" id=1]
 
 [sub_resource type="CubeMesh" id=2]
 
-[node name="N_NetworkController" type="StaticBody" groups=[
+[node name="N_Input" type="StaticBody" groups=[
 "node",
-"saveLayer1",
+"saveLayer0",
 ]]
 script = ExtResource( 1 )
 

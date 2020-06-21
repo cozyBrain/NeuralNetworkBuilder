@@ -3,7 +3,7 @@ class_name Pointer
 
 const ID : String = "Pointer"
 
-export (String) var pointerResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
+export (String) var pointerResource = "res://Components/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
 onready var rayCast = get_node("../../Yaxis/Camera/RayCast")
 var rayCastDetectedObject : Object
 var pointer
@@ -56,7 +56,7 @@ func activatePointer(translation, aim : Basis):
 	var pointerPosition = translation
 	pointerPosition -= aim.z*distance
 	pointerPosition = pointerPosition.round()
-	pointer = load("res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
+	pointer = load("res://Components/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn").instance()
 	pointer.translation = pointerPosition
 	prevPointerPosition = pointer.translation
 	add_child(pointer)

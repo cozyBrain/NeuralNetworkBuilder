@@ -3,69 +3,82 @@ class_name LinkCreator
 
 const ID : String = "LinkCreator"
 
-var Link
+var linkSelection = "L_SCWeight"  # default link
+var Link = load("res://Components/"+linkSelection+"/"+linkSelection+".tscn")
+var prevLink = Link
+var hotbarSelectedLink = Link
 
 var hotbar : Array = ["L_SCWeight", "L_SCSharedWeight"]
 var hotbarSelection : int setget setHotbarSelection
 func setHotbarSelection(selection : int):
-	Link = load("res://Components/" + hotbar[hotbarSelection] + "/" + hotbar[hotbarSelection] + ".tscn").instance()
+	hotbarSelection = selection
+	hotbarSelectedLink = load("res://Components/"+hotbar[hotbarSelection]+"/"+hotbar[hotbarSelection] + ".tscn")
+	linkSelection = hotbar[hotbarSelection]
 
-var Anode : Object
-func handle(position) -> String:
-	var output : String
-	var object
-	if position.is_valid_integer():  # is this an instance?
-		object = instance_from_id(int(position))
-	else:
-		position = G.str2vector3(position)
-		if position == null:
-			return "Invalid argument\n"
-		object = G.default_world.getNode(position)
-		if null == object:
-			return str(position, ": No object detected\n")
-		
-	if Anode == null:
-		Anode = object
-		output += str(self.name, ": From ", self.Anode)
-	else:
-		output += str(self.name, ": To ", object)
-		G.default_world.addLink(create(Anode, object))
-		Anode = null
-	return output
+# create link using saveData loading system
+enum {NumOfArgs, ArgTypes, NumOfQueuedArg, SaveDataNames, ArgSaveDataQueue}
+var LINKS : Dictionary = {
+	"L_SCWeight" : [2, [TYPE_VECTOR3, TYPE_VECTOR3], 0, ["Inode", "Onode"], {}],
+	"L_SCSharedWeight" : [3, [TYPE_VECTOR3, TYPE_VECTOR3, TYPE_VECTOR3], 0, ["Inode", "Onode", "Wnode"], {}],
+}
 
-func create(A : Object, B : Object) -> Object:
-	if A == null or B == null:
-		return null
-	var newLink = Link.instance()
-	# config synapse
-	var distance = A.translation.distance_to(B.translation)
-	var position = (A.translation + B.translation) / 2
-	var direction = A.translation.direction_to(B.translation)
-	newLink.setLength(distance)
-	var d = direction
-	d.x = 1 if d.x == 0 else 0
-	d.y = 1 if d.y == 0 else 0
-	d.z = 1 if d.y == 0 else 0
-	newLink.look_at_from_position(position, A.translation, d)
-	if newLink.connectFrom(A) == -1:
-		print(self.name, ": link failed: connectFrom ", A)
-		return null
-	if newLink.connectTo(B) == -1:
-		print(self.name, ": link failed: connectTo ", B)
-		return null
+# Tool LinkCreator -h -d 1,-2,3
+# Tool LinkCreator -l L_SCSharedWeight -d 0,0,3 -2,0,3 -1,0,0
+
+func handle(arg : String):
+	print(arg)
 	
-	var success : int = 0
-	# connect both node with the newLink
-	if A.has_method("connectTo"):
-		if A.connectTo(newLink) == -1:
-			print(self.name, ": failed to connect ", A, " to ", newLink)
+	var output : String
+	var argParser = ArgParser.new(arg)
+	
+	linkSelection = argParser.getString(["link", "l"], linkSelection)
+	if linkSelection: 
+		Link = load("res://Components/" + linkSelection + "/" + linkSelection + ".tscn")
+	else: 
+		Link = prevLink
+	if argParser.getBool(["hotbarLinkSelection", "h"]):
+		Link = hotbarSelectedLink
+	
+	var linkDatas = argParser.getStrings(["data", "d"])
+	if linkDatas == null:
+		output += "no -data arguments!\n"
+	elif linkDatas.size() > 0:
+		var numOfQueuedArg = LINKS[linkSelection][NumOfQueuedArg]
+		var argSaveDataQueue = LINKS[linkSelection][ArgSaveDataQueue]
+		if numOfQueuedArg + linkDatas.size() > LINKS[linkSelection][NumOfArgs]:
+			if numOfQueuedArg > 0: output += "-data: too many arguments to create link. some queued linkData exist: "+str(argSaveDataQueue)+"\n"
+			else: output += "-data: too many arguments to create link.\n"
 		else:
-			success += 1
-	if B.has_method("connectFrom"):
-		if B.connectFrom(newLink) == -1:
-			print(self.name, ": failed to connect ", B, " from ", newLink)
-		else:
-			success += 1
-	if not success >= 2:
+			for i in range(linkDatas.size()):
+				var LINK = LINKS[linkSelection]
+				var saveDataNames = LINKS[linkSelection][SaveDataNames]
+				var linkData = null
+				# if valid, convert.
+				match LINK[ArgTypes][numOfQueuedArg+i]:
+					TYPE_VECTOR3:
+						if G.isValidVector3(linkDatas[i]):
+							linkData = G.str2vector3(linkDatas[i])
+					TYPE_REAL:
+						if linkDatas[i].is_valid_float():
+							linkData = float(linkDatas[i])
+					
+				if linkData:  # if linkData is valid
+					argSaveDataQueue[saveDataNames[numOfQueuedArg+i]] = linkData
+					LINK[NumOfQueuedArg] += 1
+					if LINK[NumOfQueuedArg] == LINK[NumOfArgs]:
+						# create
+						var newLink = Link.instance()
+						newLink.loadSaveData(argSaveDataQueue)
+						G.default_world.addLink(newLink)
+						# reset SaveDataQueue & numOfQueuedArg
+						for port in argSaveDataQueue:
+							argSaveDataQueue[port] = null
+						LINK[NumOfQueuedArg] = 0
+				else:
+					output += "-data: invalid argument!\n"
+					break
+	
+	prevLink = Link
+	if output == "":
 		return null
-	return newLink
+	return output

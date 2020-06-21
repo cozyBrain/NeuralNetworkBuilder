@@ -2,10 +2,10 @@ extends Node
 
 const ID : String = "Selector"
 
-export (String) var selectionIndicatorResource = "res://Nodes/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
+export (String) var selectionIndicatorResource = "res://Components/N_OverlappingBodyDetectorNode/N_OverlappingBodyDetectorNode.tscn"
 onready var pointer = get_node("../Pointer")
 
-var shapes : Dictionary = {
+var SHAPES : Dictionary = {
 	"voxel" : [1, [TYPE_VECTOR3], ""],  # min arguments, [arguments types], stacked arguments
 	"box" : [2, [TYPE_VECTOR3, TYPE_VECTOR3], ""],
 	"sphere" : [2, [TYPE_VECTOR3, TYPE_REAL], ""]
@@ -48,31 +48,31 @@ func handle(arg : String):
 			shapeArguments[0] = shapeArguments[0].to_lower()  # VoXeL -> voxel
 			if shapeArguments[0] == "hotbarselection":
 				shapeArguments[0] = hotbar[hotbarSelection]
-			var shape = shapes.get(shapeArguments[0])
-			if shape == null:  # if ("box")shapeArguments[0] is unknown
-				output += "Unknown shape!\n"
+			var SHAPE = SHAPES.get(shapeArguments[0])
+			if SHAPE == null:  # if ("box")shapeArguments[0] is unknown
+				output += "Unknown SHAPE!\n"
 			else:
-				if numOfShapeArguments-1 >= shape[0] or shape[2] == "":
+				if numOfShapeArguments-1 >= SHAPE[0] or SHAPE[2] == "":
 					selection = shapeArguments[0]  # ex) selection status: voxel
 					
 				var validForm : bool = true  # valid arguments?
 				
 				if not numOfShapeArguments > 1:  # does any arg exists after voxel? "voxel 0,0,2"
-					output += "No arguments of shape!\n"
+					output += "No arguments of SHAPE!\n"
 				else:
 					# verify arguments
-					for shapeArgumentIndex in range(1, clamp(numOfShapeArguments, 1, shape[0]+1)):  # voxel 0,0,2 0,0,4 -> voxel 0,0,2 : ignore needless arguments
-						var shapeTypeArgOffset : int = shape[2].split(" ", false).size()
-						if numOfShapeArguments-1 >= shape[0]:
+					for shapeArgumentIndex in range(1, clamp(numOfShapeArguments, 1, SHAPE[0]+1)):  # voxel 0,0,2 0,0,4 -> voxel 0,0,2 : ignore needless arguments
+						var shapeTypeArgOffset : int = SHAPE[2].split(" ", false).size()
+						if numOfShapeArguments-1 >= SHAPE[0]:
 							shapeTypeArgOffset = 0
 						else:
 							if shapeTypeArgOffset > 0:
 								shapeTypeArgOffset -= 1
-						if shapeTypeArgOffset+shapeArgumentIndex-1 > shape[0]-1:
+						if shapeTypeArgOffset+shapeArgumentIndex-1 > SHAPE[0]-1:
 							break
 						if shapeArguments[shapeArgumentIndex].to_lower() == "pointerposition":
 							shapeArguments[shapeArgumentIndex] = str(pointer.getPointerPosition()).replace(" ", "")
-						match shape[1][shapeTypeArgOffset+shapeArgumentIndex-1]:
+						match SHAPE[1][shapeTypeArgOffset+shapeArgumentIndex-1]:
 							TYPE_VECTOR3:
 								if not G.isValidVector3(shapeArguments[shapeArgumentIndex]):
 									validForm = false
@@ -82,23 +82,23 @@ func handle(arg : String):
 							_:
 								validForm = false
 						if not validForm:
-							output += "Invalid shape argument!\n"
+							output += "Invalid SHAPE argument!\n"
 							break
 						selection += " "+shapeArguments[shapeArgumentIndex]  # selection status: voxel 0,0,2
 						
 					if validForm:  # indicate selection
-						if numOfShapeArguments-1 >= shape[0]:  # if enough shape arguments to get it done at once
+						if numOfShapeArguments-1 >= SHAPE[0]:  # if enough SHAPE arguments to get it done at once
 							selection += "\n"
 							addSelection(selection)
 							output += "selectionGroup <"+groupSelection+">:\n" + "       "+selectionGroups[groupSelection][0].replace("\n", "\n       ")
 						else:
-							if shape[2].split(" ", false).size()-1 < shape[0]:
-								shape[2] += selection
+							if SHAPE[2].split(" ", false).size()-1 < SHAPE[0]:
+								SHAPE[2] += selection
 								output += selection
-							if shape[2].split(" ", false).size()-1 >= shape[0]:
-								shape[2] += "\n"
-								addSelection(shape[2])
-								shape[2] = ""
+							if SHAPE[2].split(" ", false).size()-1 >= SHAPE[0]:
+								SHAPE[2] += "\n"
+								addSelection(SHAPE[2])
+								SHAPE[2] = ""
 								output += "selectionGroup <"+groupSelection+">:\n" + "       "+selectionGroups[groupSelection][0].replace("\n", "\n       ")
 	
 	# merge

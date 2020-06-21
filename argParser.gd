@@ -7,17 +7,22 @@ var argument : String
 func _init(arg : String):
 	argument = arg
 
-func getStrings(flagsToDetect : Array):
+func getStrings(flagsToDetect : Array):  # return null when detect only flag not flag Arguments
 	for i in range(0, flagsToDetect.size()):
 		flagsToDetect[i] = "-"+flagsToDetect[i]
 	
 	var args = argument.split(" ", false)
+	
 	var strings : Array
 	var push : bool = false
 	for arg in args:
 		if push:
-			if arg[0] == "-":
-				break
+			if arg[0] == "-":  # if arg is such a -1 or -1,0,2 then don't break
+				if arg.length() > 1:
+					if not arg[1].is_valid_integer():
+						break
+				else:
+					break
 			strings.push_back(arg)
 			
 		for ftd in flagsToDetect:

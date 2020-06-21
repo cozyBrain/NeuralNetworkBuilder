@@ -22,12 +22,12 @@ _global_script_classes=[ {
 "base": "StaticBody",
 "class": "L_SCSharedWeight",
 "language": "GDScript",
-"path": "res://Links/L_SCSharedWeight/L_SCSharedWeight.gd"
+"path": "res://Components/L_SCSharedWeight/L_SCSharedWeight.gd"
 }, {
 "base": "StaticBody",
 "class": "L_SCWeight",
 "language": "GDScript",
-"path": "res://Links/L_SCWeight/L_SCWeight.gd"
+"path": "res://Components/L_SCWeight/L_SCWeight.gd"
 }, {
 "base": "Node",
 "class": "LinkCreator",
@@ -37,27 +37,27 @@ _global_script_classes=[ {
 "base": "StaticBody",
 "class": "N_Goal",
 "language": "GDScript",
-"path": "res://Nodes/N_Goal/N_Goal.gd"
+"path": "res://Components/N_Goal/N_Goal.gd"
 }, {
 "base": "StaticBody",
 "class": "N_Input",
 "language": "GDScript",
-"path": "res://Nodes/N_Input/N_Input.gd"
+"path": "res://Components/N_Input/N_Input.gd"
 }, {
 "base": "StaticBody",
 "class": "N_LeakyReLU",
 "language": "GDScript",
-"path": "res://Nodes/N_LeakyReLU/N_LeakyReLU.gd"
+"path": "res://Components/N_LeakyReLU/N_LeakyReLU.gd"
 }, {
 "base": "StaticBody",
 "class": "N_NetworkController",
 "language": "GDScript",
-"path": "res://Nodes/N_NetworkController/N_NetworkController.gd"
+"path": "res://Components/N_NetworkController/N_NetworkController.gd"
 }, {
 "base": "StaticBody",
 "class": "N_Tanh",
 "language": "GDScript",
-"path": "res://Nodes/N_Tanh/N_Tanh.gd"
+"path": "res://Components/N_Tanh/N_Tanh.gd"
 }, {
 "base": "Node",
 "class": "NodeCreator",
@@ -119,7 +119,8 @@ stdout/print_fps=false
 
 [display]
 
-window/stretch/mode="viewport"
+window/vsync/use_vsync=false
+window/stretch/aspect="keep"
 
 [input]
 

@@ -1,0 +1,118 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://World.gd" type="Script" id=1]
+[ext_resource path="res://Components/N_Tanh/N_Tanh.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Nodes/N_Goal/N_Goal.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Nodes/N_Input/N_Input.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Nodes/N_NetworkController/N_NetworkController.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Nodes/N_LeakyReLU/N_LeakyReLU.tscn" type="PackedScene" id=6]
+
+
+[sub_resource type="Environment" id=1]
+background_mode = 1
+ambient_light_color = Color( 1, 1, 1, 1 )
+glow_enabled = true
+
+[node name="World" type="Node"]
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": "Session,. not Main"
+}
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 1 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="WorldEnvironment"]
+transform = Transform( 0.967696, -0.103406, 0.229939, -0.25212, -0.396897, 0.882558, 0, -0.91202, -0.410146, 0, 8.89915, 0 )
+
+[node name="components" type="Node" parent="."]
+
+[node name="N_NetworkController" parent="components" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 3 )
+
+[node name="N_LeakyReLU48" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 4 )
+
+[node name="N_LeakyReLU47" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1, 4 )
+
+[node name="N_LeakyReLU46" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 3 )
+
+[node name="N_LeakyReLU45" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 4 )
+
+[node name="N_LeakyReLU44" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 3 )
+
+[node name="N_LeakyReLU43" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 4 )
+
+[node name="N_LeakyReLU42" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2 )
+
+[node name="N_LeakyReLU41" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 2 )
+
+[node name="N_LeakyReLU40" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 2 )
+
+[node name="N_LeakyReLU39" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1, 2 )
+
+[node name="N_LeakyReLU2" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3 )
+
+[node name="N_LeakyReLU11" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2 )
+
+[node name="N_LeakyReLU8" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4 )
+
+[node name="N_LeakyReLU10" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 4 )
+
+[node name="N_LeakyReLU4" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 3 )
+
+[node name="N_LeakyReLU12" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 2 )
+
+[node name="N_LeakyReLU38" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1, 3 )
+
+[node name="N_LeakyReLU37" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 3 )
+
+[node name="N_LeakyReLU3" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3 )
+
+[node name="N_LeakyReLU9" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4 )
+
+[node name="N_LeakyReLU7" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2 )
+
+[node name="N_LeakyReLU30" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 3 )
+
+[node name="N_LeakyReLU29" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 4 )
+
+[node name="N_LeakyReLU28" parent="components" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 2 )
+
+[node name="N_Input1" parent="components" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 3 )
+
+[node name="N_Input2" parent="components" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 3 )
+
+[node name="N_Input3" parent="components" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3, 3 )
+
+[node name="N_Tanh" parent="components" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1, 3 )
+
+[node name="N_Goal" parent="components" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, 3 )

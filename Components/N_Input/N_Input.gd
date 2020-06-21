@@ -1,39 +1,28 @@
-class_name N_LeakyReLU
-extends StaticBody  # don't consume any CPU resources as long as they don't move. (from docs)
+class_name N_Input
+extends StaticBody
 
 var Olinks : Array
 var Ilinks : Array
 var Output : float
-var BOutput : float 
-const ID : String = "N_LeakyReLU"
-const leakage : float = .1
+const ID : String = "N_Input"
 
 func _ready():
 	$CollisionShape/MeshInstance.set_surface_material(0, $CollisionShape/MeshInstance.get_surface_material(0).duplicate(4))
+	updateEmissionByOutput()
+
+func addOutput(x:float) -> void:
+	Output += x
+	updateEmissionByOutput()
+
+func setOutput(x:float) -> void:
+	Output = x
+	updateEmissionByOutput()
 
 func prop() -> void:
-	Output = 0
-	for link in Ilinks:
-		Output += link.getOutput()
-	Output = activationFunc(Output)
-
+	pass
 func bprop() -> void:  # back-propagation
-	BOutput = 0
-	for link in Olinks:
-		BOutput += link.getBOutput()
-	BOutput *= derivateActivationFunc(Output)
-	for link in Ilinks:
-		link.updateWeight(BOutput)
+	pass
 
-static func activationFunc(x:float) -> float:
-	if x < 0:
-		return x * leakage
-	return x
-static func derivateActivationFunc(x:float) -> float:
-	if x < 0:
-		return leakage
-	return 1.0
-	
 func connectPort(target:Node, port:String) -> int:
 	match port:
 		"Olinks":
@@ -45,7 +34,7 @@ func connectPort(target:Node, port:String) -> int:
 		"Ilinks":
 			match target.get("ID"):
 				"L_SCWeight", "L_SCSharedWeight":
-					Olinks.push_front(target)
+					Ilinks.push_front(target)
 				_:
 					return -1
 	return 00
@@ -68,7 +57,6 @@ func getSaveData() -> Dictionary:
 	return {
 		"ID" : ID,
 		"Output" : Output,
-		"BOutput" : BOutput,
 		"translation" : translation,
 	}
 func loadSaveData(sd:Dictionary):

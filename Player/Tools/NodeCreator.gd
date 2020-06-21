@@ -13,7 +13,7 @@ func create():
 	if pointerPosition != null:
 		var obj = G.default_world.getNode(pointerPosition)
 		if obj == null:
-			var body = load("res://Nodes/" + hotbar[hotbarSelection] + "/" + hotbar[hotbarSelection] + ".tscn").instance()
+			var body = load("res://Components/" + hotbar[hotbarSelection] + "/" + hotbar[hotbarSelection] + ".tscn").instance()
 			body.translation = pointer.pointerPosition
 			G.default_world.addNode(body)
 			print("create ", body)
