@@ -32,7 +32,7 @@ func handle(arg : String):
 	var pasteArguments = argParser.getStrings(["paste", "p"])
 	var strideArguments = argParser.getStrings(["stride", "s"])
 	var linkArguments = argParser.getStrings(["link", "l"])  # -link <Ilink:-1:IlinkDepthOrOlinkDepth> <Olink:2:IlinkDepthOrOlinkDepth>
-	var createNodeOverLink = argParser.getBool(["createNodeOverLink", "createOverLink", "col"])
+	var createNodeOverLink = argParser.getBool(["createNodeOverLink", "createOverLink", "col"])  # not yet
 	
 	var overrideArguments = argParser.getStrings(["override", "o"])  # -override node : override only node
 	var overrideNode : bool = false
