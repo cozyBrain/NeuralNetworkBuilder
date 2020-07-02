@@ -13,10 +13,10 @@ var networkGroups : Dictionary = {G.defaultGroupName : groupComponent.duplicate(
 var groupSelection : String = G.defaultGroupName  # networkGroupSelection
 var dataSetsGroupSelection : String = G.defaultGroupName
 
-# Tool SupervisedLearningTrainer -train 7 -shuffle  # -g _default -nc _SLT_NetworkController -il _SLT_InputLayer -ol _SLT_GoalLayer
 # Tool SupervisedLearningTrainer -add  # add DataSet into IL&GL_DataSets{"_default":[]}
-# Tool SupervisedLearningTrainer -ds dog -add  # add DataSet into IL&GL_DataSets{"dog":[]}
+# Tool SupervisedLearningTrainer -train 7 -shuffle  # -g _default -nc _SLT_NetworkController -il _SLT_InputLayer -ol _SLT_GoalLayer
 # Tool SupervisedLearningTrainer -train 77 -i 20 -v
+# Tool SupervisedLearningTrainer -ds dog -add  # add DataSet into IL&GL_DataSets{"dog":[]}
 
 func handle(arg : String):
 	var output : String

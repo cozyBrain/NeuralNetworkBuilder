@@ -6,7 +6,7 @@ export (String) var selectionIndicatorResource = "res://Components/N_Overlapping
 onready var pointer = get_node("../Pointer")
 
 var SHAPES : Dictionary = {
-	"voxel" : [1, [TYPE_VECTOR3], ""],  # min arguments, [arguments types], stacked arguments
+	"voxel" : [1, [TYPE_VECTOR3], ""],  # min num of arguments, [arguments types], stacked arguments
 	"box" : [2, [TYPE_VECTOR3, TYPE_VECTOR3], ""],
 	"sphere" : [2, [TYPE_VECTOR3, TYPE_REAL], ""]
 }
@@ -14,8 +14,8 @@ var SHAPES : Dictionary = {
 var hotbar : Array = ["voxel", "box"]
 var hotbarSelection : int
 
-const groupComponent = ["",[]]
-var selectionGroups : Dictionary = {G.defaultGroupName : groupComponent.duplicate(true)}  # [selection, selectionIndicatingObjects]
+const groupComponent = ["",[]]  # [selection, selectionIndicatingObjects]
+var selectionGroups : Dictionary = {G.defaultGroupName : groupComponent.duplicate(true)}
 var groupSelection : String = G.defaultGroupName
 
 # Tool Selector -shape hotbarSelection voxel 0,0,2  -> default: "voxel 0,0,2\n"

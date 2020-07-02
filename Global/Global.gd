@@ -16,6 +16,7 @@ extends Node
 #	"L_SCWeight", "L_SCSharedWeight",
 #	"Port_Inode", "Port_Onode", "Port_Wnode",
 #]
+const VERSION = "0.0-b"
 const dx = 0.0001
 const default_world_path = "/root/World"
 onready var default_world = get_node(default_world_path)
@@ -23,6 +24,7 @@ onready var default_world = get_node(default_world_path)
 const defaultGroupName="_default"
 
 func _ready():
+	print("Program Version: ", VERSION)
 	pass
 
 static func isValidVector3(vector : String) -> bool:

@@ -25,6 +25,7 @@ var ToolHotbar
 var hotbar = ["ObjectInfoIndicator", "LinkCreator", "BoxConnector", "Hand", "NodeCreator", "Selector", "Copier", "SupervisedLearningTrainer","None","None"]  # size:10  hotbar lol! Korean people will see why
 
 func _ready():
+	console.println(str("Program Version: ", G.VERSION))
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	var playerHotbarIndication = str("PlayerHotbar: [")
 	for item in hotbar:
