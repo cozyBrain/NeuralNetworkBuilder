@@ -47,11 +47,11 @@ func boxGetNode(from:Vector3, to:Vector3) -> Array:
 	var nodes : Array
 	var dvec : Vector3
 	var ivec : Vector3 = from
-
+	
 	dvec.x = 1 if from.x < to.x else -1
 	dvec.y = 1 if from.y < to.y else -1
 	dvec.z = 1 if from.z < to.z else -1
-
+	
 	# iteration
 	for z in range(from.z, to.z+dvec.z, dvec.z):
 		for y in range(from.y, to.y+dvec.y, dvec.y):

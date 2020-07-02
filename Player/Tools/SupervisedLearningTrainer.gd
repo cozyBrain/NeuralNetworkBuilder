@@ -10,18 +10,19 @@ enum gi {  # group index
 
 const groupComponent = ["_SLT_networkController", "_SLT_inputLayer", "_SLT_goalLayer", {}]  # [NetworkControllerSelection, InputLayerSelection, GoalLayerSelection, IL&GL_dataSetsGroupsForTraining{}]
 var networkGroups : Dictionary = {G.defaultGroupName : groupComponent.duplicate(true)}
-var groupSelection : String = G.defaultGroupName
+var groupSelection : String = G.defaultGroupName  # networkGroupSelection
 var dataSetsGroupSelection : String = G.defaultGroupName
 
-# Tool SupervisedLearningTrainer -train 7 -shuffle  ==  -g _default -nc _SLT_NetworkController -il _SLT_InputLayer -ol _SLT_GoalLayer
+# Tool SupervisedLearningTrainer -train 7 -shuffle  # -g _default -nc _SLT_NetworkController -il _SLT_InputLayer -ol _SLT_GoalLayer
 # Tool SupervisedLearningTrainer -add  # add DataSet into IL&GL_DataSets{"_default":[]}
 # Tool SupervisedLearningTrainer -ds dog -add  # add DataSet into IL&GL_DataSets{"dog":[]}
+# Tool SupervisedLearningTrainer -train 77 -i 20 -v
 
 func handle(arg : String):
-	print(networkGroups[groupSelection][gi.DataSetsGroups])
 	var output : String
 	var argParser = ArgParser.new(arg)
 	groupSelection = argParser.getString(["group", "g"], groupSelection)
+	dataSetsGroupSelection = argParser.getString(["dataSetsGroupSelection", "ds"], dataSetsGroupSelection)
 	var listArguments = argParser.getStrings(["list", "ls"])
 	var eraseArguments = argParser.getStrings(["erase", "e"])
 	var addArguments = argParser.getStrings(["add", "a"])
@@ -74,7 +75,7 @@ func handle(arg : String):
 							continue
 						node2set.set("Output", dataSet[data2applyIndex][1])
 					for networkControllerNode in networkControllerNodes:
-						for _i in range(iterationPerDataSet):
+						for _j in range(iterationPerDataSet):
 							networkControllerNode.propagate()
 							networkControllerNode.backpropagate()
 							networkControllerNode.visualize()
@@ -114,6 +115,8 @@ func handle(arg : String):
 						output += "       " + group + "\n"
 			_:
 				output += "Unknown list argument!\n"
+	
+	print(networkGroups[groupSelection][gi.DataSetsGroups])
 	
 	if output == "":
 		return null

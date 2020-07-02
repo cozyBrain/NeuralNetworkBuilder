@@ -69,7 +69,6 @@ func _process(delta):
 					if null == detectedObject:
 						print("Hand: No Object Detected")
 					else:
-						print("Hand: < ", detectedObject, " >")
 						var id = detectedObject.get("ID")
 						if id == null:
 							print("Hand: could not interact")
@@ -187,11 +186,12 @@ func _input(event):
 					if subSelection == -1:
 						subSelection = 9
 					if subSelection == 9:  # key 0 to escape
-						print("escape")
+						console.println("Exited hotbarSubSelectionMode.")
 						hotbarSubSelection = false
 					else:
 						if ToolHotbar.size() > subSelection:
-							print("subSelection:", subSelection, ":", ToolHotbar[subSelection])
+							print("ToolSubSelection:", subSelection, ":", ToolHotbar[subSelection])
+							console.println(str("ToolSubSelection:", subSelection, ":", ToolHotbar[subSelection]))
 							Tool.set("hotbarSelection", subSelection)
 				else:
 					hotbarSelection = scancode - 49
@@ -207,12 +207,13 @@ func _input(event):
 						Tool = get_node_or_null("Tools/"+hotbar[prevHotbarSelection])
 						if Tool != null:
 							ToolHotbar = Tool.get("hotbar")
+							console.println(str("ToolSelection: "+ hotbar[prevHotbarSelection]))
 							if ToolHotbar != null:
 								print("ToolHotbar: ", ToolHotbar)
 											
 					else:  # when you select selected one again
 						if ToolHotbar != null:  # does the tool has hotbar?
-							print("hotbarSubSelection. 0 to escape.")
+							console.println("Entered hotbarSubSelectionMode. 0 to escape.")
 							hotbarSubSelection = true
 	
 	if Tool != null: 
